@@ -36,12 +36,15 @@ import java.util.SortedMap;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@code ForwardingSortedMap}.
  *
  * @author Robert KonigsbergSortedMapFeature
  */
+@NullUnmarked
 public class ForwardingSortedMapTest extends TestCase {
   static class StandardImplForwardingSortedMap<K, V> extends ForwardingSortedMap<K, V> {
     private final SortedMap<K, V> backingSortedMap;
@@ -71,12 +74,12 @@ public class ForwardingSortedMapTest extends TestCase {
     }
 
     @Override
-    public V remove(Object object) {
+    public @Nullable V remove(Object object) {
       return standardRemove(object);
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(@Nullable Object object) {
       return standardEquals(object);
     }
 

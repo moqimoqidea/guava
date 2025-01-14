@@ -19,9 +19,9 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.errorprone.annotations.InlineMe;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.RandomAccess;
-import javax.annotation.CheckForNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Static utility methods pertaining to {@code char} primitives, that are not already found in
@@ -46,14 +46,13 @@ import javax.annotation.CheckForNull;
  * @since 1.0
  */
 @GwtCompatible(emulated = true)
-@ElementTypesAreNonnullByDefault
 public final class Chars {
   private Chars() {}
 
   /**
    * The number of bytes required to represent a primitive {@code char} value.
    *
-   * <p><b>Java 8 users:</b> use {@link Character#BYTES} instead.
+   * <p><b>Java 8+ users:</b> use {@link Character#BYTES} instead.
    */
   public static final int BYTES = Character.SIZE / Byte.SIZE;
 
@@ -61,7 +60,7 @@ public final class Chars {
    * Returns a hash code for {@code value}; equal to the result of invoking {@code ((Character)
    * value).hashCode()}.
    *
-   * <p><b>Java 8 users:</b> use {@link Character#hashCode(char)} instead.
+   * <p><b>Java 8+ users:</b> use {@link Character#hashCode(char)} instead.
    *
    * @param value a primitive {@code char} value
    * @return a hash code for the value
@@ -106,7 +105,7 @@ public final class Chars {
    * Compares the two specified {@code char} values. The sign of the value returned is the same as
    * that of {@code ((Character) a).compareTo(b)}.
    *
-   * <p><b>Note for Java 7 and later:</b> this method should be treated as deprecated; use the
+   * <p><b>Note:</b> this method is now unnecessary and should be treated as deprecated; use the
    * equivalent {@link Character#compare} method instead.
    *
    * @param a the first {@code char} to compare
@@ -114,8 +113,9 @@ public final class Chars {
    * @return a negative value if {@code a} is less than {@code b}; a positive value if {@code a} is
    *     greater than {@code b}; or zero if they are equal
    */
+  @InlineMe(replacement = "Character.compare(a, b)")
   public static int compare(char a, char b) {
-    return a - b; // safe due to restricted range
+    return Character.compare(a, b);
   }
 
   /**
@@ -258,7 +258,6 @@ public final class Chars {
    * @throws IllegalArgumentException if {@code min > max}
    * @since 21.0
    */
-  @Beta
   public static char constrainToRange(char value, char min, char max) {
     checkArgument(min <= max, "min (%s) must be less than or equal to max (%s)", min, max);
     return value < min ? min : value < max ? value : max;
@@ -270,19 +269,29 @@ public final class Chars {
    *
    * @param arrays zero or more {@code char} arrays
    * @return a single array containing all the values from the source arrays, in order
+   * @throws IllegalArgumentException if the total number of elements in {@code arrays} does not fit
+   *     in an {@code int}
    */
   public static char[] concat(char[]... arrays) {
-    int length = 0;
+    long length = 0;
     for (char[] array : arrays) {
       length += array.length;
     }
-    char[] result = new char[length];
+    char[] result = new char[checkNoOverflow(length)];
     int pos = 0;
     for (char[] array : arrays) {
       System.arraycopy(array, 0, result, pos, array.length);
       pos += array.length;
     }
     return result;
+  }
+
+  private static int checkNoOverflow(long result) {
+    checkArgument(
+        result == (int) result,
+        "the total number of elements (%s) in the arrays must fit in an int",
+        result);
+    return (int) result;
   }
 
   /**
@@ -393,7 +402,7 @@ public final class Chars {
     public int compare(char[] left, char[] right) {
       int minLength = Math.min(left.length, right.length);
       for (int i = 0; i < minLength; i++) {
-        int result = Chars.compare(left[i], right[i]);
+        int result = Character.compare(left[i], right[i]);
         if (result != 0) {
           return result;
         }
@@ -496,7 +505,7 @@ public final class Chars {
    *
    * <p>The provided "distance" may be negative, which will rotate left.
    *
-   * @since NEXT
+   * @since 32.0.0
    */
   public static void rotate(char[] array, int distance) {
     rotate(array, distance, 0, array.length);
@@ -512,7 +521,7 @@ public final class Chars {
    *
    * @throws IndexOutOfBoundsException if {@code fromIndex < 0}, {@code toIndex > array.length}, or
    *     {@code toIndex > fromIndex}
-   * @since NEXT
+   * @since 32.0.0
    */
   public static void rotate(char[] array, int distance, int fromIndex, int toIndex) {
     // See Ints.rotate for more details about possible algorithms here.
@@ -593,14 +602,14 @@ public final class Chars {
     }
 
     @Override
-    public boolean contains(@CheckForNull Object target) {
+    public boolean contains(@Nullable Object target) {
       // Overridden to prevent a ton of boxing
       return (target instanceof Character)
           && Chars.indexOf(array, (Character) target, start, end) != -1;
     }
 
     @Override
-    public int indexOf(@CheckForNull Object target) {
+    public int indexOf(@Nullable Object target) {
       // Overridden to prevent a ton of boxing
       if (target instanceof Character) {
         int i = Chars.indexOf(array, (Character) target, start, end);
@@ -612,7 +621,7 @@ public final class Chars {
     }
 
     @Override
-    public int lastIndexOf(@CheckForNull Object target) {
+    public int lastIndexOf(@Nullable Object target) {
       // Overridden to prevent a ton of boxing
       if (target instanceof Character) {
         int i = Chars.lastIndexOf(array, (Character) target, start, end);
@@ -643,7 +652,7 @@ public final class Chars {
     }
 
     @Override
-    public boolean equals(@CheckForNull Object object) {
+    public boolean equals(@Nullable Object object) {
       if (object == this) {
         return true;
       }

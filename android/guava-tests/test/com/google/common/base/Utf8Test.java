@@ -23,6 +23,7 @@ import static java.lang.Character.MAX_LOW_SURROGATE;
 import static java.lang.Character.MIN_HIGH_SURROGATE;
 import static java.lang.Character.MIN_LOW_SURROGATE;
 import static java.lang.Character.MIN_SUPPLEMENTARY_CODE_POINT;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Unit tests for {@link Utf8}.
@@ -40,6 +42,7 @@ import junit.framework.TestCase;
  * @author Clément Roux
  */
 @GwtCompatible(emulated = true)
+@NullUnmarked
 public class Utf8Test extends TestCase {
 
   private static final ImmutableList<String> ILL_FORMED_STRINGS;
@@ -58,6 +61,8 @@ public class Utf8Test extends TestCase {
     builder.add(newString(MIN_LOW_SURROGATE, MAX_HIGH_SURROGATE));
     ILL_FORMED_STRINGS = builder.build();
   }
+
+  // We can't use Character.isSurrogate(c) because of GWT.
 
   public void testEncodedLength_validStrings() {
     assertEquals(0, Utf8.encodedLength(""));
@@ -332,8 +337,8 @@ public class Utf8Test extends TestCase {
       }
       boolean isRoundTrippable = Utf8.isWellFormed(bytes);
       assertEquals(isRoundTrippable, Utf8.isWellFormed(bytes, 0, numBytes));
-      String s = new String(bytes, Charsets.UTF_8);
-      byte[] bytesReencoded = s.getBytes(Charsets.UTF_8);
+      String s = new String(bytes, UTF_8);
+      byte[] bytesReencoded = s.getBytes(UTF_8);
       boolean bytesEqual = Arrays.equals(bytes, bytesReencoded);
 
       if (bytesEqual != isRoundTrippable) {

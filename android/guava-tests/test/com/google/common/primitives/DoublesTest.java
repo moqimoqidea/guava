@@ -16,12 +16,16 @@
 
 package com.google.common.primitives;
 
+import static com.google.common.primitives.Doubles.max;
+import static com.google.common.primitives.Doubles.min;
+import static com.google.common.primitives.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.lang.Double.NaN;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Converter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.testing.Helpers;
@@ -34,12 +38,15 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Unit test for {@link Doubles}.
  *
  * @author Kevin Bourrillion
  */
+@NullMarked
 @GwtCompatible(emulated = true)
 public class DoublesTest extends TestCase {
   private static final double[] EMPTY = {};
@@ -88,6 +95,8 @@ public class DoublesTest extends TestCase {
     }
   }
 
+  // We need to test that our method behaves like the JDK method.
+  @SuppressWarnings("InlineMeInliner")
   public void testCompare() {
     for (double x : VALUES) {
       for (double y : VALUES) {
@@ -206,48 +215,38 @@ public class DoublesTest extends TestCase {
 
   @GwtIncompatible
   public void testMax_noArgs() {
-    try {
-      Doubles.max();
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> max());
   }
 
   public void testMax() {
-    assertThat(Doubles.max(LEAST)).isEqualTo(LEAST);
-    assertThat(Doubles.max(GREATEST)).isEqualTo(GREATEST);
+    assertThat(max(LEAST)).isEqualTo(LEAST);
+    assertThat(max(GREATEST)).isEqualTo(GREATEST);
     assertThat(
-            Doubles.max(
-                (double) 8, (double) 6, (double) 7, (double) 5, (double) 3, (double) 0, (double) 9))
+            max((double) 8, (double) 6, (double) 7, (double) 5, (double) 3, (double) 0, (double) 9))
         .isEqualTo((double) 9);
 
-    assertThat(Doubles.max(-0.0, 0.0)).isEqualTo(0.0);
-    assertThat(Doubles.max(0.0, -0.0)).isEqualTo(0.0);
-    assertThat(Doubles.max(NUMBERS)).isEqualTo(GREATEST);
-    assertThat(Double.isNaN(Doubles.max(VALUES))).isTrue();
+    assertThat(max(-0.0, 0.0)).isEqualTo(0.0);
+    assertThat(max(0.0, -0.0)).isEqualTo(0.0);
+    assertThat(max(NUMBERS)).isEqualTo(GREATEST);
+    assertThat(Double.isNaN(max(VALUES))).isTrue();
   }
 
   @GwtIncompatible
   public void testMin_noArgs() {
-    try {
-      Doubles.min();
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> min());
   }
 
   public void testMin() {
-    assertThat(Doubles.min(LEAST)).isEqualTo(LEAST);
-    assertThat(Doubles.min(GREATEST)).isEqualTo(GREATEST);
+    assertThat(min(LEAST)).isEqualTo(LEAST);
+    assertThat(min(GREATEST)).isEqualTo(GREATEST);
     assertThat(
-            Doubles.min(
-                (double) 8, (double) 6, (double) 7, (double) 5, (double) 3, (double) 0, (double) 9))
+            min((double) 8, (double) 6, (double) 7, (double) 5, (double) 3, (double) 0, (double) 9))
         .isEqualTo((double) 0);
 
-    assertThat(Doubles.min(-0.0, 0.0)).isEqualTo(-0.0);
-    assertThat(Doubles.min(0.0, -0.0)).isEqualTo(-0.0);
-    assertThat(Doubles.min(NUMBERS)).isEqualTo(LEAST);
-    assertThat(Double.isNaN(Doubles.min(VALUES))).isTrue();
+    assertThat(min(-0.0, 0.0)).isEqualTo(-0.0);
+    assertThat(min(0.0, -0.0)).isEqualTo(-0.0);
+    assertThat(min(NUMBERS)).isEqualTo(LEAST);
+    assertThat(Double.isNaN(min(VALUES))).isTrue();
   }
 
   public void testConstrainToRange() {
@@ -257,11 +256,9 @@ public class DoublesTest extends TestCase {
     assertThat(Doubles.constrainToRange((double) 0, (double) -5, (double) -1))
         .isEqualTo((double) -1);
     assertThat(Doubles.constrainToRange((double) 5, (double) 2, (double) 2)).isEqualTo((double) 2);
-    try {
-      Doubles.constrainToRange((double) 1, (double) 3, (double) 2);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> Doubles.constrainToRange((double) 1, (double) 3, (double) 2));
   }
 
   public void testConcat() {
@@ -277,6 +274,37 @@ public class DoublesTest extends TestCase {
         .isEqualTo(new double[] {(double) 1, (double) 2, (double) 3, (double) 4});
   }
 
+  @GwtIncompatible // different overflow behavior; could probably be made to work by using ~~
+  public void testConcat_overflow_negative() {
+    int dim1 = 1 << 16;
+    int dim2 = 1 << 15;
+    assertThat(dim1 * dim2).isLessThan(0);
+    testConcatOverflow(dim1, dim2);
+  }
+
+  @GwtIncompatible // different overflow behavior; could probably be made to work by using ~~
+  public void testConcat_overflow_nonNegative() {
+    int dim1 = 1 << 16;
+    int dim2 = 1 << 16;
+    assertThat(dim1 * dim2).isAtLeast(0);
+    testConcatOverflow(dim1, dim2);
+  }
+
+  private static void testConcatOverflow(int arraysDim1, int arraysDim2) {
+    assertThat((long) arraysDim1 * arraysDim2).isNotEqualTo((long) (arraysDim1 * arraysDim2));
+
+    double[][] arrays = new double[arraysDim1][];
+    // it's shared to avoid using too much memory in tests
+    double[] sharedArray = new double[arraysDim2];
+    Arrays.fill(arrays, sharedArray);
+
+    try {
+      Doubles.concat(arrays);
+      fail();
+    } catch (IllegalArgumentException expected) {
+    }
+  }
+
   public void testEnsureCapacity() {
     assertThat(Doubles.ensureCapacity(EMPTY, 0, 1)).isSameInstanceAs(EMPTY);
     assertThat(Doubles.ensureCapacity(ARRAY1, 0, 1)).isSameInstanceAs(ARRAY1);
@@ -289,17 +317,8 @@ public class DoublesTest extends TestCase {
   }
 
   public void testEnsureCapacity_fail() {
-    try {
-      Doubles.ensureCapacity(ARRAY1, -1, 1);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
-    try {
-      // notice that this should even fail when no growth was needed
-      Doubles.ensureCapacity(ARRAY1, 1, -1);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Doubles.ensureCapacity(ARRAY1, -1, 1));
+    assertThrows(IllegalArgumentException.class, () -> Doubles.ensureCapacity(ARRAY1, 1, -1));
   }
 
   @GwtIncompatible // Double.toString returns different value in GWT.
@@ -500,12 +519,14 @@ public class DoublesTest extends TestCase {
         new double[] {-1, 1, Double.NaN, -2, 2}, 1, 4, new double[] {-1, Double.NaN, 1, -2, 2});
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // SerializableTester
   public void testLexicographicalComparatorSerializable() {
     Comparator<double[]> comparator = Doubles.lexicographicalComparator();
     assertThat(SerializableTester.reserialize(comparator)).isSameInstanceAs(comparator);
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // SerializableTester
   public void testStringConverterSerialization() {
     SerializableTester.reserializeAndAssert(Doubles.stringConverter());
@@ -543,12 +564,8 @@ public class DoublesTest extends TestCase {
   }
 
   public void testToArray_withNull() {
-    List<Double> list = Arrays.asList((double) 0, (double) 1, null);
-    try {
-      Doubles.toArray(list);
-      fail();
-    } catch (NullPointerException expected) {
-    }
+    List<@Nullable Double> list = Arrays.asList((double) 0, (double) 1, null);
+    assertThrows(NullPointerException.class, () -> Doubles.toArray(list));
   }
 
   public void testToArray_withConversion() {
@@ -569,6 +586,7 @@ public class DoublesTest extends TestCase {
     assertThat(Doubles.toArray(doubles)).isEqualTo(array);
   }
 
+  @J2ktIncompatible // b/239034072: Kotlin varargs copy parameter arrays.
   public void testAsList_isAView() {
     double[] array = {(double) 0, (double) 1};
     List<Double> list = Doubles.asList(array);
@@ -607,7 +625,7 @@ public class DoublesTest extends TestCase {
    * A reference implementation for {@code tryParse} that just catches the exception from {@link
    * Double#valueOf}.
    */
-  private static Double referenceTryParse(String input) {
+  private static @Nullable Double referenceTryParse(String input) {
     if (input.trim().length() < input.length()) {
       return null;
     }
@@ -683,6 +701,7 @@ public class DoublesTest extends TestCase {
     }
   }
 
+  @J2ktIncompatible // hexadecimal doubles
   @GwtIncompatible // Doubles.tryParse
   public void testTryParseOfToHexStringIsOriginal() {
     for (double d : NUMBERS) {
@@ -734,6 +753,7 @@ public class DoublesTest extends TestCase {
     }
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // NullPointerTester
   public void testNulls() {
     new NullPointerTester().testAllPublicStaticMethods(Doubles.class);
@@ -752,11 +772,8 @@ public class DoublesTest extends TestCase {
   }
 
   public void testStringConverter_convertError() {
-    try {
-      Doubles.stringConverter().convert("notanumber");
-      fail();
-    } catch (NumberFormatException expected) {
-    }
+    assertThrows(
+        NumberFormatException.class, () -> Doubles.stringConverter().convert("notanumber"));
   }
 
   public void testStringConverter_nullConversions() {
@@ -774,6 +791,7 @@ public class DoublesTest extends TestCase {
     assertThat(converter.reverse().convert(1e-6)).isEqualTo("1.0E-6");
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // NullPointerTester
   public void testStringConverter_nullPointerTester() throws Exception {
     NullPointerTester tester = new NullPointerTester();
@@ -783,10 +801,6 @@ public class DoublesTest extends TestCase {
   @GwtIncompatible
   public void testTryParse_withNullNoGwt() {
     assertThat(Doubles.tryParse("null")).isNull();
-    try {
-      Doubles.tryParse(null);
-      fail("Expected NPE");
-    } catch (NullPointerException expected) {
-    }
+    assertThrows(NullPointerException.class, () -> Doubles.tryParse(null));
   }
 }

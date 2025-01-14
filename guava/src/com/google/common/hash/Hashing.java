@@ -16,8 +16,13 @@ package com.google.common.hash;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.hash.SneakyThrows.sneakyThrow;
+import static java.lang.invoke.MethodType.methodType;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.j2objc.annotations.J2ObjCIncompatible;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,22 +32,21 @@ import java.util.List;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
-import javax.annotation.CheckForNull;
 import javax.crypto.spec.SecretKeySpec;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Static methods to obtain {@link HashFunction} instances, and other static hashing-related
  * utilities.
  *
  * <p>A comparison of the various hash functions can be found <a
- * href="http://goo.gl/jS7HH">here</a>.
+ * href="https://docs.google.com/spreadsheets/d/1_q2EVcxA2HjcrlVMbaqXwMj31h9M5-Bqj_m8vITOwwk/">here</a>.
  *
  * @author Kevin Bourrillion
  * @author Dimitris Andreou
  * @author Kurt Alfred Kluever
  * @since 11.0
  */
-@ElementTypesAreNonnullByDefault
 public final class Hashing {
   /**
    * Returns a general-purpose, <b>temporary-use</b>, non-cryptographic hash function. The algorithm
@@ -105,6 +109,7 @@ public final class Hashing {
    *     #murmur3_32_fixed(int)} instead.
    */
   @Deprecated
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_32(int seed) {
     return new Murmur3_32HashFunction(seed, /* supplementaryPlaneFix= */ false);
   }
@@ -123,6 +128,7 @@ public final class Hashing {
    *     #murmur3_32_fixed()} instead.
    */
   @Deprecated
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_32() {
     return Murmur3_32HashFunction.MURMUR3_32;
   }
@@ -139,6 +145,7 @@ public final class Hashing {
    *
    * @since 31.0
    */
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_32_fixed(int seed) {
     return new Murmur3_32HashFunction(seed, /* supplementaryPlaneFix= */ true);
   }
@@ -155,6 +162,7 @@ public final class Hashing {
    *
    * @since 31.0
    */
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_32_fixed() {
     return Murmur3_32HashFunction.MURMUR3_32_FIXED;
   }
@@ -166,6 +174,7 @@ public final class Hashing {
    *
    * <p>The exact C++ equivalent is the MurmurHash3_x64_128 function (Murmur3F).
    */
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_128(int seed) {
     return new Murmur3_128HashFunction(seed);
   }
@@ -177,6 +186,7 @@ public final class Hashing {
    *
    * <p>The exact C++ equivalent is the MurmurHash3_x64_128 function (Murmur3F).
    */
+  @SuppressWarnings("IdentifierName") // the best we could do for adjacent digit blocks
   public static HashFunction murmur3_128() {
     return Murmur3_128HashFunction.MURMUR3_128;
   }
@@ -281,6 +291,10 @@ public final class Hashing {
    * Returns a hash function implementing the Message Authentication Code (MAC) algorithm, using the
    * MD5 (128 hash bits) hash function and the given secret key.
    *
+   * <p>If you are designing a new system that needs HMAC, prefer {@link #hmacSha256} or other
+   * future-proof algorithms <a
+   * href="https://datatracker.ietf.org/doc/html/rfc6151#section-2.3">over {@code hmacMd5}</a>.
+   *
    * @param key the secret key
    * @throws IllegalArgumentException if the given key is inappropriate for initializing this MAC
    * @since 20.0
@@ -293,6 +307,10 @@ public final class Hashing {
    * Returns a hash function implementing the Message Authentication Code (MAC) algorithm, using the
    * MD5 (128 hash bits) hash function and a {@link SecretKeySpec} created from the given byte array
    * and the MD5 algorithm.
+   *
+   * <p>If you are designing a new system that needs HMAC, prefer {@link #hmacSha256} or other
+   * future-proof algorithms <a
+   * href="https://datatracker.ietf.org/doc/html/rfc6151#section-2.3">over {@code hmacMd5}</a>.
    *
    * @param key the key material of the secret key
    * @since 20.0
@@ -394,7 +412,45 @@ public final class Hashing {
    * @since 18.0
    */
   public static HashFunction crc32c() {
-    return Crc32cHashFunction.CRC_32_C;
+    return Crc32CSupplier.HASH_FUNCTION;
+  }
+
+  @Immutable
+  private enum Crc32CSupplier implements ImmutableSupplier<HashFunction> {
+    @J2ObjCIncompatible
+    JAVA_UTIL_ZIP {
+      @Override
+      public HashFunction get() {
+        return ChecksumType.CRC_32C.hashFunction;
+      }
+    },
+    ABSTRACT_HASH_FUNCTION {
+      @Override
+      public HashFunction get() {
+        return Crc32cHashFunction.CRC_32_C;
+      }
+    };
+
+    static final HashFunction HASH_FUNCTION = pickFunction().get();
+
+    private static Crc32CSupplier pickFunction() {
+      Crc32CSupplier[] functions = values();
+
+      if (functions.length == 1) {
+        // We're running under J2ObjC.
+        return functions[0];
+      }
+
+      // We can't refer to JAVA_UTIL_ZIP directly at compile time because of J2ObjC.
+      Crc32CSupplier javaUtilZip = functions[0];
+
+      try {
+        Class.forName("java.util.zip.CRC32C");
+        return javaUtilZip;
+      } catch (ClassNotFoundException runningUnderJava8) {
+        return ABSTRACT_HASH_FUNCTION;
+      }
+    }
   }
 
   /**
@@ -437,6 +493,13 @@ public final class Hashing {
         return new CRC32();
       }
     },
+    @J2ObjCIncompatible
+    CRC_32C("Hashing.crc32c()") {
+      @Override
+      public Checksum get() {
+        return Crc32cMethodHandles.newCrc32c();
+      }
+    },
     ADLER_32("Hashing.adler32()") {
       @Override
       public Checksum get() {
@@ -448,6 +511,51 @@ public final class Hashing {
 
     ChecksumType(String toString) {
       this.hashFunction = new ChecksumHashFunction(this, 32, toString);
+    }
+  }
+
+  @J2ObjCIncompatible
+  @SuppressWarnings("unused")
+  private static final class Crc32cMethodHandles {
+    private static final MethodHandle CONSTRUCTOR = crc32cConstructor();
+
+    @IgnoreJRERequirement // https://github.com/mojohaus/animal-sniffer/issues/67
+    static Checksum newCrc32c() {
+      try {
+        return (Checksum) CONSTRUCTOR.invokeExact();
+      } catch (Throwable e) {
+        // The constructor has no `throws` clause.
+        throw sneakyThrow(e);
+      }
+    }
+
+    private static MethodHandle crc32cConstructor() {
+      try {
+        Class<?> clazz = Class.forName("java.util.zip.CRC32C");
+        /*
+         * We can't cast to CRC32C at the call site because we support building with Java 8
+         * (https://github.com/google/guava/issues/6549). So we have to use asType() to change from
+         * CRC32C to Checksum. This may carry some performance cost
+         * (https://stackoverflow.com/a/22321671/28465), but I'd have to benchmark more carefully to
+         * even detect it.
+         */
+        return MethodHandles.lookup()
+            .findConstructor(clazz, methodType(void.class))
+            .asType(methodType(Checksum.class));
+      } catch (ClassNotFoundException e) {
+        // We check that the class is available before calling this method.
+        throw new AssertionError(e);
+      } catch (IllegalAccessException e) {
+        // That API is public.
+        throw newLinkageError(e);
+      } catch (NoSuchMethodException e) {
+        // That constructor exists.
+        throw newLinkageError(e);
+      }
+    }
+
+    private static LinkageError newLinkageError(Throwable cause) {
+      return new LinkageError(cause.toString(), cause);
     }
   }
 
@@ -708,7 +816,7 @@ public final class Hashing {
     }
 
     @Override
-    public boolean equals(@CheckForNull Object object) {
+    public boolean equals(@Nullable Object object) {
       if (object instanceof ConcatenatedHashFunction) {
         ConcatenatedHashFunction other = (ConcatenatedHashFunction) object;
         return Arrays.equals(functions, other.functions);

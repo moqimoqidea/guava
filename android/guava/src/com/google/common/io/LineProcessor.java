@@ -14,12 +14,11 @@
 
 package com.google.common.io;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A callback to be used with the streaming {@code readLines} methods.
@@ -30,10 +29,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Miles Barr
  * @since 1.0
  */
-@Beta
 @J2ktIncompatible
 @GwtIncompatible
-@ElementTypesAreNonnullByDefault
 public interface LineProcessor<T extends @Nullable Object> {
 
   /**

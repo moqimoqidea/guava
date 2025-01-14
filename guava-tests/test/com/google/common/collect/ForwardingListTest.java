@@ -31,6 +31,8 @@ import java.util.ListIterator;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@code ForwardingList}.
@@ -38,6 +40,7 @@ import junit.framework.TestSuite;
  * @author Robert Konigsberg
  * @author Louis Wasserman
  */
+@NullUnmarked
 public class ForwardingListTest extends TestCase {
   static final class StandardImplForwardingList<T> extends ForwardingList<T> {
     private final List<T> backingList;
@@ -112,7 +115,7 @@ public class ForwardingListTest extends TestCase {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(@Nullable Object object) {
       return standardEquals(object);
     }
 

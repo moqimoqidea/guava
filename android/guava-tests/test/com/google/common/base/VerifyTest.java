@@ -14,28 +14,28 @@
 
 package com.google.common.base;
 
+import static com.google.common.base.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.base.Verify.verifyNotNull;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
 
 /** Unit test for {@link com.google.common.base.Verify}. */
 @GwtCompatible(emulated = true)
+@NullUnmarked
 public class VerifyTest extends TestCase {
   public void testVerify_simple_success() {
     verify(true);
   }
 
   public void testVerify_simple_failure() {
-    try {
-      verify(false);
-      fail();
-    } catch (VerifyException expected) {
-    }
+    assertThrows(VerifyException.class, () -> verify(false));
   }
 
   public void testVerify_simpleMessage_success() {
@@ -43,12 +43,8 @@ public class VerifyTest extends TestCase {
   }
 
   public void testVerify_simpleMessage_failure() {
-    try {
-      verify(false, "message");
-      fail();
-    } catch (VerifyException expected) {
-      assertThat(expected).hasMessageThat().isEqualTo("message");
-    }
+    VerifyException expected = assertThrows(VerifyException.class, () -> verify(false, "message"));
+    assertThat(expected).hasMessageThat().isEqualTo("message");
   }
 
   public void testVerify_complexMessage_success() {
@@ -56,12 +52,8 @@ public class VerifyTest extends TestCase {
   }
 
   public void testVerify_complexMessage_failure() {
-    try {
-      verify(false, FORMAT, 5);
-      fail();
-    } catch (VerifyException expected) {
-      checkMessage(expected);
-    }
+    VerifyException expected = assertThrows(VerifyException.class, () -> verify(false, FORMAT, 5));
+    checkMessage(expected);
   }
 
   private static final String NON_NULL_STRING = "foo";
@@ -72,11 +64,7 @@ public class VerifyTest extends TestCase {
   }
 
   public void testVerifyNotNull_simple_failure() {
-    try {
-      verifyNotNull(null);
-      fail();
-    } catch (VerifyException expected) {
-    }
+    assertThrows(VerifyException.class, () -> verifyNotNull(null));
   }
 
   public void testVerifyNotNull_complexMessage_success() {
@@ -85,14 +73,12 @@ public class VerifyTest extends TestCase {
   }
 
   public void testVerifyNotNull_simpleMessage_failure() {
-    try {
-      verifyNotNull(null, FORMAT, 5);
-      fail();
-    } catch (VerifyException expected) {
-      checkMessage(expected);
-    }
+    VerifyException expected =
+        assertThrows(VerifyException.class, () -> verifyNotNull(null, FORMAT, 5));
+    checkMessage(expected);
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // NullPointerTester
   public void testNullPointers() {
     // Don't bother testing: Verify is like Preconditions. See the discussion on that class.

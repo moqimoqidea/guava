@@ -16,9 +16,12 @@
 
 package com.google.common.base;
 
+import static com.google.common.base.ReflectionFreeAssertThrows.assertThrows;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Unit test for {@link Ascii}.
@@ -26,6 +29,7 @@ import junit.framework.TestCase;
  * @author Craig Berry
  */
 @GwtCompatible
+@NullUnmarked
 public class AsciiTest extends TestCase {
 
   /**
@@ -98,29 +102,13 @@ public class AsciiTest extends TestCase {
   }
 
   public void testTruncateIllegalArguments() {
-    try {
-      Ascii.truncate("foobar", 2, "...");
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Ascii.truncate("foobar", 2, "..."));
 
-    try {
-      Ascii.truncate("foobar", 8, "1234567890");
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Ascii.truncate("foobar", 8, "1234567890"));
 
-    try {
-      Ascii.truncate("foobar", -1, "...");
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Ascii.truncate("foobar", -1, "..."));
 
-    try {
-      Ascii.truncate("foobar", -1, "");
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Ascii.truncate("foobar", -1, ""));
   }
 
   public void testEqualsIgnoreCase() {

@@ -17,10 +17,8 @@ package com.google.common.base;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
-import com.google.common.annotations.J2ktIncompatible;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,7 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import javax.annotation.CheckForNull;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Extracts non-overlapping substrings from an input string, typically by recognizing appearances of
@@ -99,7 +99,6 @@ import javax.annotation.CheckForNull;
  * @since 1.0
  */
 @GwtCompatible(emulated = true)
-@ElementTypesAreNonnullByDefault
 public final class Splitter {
   private final CharMatcher trimmer;
   private final boolean omitEmptyStrings;
@@ -213,13 +212,13 @@ public final class Splitter {
    * @return a splitter, with default settings, that uses this pattern
    * @throws IllegalArgumentException if {@code separatorPattern} matches the empty string
    */
-  @J2ktIncompatible
   @GwtIncompatible // java.util.regex
   public static Splitter on(Pattern separatorPattern) {
-    return on(new JdkPattern(separatorPattern));
+    return onPatternInternal(new JdkPattern(separatorPattern));
   }
 
-  private static Splitter on(final CommonPattern separatorPattern) {
+  /** Internal utility; see {@link #on(Pattern)} instead. */
+  static Splitter onPatternInternal(final CommonPattern separatorPattern) {
     checkArgument(
         !separatorPattern.matcher("").matches(),
         "The pattern may not match the empty string: %s",
@@ -257,10 +256,9 @@ public final class Splitter {
    * @throws IllegalArgumentException if {@code separatorPattern} matches the empty string or is a
    *     malformed expression
    */
-  @J2ktIncompatible
   @GwtIncompatible // java.util.regex
   public static Splitter onPattern(String separatorPattern) {
-    return on(Platform.compilePattern(separatorPattern));
+    return onPatternInternal(Platform.compilePattern(separatorPattern));
   }
 
   /**
@@ -332,7 +330,7 @@ public final class Splitter {
    * <p>For example, {@code Splitter.on(',').limit(3).split("a,b,c,d")} returns an iterable
    * containing {@code ["a", "b", "c,d"]}. When omitting empty strings, the omitted strings do not
    * count. Hence, {@code Splitter.on(',').limit(3).omitEmptyStrings().split("a,,,b,,,c,d")} returns
-   * an iterable containing {@code ["a", "b", "c,d"}. When trim is requested, all entries are
+   * an iterable containing {@code ["a", "b", "c,d"]}. When trim is requested, all entries are
    * trimmed, including the last. Hence {@code Splitter.on(',').limit(3).trimResults().split(" a , b
    * , c , d ")} results in {@code ["a", "b", "c , d"]}.
    *
@@ -427,12 +425,28 @@ public final class Splitter {
   }
 
   /**
+   * Splits {@code sequence} into string components and makes them available through an {@link
+   * Stream}, which may be lazily evaluated. If you want an eagerly computed {@link List}, use
+   * {@link #splitToList(CharSequence)}.
+   *
+   * @param sequence the sequence of characters to split
+   * @return a stream over the segments split from the parameter
+   * @since 33.4.0 (but since 28.2 in the JRE flavor)
+   */
+  @SuppressWarnings("Java7ApiChecker")
+  // If users use this when they shouldn't, we hope that NewApi will catch subsequent Stream calls.
+  @IgnoreJRERequirement
+  public Stream<String> splitToStream(CharSequence sequence) {
+    // Can't use Streams.stream() from base
+    return StreamSupport.stream(split(sequence).spliterator(), false);
+  }
+
+  /**
    * Returns a {@code MapSplitter} which splits entries based on this splitter, and splits entries
    * into keys and values using the specified separator.
    *
    * @since 10.0
    */
-  @Beta
   public MapSplitter withKeyValueSeparator(String separator) {
     return withKeyValueSeparator(on(separator));
   }
@@ -443,7 +457,6 @@ public final class Splitter {
    *
    * @since 14.0
    */
-  @Beta
   public MapSplitter withKeyValueSeparator(char separator) {
     return withKeyValueSeparator(on(separator));
   }
@@ -467,7 +480,6 @@ public final class Splitter {
    *
    * @since 10.0
    */
-  @Beta
   public MapSplitter withKeyValueSeparator(Splitter keyValueSplitter) {
     return new MapSplitter(this, keyValueSplitter);
   }
@@ -480,7 +492,6 @@ public final class Splitter {
    *
    * @since 10.0
    */
-  @Beta
   public static final class MapSplitter {
     private static final String INVALID_ENTRY_MESSAGE = "Chunk [%s] is not a valid entry";
     private final Splitter outerSplitter;
@@ -552,9 +563,8 @@ public final class Splitter {
       this.toSplit = toSplit;
     }
 
-    @CheckForNull
     @Override
-    protected String computeNext() {
+    protected @Nullable String computeNext() {
       /*
        * The returned string will be from the end of the last match to the beginning of the next
        * one. nextStart is the start position of the returned substring, while offset is the place

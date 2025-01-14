@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.testing.ListTestSuiteBuilder;
 import com.google.common.collect.testing.SampleElements;
@@ -31,6 +32,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Test suite covering {@link Longs#asList(long[])}.
@@ -38,6 +40,7 @@ import junit.framework.TestSuite;
  * @author Kevin Bourrillion
  */
 @GwtCompatible(emulated = true)
+@NullUnmarked
 public class LongArrayAsListTest extends TestCase {
 
   private static List<Long> asList(Long[] values) {
@@ -48,6 +51,7 @@ public class LongArrayAsListTest extends TestCase {
     return Longs.asList(temp);
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // suite
   public static Test suite() {
     List<ListTestSuiteBuilder<Long>> builders =

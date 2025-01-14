@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.annotation.CheckForNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A collection that maps keys to values, similar to {@link Map}, but in which each key may be
@@ -132,13 +131,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * <h3>Implementations</h3>
  *
- * <p>As always, prefer the immutable implementations, {@link ImmutableListMultimap} and {@link
- * ImmutableSetMultimap}. General-purpose mutable implementations are listed above under "All Known
- * Implementing Classes". You can also create a <i>custom</i> multimap, backed by any {@code Map}
- * and {@link Collection} types, using the {@link Multimaps#newMultimap Multimaps.newMultimap}
- * family of methods. Finally, another popular way to obtain a multimap is using {@link
- * Multimaps#index Multimaps.index}. See the {@link Multimaps} class for these and other static
- * utilities related to multimaps.
+ * <ul>
+ *   <li>{@link ImmutableListMultimap}
+ *   <li>{@link ImmutableSetMultimap}
+ *   <li>Configure your own mutable multimap with {@link MultimapBuilder}
+ *   <li>{@link LinkedListMultimap} (for one unusual kind of mutable {@code Multimap})
+ * </ul>
+ *
+ * Guava contains a number of other multimap implementations, such as {@link ArrayListMultimap}. In
+ * new code, we recommend using {@link MultimapBuilder} instead: It provides better control of how
+ * keys and values are stored.
  *
  * <h3>Other Notes</h3>
  *
@@ -158,7 +160,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @DoNotMock("Use ImmutableMultimap, HashMultimap, or another implementation")
 @GwtCompatible
-@ElementTypesAreNonnullByDefault
 public interface Multimap<K extends @Nullable Object, V extends @Nullable Object> {
   // Query Operations
 
@@ -181,21 +182,20 @@ public interface Multimap<K extends @Nullable Object, V extends @Nullable Object
    * Returns {@code true} if this multimap contains at least one key-value pair with the key {@code
    * key}.
    */
-  boolean containsKey(@CompatibleWith("K") @CheckForNull Object key);
+  boolean containsKey(@CompatibleWith("K") @Nullable Object key);
 
   /**
    * Returns {@code true} if this multimap contains at least one key-value pair with the value
    * {@code value}.
    */
-  boolean containsValue(@CompatibleWith("V") @CheckForNull Object value);
+  boolean containsValue(@CompatibleWith("V") @Nullable Object value);
 
   /**
    * Returns {@code true} if this multimap contains at least one key-value pair with the key {@code
    * key} and the value {@code value}.
    */
   boolean containsEntry(
-      @CompatibleWith("K") @CheckForNull Object key,
-      @CompatibleWith("V") @CheckForNull Object value);
+      @CompatibleWith("K") @Nullable Object key, @CompatibleWith("V") @Nullable Object value);
 
   // Modification Operations
 
@@ -221,8 +221,7 @@ public interface Multimap<K extends @Nullable Object, V extends @Nullable Object
    */
   @CanIgnoreReturnValue
   boolean remove(
-      @CompatibleWith("K") @CheckForNull Object key,
-      @CompatibleWith("V") @CheckForNull Object value);
+      @CompatibleWith("K") @Nullable Object key, @CompatibleWith("V") @Nullable Object value);
 
   // Bulk Operations
 
@@ -274,7 +273,7 @@ public interface Multimap<K extends @Nullable Object, V extends @Nullable Object
    *     modifiable, but updating it will have no effect on the multimap.
    */
   @CanIgnoreReturnValue
-  Collection<V> removeAll(@CompatibleWith("K") @CheckForNull Object key);
+  Collection<V> removeAll(@CompatibleWith("K") @Nullable Object key);
 
   /** Removes all key-value pairs from the multimap, leaving it {@linkplain #isEmpty empty}. */
   void clear();
@@ -355,7 +354,7 @@ public interface Multimap<K extends @Nullable Object, V extends @Nullable Object
    * multimaps are equal, because they both have empty {@link #asMap} views.
    */
   @Override
-  boolean equals(@CheckForNull Object obj);
+  boolean equals(@Nullable Object obj);
 
   /**
    * Returns the hash code for this multimap.

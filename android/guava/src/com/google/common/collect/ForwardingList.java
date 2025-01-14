@@ -16,15 +16,13 @@
 
 package com.google.common.collect;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import javax.annotation.CheckForNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A list which forwards all its method calls to another list. Subclasses should override one or
@@ -52,7 +50,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 2.0
  */
 @GwtCompatible
-@ElementTypesAreNonnullByDefault
 public abstract class ForwardingList<E extends @Nullable Object> extends ForwardingCollection<E>
     implements List<E> {
   // TODO(lowasser): identify places where thread safety is actually lost
@@ -81,12 +78,12 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
   }
 
   @Override
-  public int indexOf(@CheckForNull Object element) {
+  public int indexOf(@Nullable Object element) {
     return delegate().indexOf(element);
   }
 
   @Override
-  public int lastIndexOf(@CheckForNull Object element) {
+  public int lastIndexOf(@Nullable Object element) {
     return delegate().lastIndexOf(element);
   }
 
@@ -120,7 +117,7 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
   }
 
   @Override
-  public boolean equals(@CheckForNull Object object) {
+  public boolean equals(@Nullable Object object) {
     return object == this || delegate().equals(object);
   }
 
@@ -159,7 +156,7 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  protected int standardIndexOf(@CheckForNull Object element) {
+  protected int standardIndexOf(@Nullable Object element) {
     return Lists.indexOfImpl(this, element);
   }
 
@@ -170,7 +167,7 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  protected int standardLastIndexOf(@CheckForNull Object element) {
+  protected int standardLastIndexOf(@Nullable Object element) {
     return Lists.lastIndexOfImpl(this, element);
   }
 
@@ -204,7 +201,6 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  @Beta
   protected ListIterator<E> standardListIterator(int start) {
     return Lists.listIteratorImpl(this, start);
   }
@@ -215,7 +211,6 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  @Beta
   protected List<E> standardSubList(int fromIndex, int toIndex) {
     return Lists.subListImpl(this, fromIndex, toIndex);
   }
@@ -227,8 +222,7 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  @Beta
-  protected boolean standardEquals(@CheckForNull Object object) {
+  protected boolean standardEquals(@Nullable Object object) {
     return Lists.equalsImpl(this, object);
   }
 
@@ -239,7 +233,6 @@ public abstract class ForwardingList<E extends @Nullable Object> extends Forward
    *
    * @since 7.0
    */
-  @Beta
   protected int standardHashCode() {
     return Lists.hashCodeImpl(this);
   }

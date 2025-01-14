@@ -16,7 +16,6 @@ package com.google.common.util.concurrent;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.annotations.VisibleForTesting;
@@ -42,7 +41,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A striped {@code Lock/Semaphore/ReadWriteLock}. This offers the underlying lock striping similar
@@ -83,10 +82,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Dimitris Andreou
  * @since 13.0
  */
-@Beta
 @J2ktIncompatible
 @GwtIncompatible
-@ElementTypesAreNonnullByDefault
 public abstract class Striped<L> {
   /**
    * If there are at least this many stripes, we assume the memory usage of a ConcurrentMap will be
@@ -219,10 +216,18 @@ public abstract class Striped<L> {
    * @return a new {@code Striped<Lock>}
    */
   public static Striped<Lock> lazyWeakLock(int stripes) {
-    return lazy(stripes, () -> new ReentrantLock(false));
+    return lazyWeakCustom(stripes, () -> new ReentrantLock(false));
   }
 
-  private static <L> Striped<L> lazy(int stripes, Supplier<L> supplier) {
+  /**
+   * Creates a {@code Striped<L>} with lazily initialized, weakly referenced locks. Every lock is
+   * obtained from the passed supplier.
+   *
+   * @param stripes the minimum number of stripes (locks) required
+   * @param supplier a {@code Supplier<L>} object to obtain locks from
+   * @return a new {@code Striped<L>}
+   */
+  static <L> Striped<L> lazyWeakCustom(int stripes, Supplier<L> supplier) {
     return stripes < LARGE_LAZY_CUTOFF
         ? new SmallLazyStriped<L>(stripes, supplier)
         : new LargeLazyStriped<L>(stripes, supplier);
@@ -249,7 +254,7 @@ public abstract class Striped<L> {
    * @return a new {@code Striped<Semaphore>}
    */
   public static Striped<Semaphore> lazyWeakSemaphore(int stripes, int permits) {
-    return lazy(stripes, () -> new Semaphore(permits, false));
+    return lazyWeakCustom(stripes, () -> new Semaphore(permits, false));
   }
 
   /**
@@ -271,7 +276,7 @@ public abstract class Striped<L> {
    * @return a new {@code Striped<ReadWriteLock>}
    */
   public static Striped<ReadWriteLock> lazyWeakReadWriteLock(int stripes) {
-    return lazy(stripes, WeakSafeReadWriteLock::new);
+    return lazyWeakCustom(stripes, WeakSafeReadWriteLock::new);
   }
   /**
    * ReadWriteLock implementation whose read and write locks retain a reference back to this lock.

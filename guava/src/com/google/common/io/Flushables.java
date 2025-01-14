@@ -28,10 +28,8 @@ import java.util.logging.Logger;
  * @author Michael Lancaster
  * @since 1.0
  */
-@Beta
 @J2ktIncompatible
 @GwtIncompatible
-@ElementTypesAreNonnullByDefault
 public final class Flushables {
   private static final Logger logger = Logger.getLogger(Flushables.class.getName());
 
@@ -50,6 +48,7 @@ public final class Flushables {
    *     an {@code IOException}.
    * @see Closeables#close
    */
+  @SuppressWarnings("IdentifierName") // See Closeables.close
   public static void flush(Flushable flushable, boolean swallowIOException) throws IOException {
     try {
       flushable.flush();
@@ -68,6 +67,7 @@ public final class Flushables {
    *
    * @param flushable the {@code Flushable} object to be flushed.
    */
+  @Beta
   public static void flushQuietly(Flushable flushable) {
     try {
       flush(flushable, true);

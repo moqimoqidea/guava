@@ -17,7 +17,8 @@ package com.google.common.reflect;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.DoNotMock;
 import java.util.Map;
-import javax.annotation.CheckForNull;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A map, each entry of which maps a {@link TypeToken} to an instance of that type. In addition to
@@ -34,17 +35,13 @@ import javax.annotation.CheckForNull;
  * <p>Like any other {@code Map<Class, Object>}, this map may contain entries for primitive types,
  * and a primitive type and its corresponding wrapper type may map to different values.
  *
- * <p>This class's support for {@code null} requires some explanation. For details, see {@link
- * com.google.common.collect.ClassToInstanceMap}. Its explanation applies equally well to {@code
- * TypeToInstanceMap}.
- *
  * @param <B> the common supertype that all entries must share; often this is simply {@link Object}
  * @author Ben Yu
  * @since 13.0
  */
 @DoNotMock("Use ImmutableTypeToInstanceMap or MutableTypeToInstanceMap")
-@ElementTypesAreNonnullByDefault
-public interface TypeToInstanceMap<B> extends Map<TypeToken<? extends B>, B> {
+public interface TypeToInstanceMap<B extends @Nullable Object>
+    extends Map<TypeToken<? extends @NonNull B>, B> {
 
   /**
    * Returns the value the specified class is mapped to, or {@code null} if no entry for this class
@@ -54,16 +51,14 @@ public interface TypeToInstanceMap<B> extends Map<TypeToken<? extends B>, B> {
    * <p>{@code getInstance(Foo.class)} is equivalent to {@code
    * getInstance(TypeToken.of(Foo.class))}.
    */
-  @CheckForNull
-  <T extends B> T getInstance(Class<T> type);
+  <T extends @NonNull B> @Nullable T getInstance(Class<T> type);
 
   /**
    * Returns the value the specified type is mapped to, or {@code null} if no entry for this type is
    * present. This will only return a value that was bound to this specific type, not a value that
    * may have been bound to a subtype.
    */
-  @CheckForNull
-  <T extends B> T getInstance(TypeToken<T> type);
+  <T extends @NonNull B> @Nullable T getInstance(TypeToken<T> type);
 
   /**
    * Maps the specified class to the specified value. Does <i>not</i> associate this value with any
@@ -76,8 +71,7 @@ public interface TypeToInstanceMap<B> extends Map<TypeToken<? extends B>, B> {
    *     null} if there was no previous entry.
    */
   @CanIgnoreReturnValue
-  @CheckForNull
-  <T extends B> T putInstance(Class<T> type, T value);
+  <T extends B> @Nullable T putInstance(Class<@NonNull T> type, @ParametricNullness T value);
 
   /**
    * Maps the specified type to the specified value. Does <i>not</i> associate this value with any
@@ -87,6 +81,5 @@ public interface TypeToInstanceMap<B> extends Map<TypeToken<? extends B>, B> {
    *     if there was no previous entry.
    */
   @CanIgnoreReturnValue
-  @CheckForNull
-  <T extends B> T putInstance(TypeToken<T> type, T value);
+  <T extends B> @Nullable T putInstance(TypeToken<@NonNull T> type, @ParametricNullness T value);
 }

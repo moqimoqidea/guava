@@ -30,12 +30,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiFunction;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@code Synchronized#biMap}.
  *
  * @author Mike Bostock
  */
+@NullUnmarked
 public class SynchronizedBiMapTest extends SynchronizedMapTest {
 
   public static TestSuite suite() {
@@ -79,7 +82,6 @@ public class SynchronizedBiMapTest extends SynchronizedMapTest {
   public static final class SynchronizedHashBiMapGenerator extends TestStringBiMapGenerator {
     @Override
     protected BiMap<String, String> create(Entry<String, String>[] entries) {
-      Object mutex = new Object();
       BiMap<String, String> result = HashBiMap.create();
       for (Entry<String, String> entry : entries) {
         checkArgument(!result.containsKey(entry.getKey()));
@@ -112,7 +114,7 @@ public class SynchronizedBiMapTest extends SynchronizedMapTest {
     }
 
     @Override
-    public V forcePut(K key, V value) {
+    public @Nullable V forcePut(K key, V value) {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.forcePut(key, value);
     }

@@ -16,10 +16,14 @@
 
 package com.google.common.collect;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.singleton;
+import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Equivalence;
 import com.google.common.collect.ImmutableSet.Builder;
 import com.google.common.collect.testing.ListTestSuiteBuilder;
@@ -38,13 +42,14 @@ import com.google.common.collect.testing.google.SetGenerators.ImmutableSetWithBa
 import com.google.common.testing.CollectorTester;
 import com.google.common.testing.EqualsTester;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collector;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Unit test for {@link ImmutableSet}.
@@ -54,8 +59,10 @@ import junit.framework.TestSuite;
  * @author Nick Kralevich
  */
 @GwtCompatible(emulated = true)
+@NullMarked
 public class ImmutableSetTest extends AbstractImmutableSetTest {
 
+  @J2ktIncompatible
   @GwtIncompatible // suite
   public static Test suite() {
     TestSuite suite = new TestSuite();
@@ -192,7 +199,6 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     return ImmutableSet.of(e1, e2, e3, e4, e5);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   protected <E extends Comparable<? super E>> Set<E> of(
       E e1, E e2, E e3, E e4, E e5, E e6, E... rest) {
@@ -244,7 +250,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
   public void testCreation_arrayOfArray() {
     String[] array = new String[] {"a"};
     Set<String[]> set = ImmutableSet.<String[]>of(array);
-    assertEquals(Collections.singleton(array), set);
+    assertEquals(singleton(array), set);
   }
 
   @GwtIncompatible // ImmutableSet.chooseTableSize
@@ -260,11 +266,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     assertEquals(1 << 30, ImmutableSet.chooseTableSize((1 << 30) - 1));
 
     // Now we've gone too far
-    try {
-      ImmutableSet.chooseTableSize(1 << 30);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> ImmutableSet.chooseTableSize(1 << 30));
   }
 
   @GwtIncompatible // RegularImmutableSet.table not in emulation
@@ -298,7 +300,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
   }
 
   public void testToImmutableSet() {
-    Collector<String, ?, ImmutableSet<String>> collector = ImmutableSet.toImmutableSet();
+    Collector<String, ?, ImmutableSet<String>> collector = toImmutableSet();
     Equivalence<ImmutableSet<String>> equivalence =
         Equivalence.equals().onResultOf(ImmutableSet::asList);
     CollectorTester.of(collector, equivalence)
@@ -321,17 +323,16 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
       }
 
       @Override
-      public boolean equals(Object obj) {
+      public boolean equals(@Nullable Object obj) {
         return obj instanceof TypeWithDuplicates && ((TypeWithDuplicates) obj).a == a;
       }
 
-      public boolean fullEquals(TypeWithDuplicates other) {
+      public boolean fullEquals(@Nullable TypeWithDuplicates other) {
         return other != null && a == other.a && b == other.b;
       }
     }
 
-    Collector<TypeWithDuplicates, ?, ImmutableSet<TypeWithDuplicates>> collector =
-        ImmutableSet.toImmutableSet();
+    Collector<TypeWithDuplicates, ?, ImmutableSet<TypeWithDuplicates>> collector = toImmutableSet();
     BiPredicate<ImmutableSet<TypeWithDuplicates>, ImmutableSet<TypeWithDuplicates>> equivalence =
         (set1, set2) -> {
           if (!set1.equals(set2)) {
@@ -350,11 +351,6 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     TypeWithDuplicates c = new TypeWithDuplicates(3, 1);
     CollectorTester.of(collector, equivalence)
         .expectCollects(ImmutableSet.of(a, b1, c), a, b1, c, b2);
-  }
-
-  @GwtIncompatible // GWT is single threaded
-  public void testCopyOf_threadSafe() {
-    verifyThreadSafe();
   }
 
   @Override

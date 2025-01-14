@@ -26,7 +26,8 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Helper class for creating {@link CacheBuilder} instances with all combinations of several sets of
@@ -34,6 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * @author mike nonemacher
  */
+@NullUnmarked
 class CacheBuilderFactory {
   // Default values contain only 'null', which means don't call the CacheBuilder method (just give
   // the CacheBuilder default).
@@ -88,7 +90,6 @@ class CacheBuilderFactory {
   }
 
   Iterable<CacheBuilder<Object, Object>> buildAllPermutations() {
-    @SuppressWarnings("unchecked")
     Iterable<List<Object>> combinations =
         buildCartesianProduct(
             concurrencyLevels,
@@ -125,10 +126,10 @@ class CacheBuilderFactory {
         }
       };
 
-  private static final Function<Optional<?>, Object> OPTIONAL_TO_NULLABLE =
-      new Function<Optional<?>, Object>() {
+  private static final Function<Optional<?>, @Nullable Object> OPTIONAL_TO_NULLABLE =
+      new Function<Optional<?>, @Nullable Object>() {
         @Override
-        public Object apply(Optional<?> optional) {
+        public @Nullable Object apply(Optional<?> optional) {
           return optional.orNull();
         }
       };
@@ -158,14 +159,14 @@ class CacheBuilderFactory {
   }
 
   private CacheBuilder<Object, Object> createCacheBuilder(
-      Integer concurrencyLevel,
-      Integer initialCapacity,
-      Integer maximumSize,
-      DurationSpec expireAfterWrite,
-      DurationSpec expireAfterAccess,
-      DurationSpec refresh,
-      Strength keyStrength,
-      Strength valueStrength) {
+      @Nullable Integer concurrencyLevel,
+      @Nullable Integer initialCapacity,
+      @Nullable Integer maximumSize,
+      @Nullable DurationSpec expireAfterWrite,
+      @Nullable DurationSpec expireAfterAccess,
+      @Nullable DurationSpec refresh,
+      @Nullable Strength keyStrength,
+      @Nullable Strength valueStrength) {
 
     CacheBuilder<Object, Object> builder = CacheBuilder.newBuilder();
     if (concurrencyLevel != null) {
@@ -214,7 +215,7 @@ class CacheBuilderFactory {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
       if (o instanceof DurationSpec) {
         DurationSpec that = (DurationSpec) o;
         return unit.toNanos(duration) == that.unit.toNanos(that.duration);

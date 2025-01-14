@@ -20,13 +20,21 @@ import com.google.common.annotations.GwtCompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.CheckForNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A bimap (or "bidirectional map") is a map that preserves the uniqueness of its values as well as
  * that of its keys. This constraint enables bimaps to support an "inverse view", which is another
  * bimap containing the same entries as this bimap but with reversed keys and values.
+ *
+ * <h3>Implementations</h3>
+ *
+ * <ul>
+ *   <li>{@link ImmutableBiMap}
+ *   <li>{@link HashBiMap}
+ *   <li>{@link EnumBiMap}
+ *   <li>{@link EnumHashBiMap}
+ * </ul>
  *
  * <p>See the Guava User Guide article on <a href=
  * "https://github.com/google/guava/wiki/NewCollectionTypesExplained#bimap">{@code BiMap}</a>.
@@ -35,7 +43,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 2.0
  */
 @GwtCompatible
-@ElementTypesAreNonnullByDefault
 public interface BiMap<K extends @Nullable Object, V extends @Nullable Object> extends Map<K, V> {
   // Modification Operations
 
@@ -48,8 +55,7 @@ public interface BiMap<K extends @Nullable Object, V extends @Nullable Object> e
    */
   @CanIgnoreReturnValue
   @Override
-  @CheckForNull
-  V put(@ParametricNullness K key, @ParametricNullness V value);
+  @Nullable V put(@ParametricNullness K key, @ParametricNullness V value);
 
   /**
    * An alternate form of {@code put} that silently removes any existing entry with the value {@code
@@ -70,8 +76,7 @@ public interface BiMap<K extends @Nullable Object, V extends @Nullable Object> e
    *     value.)
    */
   @CanIgnoreReturnValue
-  @CheckForNull
-  V forcePut(@ParametricNullness K key, @ParametricNullness V value);
+  @Nullable V forcePut(@ParametricNullness K key, @ParametricNullness V value);
 
   // Bulk Operations
 

@@ -28,7 +28,6 @@ import com.google.common.annotations.GwtCompatible;
  *     source-compatible</a> since 9.0)
  */
 @GwtCompatible
-@ElementTypesAreNonnullByDefault
 public abstract class Ticker {
   /** Constructor for use by subclasses. */
   protected Ticker() {}
@@ -48,8 +47,9 @@ public abstract class Ticker {
   private static final Ticker SYSTEM_TICKER =
       new Ticker() {
         @Override
+        @SuppressWarnings("GoodTime") // reading system time without TimeSource
         public long read() {
-          return Platform.systemNanoTime();
+          return System.nanoTime();
         }
       };
 }

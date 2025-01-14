@@ -20,9 +20,14 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
-/** @author Luiz-Otavio "Z" Zorzella */
+/**
+ * @author Luiz-Otavio "Z" Zorzella
+ */
 @GwtCompatible
+@NullUnmarked
 public class TearDownStackTest extends TestCase {
 
   private TearDownStack tearDownStack = new TearDownStack();
@@ -116,7 +121,7 @@ public class TearDownStackTest extends TestCase {
 
           @Override
           public void tearDown() throws Exception {
-            synchronized (result.stack) {
+            synchronized (result.lock) {
               assertEquals(
                   "The test should have cleared the stack (say, by virtue of running runTearDown)",
                   0,
@@ -146,7 +151,7 @@ public class TearDownStackTest extends TestCase {
   private static final class SimpleTearDown implements TearDown {
 
     boolean ran = false;
-    Callback callback = null;
+    @Nullable Callback callback = null;
 
     public SimpleTearDown() {}
 

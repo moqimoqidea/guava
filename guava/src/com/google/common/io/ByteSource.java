@@ -18,8 +18,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.io.ByteStreams.createBuffer;
 import static com.google.common.io.ByteStreams.skipUpTo;
+import static java.lang.Math.min;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Ascii;
@@ -41,7 +41,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A readable source of bytes, such as a file. Unlike an {@link InputStream}, a {@code ByteSource}
@@ -76,7 +76,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @J2ktIncompatible
 @GwtIncompatible
-@ElementTypesAreNonnullByDefault
 public abstract class ByteSource {
 
   /** Constructor for use by subclasses. */
@@ -180,7 +179,6 @@ public abstract class ByteSource {
    *
    * @since 19.0
    */
-  @Beta
   public Optional<Long> sizeIfKnown() {
     return Optional.absent();
   }
@@ -316,7 +314,6 @@ public abstract class ByteSource {
    *     processor} throws an {@code IOException}
    * @since 16.0
    */
-  @Beta
   @CanIgnoreReturnValue // some processors won't return a useful result
   @ParametricNullness
   public <T extends @Nullable Object> T read(ByteProcessor<T> processor) throws IOException {
@@ -549,7 +546,7 @@ public abstract class ByteSource {
       long maxLength = this.length - offset;
       return maxLength <= 0
           ? ByteSource.empty()
-          : ByteSource.this.slice(this.offset + offset, Math.min(length, maxLength));
+          : ByteSource.this.slice(this.offset + offset, min(length, maxLength));
     }
 
     @Override
@@ -562,8 +559,8 @@ public abstract class ByteSource {
       Optional<Long> optionalUnslicedSize = ByteSource.this.sizeIfKnown();
       if (optionalUnslicedSize.isPresent()) {
         long unslicedSize = optionalUnslicedSize.get();
-        long off = Math.min(offset, unslicedSize);
-        return Optional.of(Math.min(length, unslicedSize - off));
+        long off = min(offset, unslicedSize);
+        return Optional.of(min(length, unslicedSize - off));
       }
       return Optional.absent();
     }
@@ -647,8 +644,8 @@ public abstract class ByteSource {
       checkArgument(offset >= 0, "offset (%s) may not be negative", offset);
       checkArgument(length >= 0, "length (%s) may not be negative", length);
 
-      offset = Math.min(offset, this.length);
-      length = Math.min(length, this.length - offset);
+      offset = min(offset, this.length);
+      length = min(length, this.length - offset);
       int newOffset = this.offset + (int) offset;
       return new ByteArrayByteSource(bytes, newOffset, (int) length);
     }

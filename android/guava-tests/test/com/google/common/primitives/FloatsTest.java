@@ -16,12 +16,16 @@
 
 package com.google.common.primitives;
 
+import static com.google.common.primitives.Floats.max;
+import static com.google.common.primitives.Floats.min;
+import static com.google.common.primitives.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.lang.Float.NaN;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Converter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.testing.Helpers;
@@ -33,12 +37,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Unit test for {@link Floats}.
  *
  * @author Kevin Bourrillion
  */
+@NullMarked
 @GwtCompatible(emulated = true)
 public class FloatsTest extends TestCase {
   private static final float[] EMPTY = {};
@@ -83,6 +90,8 @@ public class FloatsTest extends TestCase {
     }
   }
 
+  // We need to test that our method behaves like the JDK method.
+  @SuppressWarnings("InlineMeInliner")
   public void testCompare() {
     for (float x : VALUES) {
       for (float y : VALUES) {
@@ -196,46 +205,36 @@ public class FloatsTest extends TestCase {
 
   @GwtIncompatible
   public void testMax_noArgs() {
-    try {
-      Floats.max();
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> max());
   }
 
   public void testMax() {
-    assertThat(Floats.max(GREATEST)).isEqualTo(GREATEST);
-    assertThat(Floats.max(LEAST)).isEqualTo(LEAST);
-    assertThat(
-            Floats.max((float) 8, (float) 6, (float) 7, (float) 5, (float) 3, (float) 0, (float) 9))
+    assertThat(max(GREATEST)).isEqualTo(GREATEST);
+    assertThat(max(LEAST)).isEqualTo(LEAST);
+    assertThat(max((float) 8, (float) 6, (float) 7, (float) 5, (float) 3, (float) 0, (float) 9))
         .isEqualTo((float) 9);
 
-    assertThat(Floats.max(-0f, 0f)).isEqualTo(0f);
-    assertThat(Floats.max(0f, -0f)).isEqualTo(0f);
-    assertThat(Floats.max(NUMBERS)).isEqualTo(GREATEST);
-    assertThat(Float.isNaN(Floats.max(VALUES))).isTrue();
+    assertThat(max(-0f, 0f)).isEqualTo(0f);
+    assertThat(max(0f, -0f)).isEqualTo(0f);
+    assertThat(max(NUMBERS)).isEqualTo(GREATEST);
+    assertThat(Float.isNaN(max(VALUES))).isTrue();
   }
 
   @GwtIncompatible
   public void testMin_noArgs() {
-    try {
-      Floats.min();
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> min());
   }
 
   public void testMin() {
-    assertThat(Floats.min(LEAST)).isEqualTo(LEAST);
-    assertThat(Floats.min(GREATEST)).isEqualTo(GREATEST);
-    assertThat(
-            Floats.min((float) 8, (float) 6, (float) 7, (float) 5, (float) 3, (float) 0, (float) 9))
+    assertThat(min(LEAST)).isEqualTo(LEAST);
+    assertThat(min(GREATEST)).isEqualTo(GREATEST);
+    assertThat(min((float) 8, (float) 6, (float) 7, (float) 5, (float) 3, (float) 0, (float) 9))
         .isEqualTo((float) 0);
 
-    assertThat(Floats.min(-0f, 0f)).isEqualTo(-0f);
-    assertThat(Floats.min(0f, -0f)).isEqualTo(-0f);
-    assertThat(Floats.min(NUMBERS)).isEqualTo(LEAST);
-    assertThat(Float.isNaN(Floats.min(VALUES))).isTrue();
+    assertThat(min(-0f, 0f)).isEqualTo(-0f);
+    assertThat(min(0f, -0f)).isEqualTo(-0f);
+    assertThat(min(NUMBERS)).isEqualTo(LEAST);
+    assertThat(Float.isNaN(min(VALUES))).isTrue();
   }
 
   public void testConstrainToRange() {
@@ -244,11 +243,9 @@ public class FloatsTest extends TestCase {
     assertThat(Floats.constrainToRange((float) 1, (float) 3, (float) 5)).isEqualTo((float) 3);
     assertThat(Floats.constrainToRange((float) 0, (float) -5, (float) -1)).isEqualTo((float) -1);
     assertThat(Floats.constrainToRange((float) 5, (float) 2, (float) 2)).isEqualTo((float) 2);
-    try {
-      Floats.constrainToRange((float) 1, (float) 3, (float) 2);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> Floats.constrainToRange((float) 1, (float) 3, (float) 2));
   }
 
   public void testConcat() {
@@ -264,6 +261,37 @@ public class FloatsTest extends TestCase {
         .isEqualTo(new float[] {(float) 1, (float) 2, (float) 3, (float) 4});
   }
 
+  @GwtIncompatible // different overflow behavior; could probably be made to work by using ~~
+  public void testConcat_overflow_negative() {
+    int dim1 = 1 << 16;
+    int dim2 = 1 << 15;
+    assertThat(dim1 * dim2).isLessThan(0);
+    testConcatOverflow(dim1, dim2);
+  }
+
+  @GwtIncompatible // different overflow behavior; could probably be made to work by using ~~
+  public void testConcat_overflow_nonNegative() {
+    int dim1 = 1 << 16;
+    int dim2 = 1 << 16;
+    assertThat(dim1 * dim2).isAtLeast(0);
+    testConcatOverflow(dim1, dim2);
+  }
+
+  private static void testConcatOverflow(int arraysDim1, int arraysDim2) {
+    assertThat((long) arraysDim1 * arraysDim2).isNotEqualTo((long) (arraysDim1 * arraysDim2));
+
+    float[][] arrays = new float[arraysDim1][];
+    // it's shared to avoid using too much memory in tests
+    float[] sharedArray = new float[arraysDim2];
+    Arrays.fill(arrays, sharedArray);
+
+    try {
+      Floats.concat(arrays);
+      fail();
+    } catch (IllegalArgumentException expected) {
+    }
+  }
+
   public void testEnsureCapacity() {
     assertThat(Floats.ensureCapacity(EMPTY, 0, 1)).isSameInstanceAs(EMPTY);
     assertThat(Floats.ensureCapacity(ARRAY1, 0, 1)).isSameInstanceAs(ARRAY1);
@@ -275,17 +303,8 @@ public class FloatsTest extends TestCase {
   }
 
   public void testEnsureCapacity_fail() {
-    try {
-      Floats.ensureCapacity(ARRAY1, -1, 1);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
-    try {
-      // notice that this should even fail when no growth was needed
-      Floats.ensureCapacity(ARRAY1, 1, -1);
-      fail();
-    } catch (IllegalArgumentException expected) {
-    }
+    assertThrows(IllegalArgumentException.class, () -> Floats.ensureCapacity(ARRAY1, -1, 1));
+    assertThrows(IllegalArgumentException.class, () -> Floats.ensureCapacity(ARRAY1, 1, -1));
   }
 
   @GwtIncompatible // Float.toString returns different value in GWT.
@@ -313,6 +332,7 @@ public class FloatsTest extends TestCase {
     Helpers.testComparator(comparator, ordered);
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // SerializableTester
   public void testLexicographicalComparatorSerializable() {
     Comparator<float[]> comparator = Floats.lexicographicalComparator();
@@ -485,6 +505,7 @@ public class FloatsTest extends TestCase {
         new float[] {-1, 1, Float.NaN, -2, 2}, 1, 4, new float[] {-1, Float.NaN, 1, -2, 2});
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // SerializableTester
   public void testStringConverterSerialization() {
     SerializableTester.reserializeAndAssert(Floats.stringConverter());
@@ -522,12 +543,8 @@ public class FloatsTest extends TestCase {
   }
 
   public void testToArray_withNull() {
-    List<Float> list = Arrays.asList((float) 0, (float) 1, null);
-    try {
-      Floats.toArray(list);
-      fail();
-    } catch (NullPointerException expected) {
-    }
+    List<@Nullable Float> list = Arrays.asList((float) 0, (float) 1, null);
+    assertThrows(NullPointerException.class, () -> Floats.toArray(list));
   }
 
   public void testToArray_withConversion() {
@@ -548,6 +565,7 @@ public class FloatsTest extends TestCase {
     assertThat(Floats.toArray(doubles)).isEqualTo(array);
   }
 
+  @J2ktIncompatible // b/239034072: Kotlin varargs copy parameter arrays.
   public void testAsList_isAView() {
     float[] array = {(float) 0, (float) 1};
     List<Float> list = Floats.asList(array);
@@ -585,7 +603,7 @@ public class FloatsTest extends TestCase {
    * A reference implementation for {@code tryParse} that just catches the exception from {@link
    * Float#valueOf}.
    */
-  private static Float referenceTryParse(String input) {
+  private static @Nullable Float referenceTryParse(String input) {
     if (input.trim().length() < input.length()) {
       return null;
     }
@@ -644,6 +662,7 @@ public class FloatsTest extends TestCase {
     }
   }
 
+  @J2ktIncompatible // hexadecimal floats
   @GwtIncompatible // Floats.tryParse
   public void testTryParseOfToHexStringIsOriginal() {
     for (float f : NUMBERS) {
@@ -690,6 +709,7 @@ public class FloatsTest extends TestCase {
     }
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // NullPointerTester
   public void testNulls() {
     new NullPointerTester().testAllPublicStaticMethods(Floats.class);
@@ -709,11 +729,7 @@ public class FloatsTest extends TestCase {
   }
 
   public void testStringConverter_convertError() {
-    try {
-      Floats.stringConverter().convert("notanumber");
-      fail();
-    } catch (NumberFormatException expected) {
-    }
+    assertThrows(NumberFormatException.class, () -> Floats.stringConverter().convert("notanumber"));
   }
 
   public void testStringConverter_nullConversions() {
@@ -721,6 +737,7 @@ public class FloatsTest extends TestCase {
     assertThat(Floats.stringConverter().reverse().convert(null)).isNull();
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // Float.toString returns different value in GWT.
   public void testStringConverter_reverse() {
     Converter<String, Float> converter = Floats.stringConverter();
@@ -731,6 +748,7 @@ public class FloatsTest extends TestCase {
     assertThat(converter.reverse().convert(1e-6f)).isEqualTo("1.0E-6");
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // NullPointerTester
   public void testStringConverter_nullPointerTester() throws Exception {
     NullPointerTester tester = new NullPointerTester();
@@ -740,10 +758,6 @@ public class FloatsTest extends TestCase {
   @GwtIncompatible
   public void testTryParse_withNullNoGwt() {
     assertThat(Floats.tryParse("null")).isNull();
-    try {
-      Floats.tryParse(null);
-      fail("Expected NPE");
-    } catch (NullPointerException expected) {
-    }
+    assertThrows(NullPointerException.class, () -> Floats.tryParse(null));
   }
 }

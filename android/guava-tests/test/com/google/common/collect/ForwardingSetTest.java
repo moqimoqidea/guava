@@ -31,6 +31,8 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@code ForwardingSet}.
@@ -38,6 +40,7 @@ import junit.framework.TestSuite;
  * @author Robert Konigsberg
  * @author Louis Wasserman
  */
+@NullUnmarked
 public class ForwardingSetTest extends TestCase {
   static class StandardImplForwardingSet<T> extends ForwardingSet<T> {
     private final Set<T> backingSet;
@@ -52,7 +55,7 @@ public class ForwardingSetTest extends TestCase {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(@Nullable Object object) {
       return standardEquals(object);
     }
 

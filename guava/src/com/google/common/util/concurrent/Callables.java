@@ -16,13 +16,12 @@ package com.google.common.util.concurrent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Supplier;
 import java.util.concurrent.Callable;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Static utility methods pertaining to the {@link Callable} interface.
@@ -31,7 +30,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @since 1.0
  */
 @GwtCompatible(emulated = true)
-@ElementTypesAreNonnullByDefault
 public final class Callables {
   private Callables() {}
 
@@ -48,7 +46,6 @@ public final class Callables {
    *
    * @since 20.0
    */
-  @Beta
   @J2ktIncompatible
   @GwtIncompatible
   public static <T extends @Nullable Object> AsyncCallable<T> asAsyncCallable(

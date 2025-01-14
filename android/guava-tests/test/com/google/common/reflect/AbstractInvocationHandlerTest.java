@@ -26,12 +26,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@link AbstractInvocationHandler}.
  *
  * @author Ben Yu
  */
+@NullUnmarked
 public class AbstractInvocationHandlerTest extends TestCase {
 
   private static final ImmutableList<String> LIST1 = ImmutableList.of("one", "two");
@@ -52,10 +55,6 @@ public class AbstractInvocationHandlerTest extends TestCase {
   interface B {}
 
   public void testEquals() {
-    class AB implements A, B {}
-    class BA implements B, A {}
-    AB ab = new AB();
-    BA ba = new BA();
     new EqualsTester()
         .addEqualityGroup(newDelegatingList(LIST1))
         // Actually, this violates List#equals contract.
@@ -136,7 +135,7 @@ public class AbstractInvocationHandlerTest extends TestCase {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
       if (obj instanceof DelegatingInvocationHandlerWithEquals) {
         DelegatingInvocationHandlerWithEquals that = (DelegatingInvocationHandlerWithEquals) obj;
         return delegate.equals(that.delegate);

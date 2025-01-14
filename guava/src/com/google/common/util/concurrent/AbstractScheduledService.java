@@ -25,7 +25,6 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.base.Supplier;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.concurrent.GuardedBy;
 import com.google.j2objc.annotations.WeakOuter;
@@ -41,9 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.CheckForNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Base class for services that can implement {@link #startUp} and {@link #shutDown} but while in
@@ -104,9 +101,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 @GwtIncompatible
 @J2ktIncompatible
-@ElementTypesAreNonnullByDefault
 public abstract class AbstractScheduledService implements Service {
-  private static final Logger logger = Logger.getLogger(AbstractScheduledService.class.getName());
+  private static final LazyLogger logger = new LazyLogger(AbstractScheduledService.class);
 
   /**
    * A scheduler defines the policy for how the {@link AbstractScheduledService} should run its
@@ -128,7 +124,7 @@ public abstract class AbstractScheduledService implements Service {
      * @param initialDelay the time to delay first execution
      * @param delay the delay between the termination of one execution and the commencement of the
      *     next
-     * @since 28.0
+     * @since 28.0 (but only since 33.4.0 in the Android flavor)
      */
     public static Scheduler newFixedDelaySchedule(Duration initialDelay, Duration delay) {
       return newFixedDelaySchedule(
@@ -165,7 +161,7 @@ public abstract class AbstractScheduledService implements Service {
      *
      * @param initialDelay the time to delay first execution
      * @param period the period between successive executions of the task
-     * @since 28.0
+     * @since 28.0 (but only since 33.4.0 in the Android flavor)
      */
     public static Scheduler newFixedRateSchedule(Duration initialDelay, Duration period) {
       return newFixedRateSchedule(
@@ -210,8 +206,8 @@ public abstract class AbstractScheduledService implements Service {
 
     // A handle to the running task so that we can stop it when a shutdown has been requested.
     // These two fields are volatile because their values will be accessed from multiple threads.
-    @CheckForNull private volatile Cancellable runningTask;
-    @CheckForNull private volatile ScheduledExecutorService executorService;
+    private volatile @Nullable Cancellable runningTask;
+    private volatile @Nullable ScheduledExecutorService executorService;
 
     // This lock protects the task so we can ensure that none of the template methods (startUp,
     // shutDown or runOneIteration) run concurrently with one another.
@@ -240,10 +236,12 @@ public abstract class AbstractScheduledService implements Service {
             shutDown();
           } catch (Exception ignored) {
             restoreInterruptIfIsInterruptedException(ignored);
-            logger.log(
-                Level.WARNING,
-                "Error while attempting to shut down the service after failure.",
-                ignored);
+            logger
+                .get()
+                .log(
+                    Level.WARNING,
+                    "Error while attempting to shut down the service after failure.",
+                    ignored);
           }
           notifyFailed(t);
           // requireNonNull is safe now, just as it was above.
@@ -259,33 +257,28 @@ public abstract class AbstractScheduledService implements Service {
     @Override
     protected final void doStart() {
       executorService =
-          MoreExecutors.renamingDecorator(
-              executor(),
-              new Supplier<String>() {
-                @Override
-                public String get() {
-                  return serviceName() + " " + state();
-                }
-              });
+          MoreExecutors.renamingDecorator(executor(), () -> serviceName() + " " + state());
       executorService.execute(
-          new Runnable() {
-            @Override
-            public void run() {
-              lock.lock();
-              try {
-                startUp();
-                runningTask = scheduler().schedule(delegate, executorService, task);
-                notifyStarted();
-              } catch (Throwable t) {
-                restoreInterruptIfIsInterruptedException(t);
-                notifyFailed(t);
-                if (runningTask != null) {
-                  // prevent the task from running if possible
-                  runningTask.cancel(false);
-                }
-              } finally {
-                lock.unlock();
+          () -> {
+            lock.lock();
+            try {
+              startUp();
+              /*
+               * requireNonNull is safe because executorService is never cleared after the
+               * assignment above.
+               */
+              requireNonNull(executorService);
+              runningTask = scheduler().schedule(delegate, executorService, task);
+              notifyStarted();
+            } catch (Throwable t) {
+              restoreInterruptIfIsInterruptedException(t);
+              notifyFailed(t);
+              if (runningTask != null) {
+                // prevent the task from running if possible
+                runningTask.cancel(false);
               }
+            } finally {
+              lock.unlock();
             }
           });
     }
@@ -297,28 +290,25 @@ public abstract class AbstractScheduledService implements Service {
       requireNonNull(executorService);
       runningTask.cancel(false);
       executorService.execute(
-          new Runnable() {
-            @Override
-            public void run() {
+          () -> {
+            try {
+              lock.lock();
               try {
-                lock.lock();
-                try {
-                  if (state() != State.STOPPING) {
-                    // This means that the state has changed since we were scheduled. This implies
-                    // that an execution of runOneIteration has thrown an exception and we have
-                    // transitioned to a failed state, also this means that shutDown has already
-                    // been called, so we do not want to call it again.
-                    return;
-                  }
-                  shutDown();
-                } finally {
-                  lock.unlock();
+                if (state() != State.STOPPING) {
+                  // This means that the state has changed since we were scheduled. This implies
+                  // that an execution of runOneIteration has thrown an exception and we have
+                  // transitioned to a failed state, also this means that shutDown has already
+                  // been called, so we do not want to call it again.
+                  return;
                 }
-                notifyStopped();
-              } catch (Throwable t) {
-                restoreInterruptIfIsInterruptedException(t);
-                notifyFailed(t);
+                shutDown();
+              } finally {
+                lock.unlock();
               }
+              notifyStopped();
+            } catch (Throwable t) {
+              restoreInterruptIfIsInterruptedException(t);
+              notifyFailed(t);
             }
           });
     }
@@ -508,6 +498,7 @@ public abstract class AbstractScheduledService implements Service {
     }
 
     @Override
+    @SuppressWarnings("Interruption") // We are propagating an interrupt from a caller.
     public void cancel(boolean mayInterruptIfRunning) {
       delegate.cancel(mayInterruptIfRunning);
     }
@@ -527,6 +518,8 @@ public abstract class AbstractScheduledService implements Service {
    * @since 11.0
    */
   public abstract static class CustomScheduler extends Scheduler {
+    /** Constructor for use by subclasses. */
+    public CustomScheduler() {}
 
     /** A callable class that can reschedule itself using a {@link CustomScheduler}. */
     private final class ReschedulableCallable implements Callable<@Nullable Void> {
@@ -573,8 +566,7 @@ public abstract class AbstractScheduledService implements Service {
 
       /** The future that represents the next execution of this task. */
       @GuardedBy("lock")
-      @CheckForNull
-      private SupplantableFuture cancellationDelegate;
+      private @Nullable SupplantableFuture cancellationDelegate;
 
       ReschedulableCallable(
           AbstractService service, ScheduledExecutorService executor, Runnable runnable) {
@@ -584,8 +576,7 @@ public abstract class AbstractScheduledService implements Service {
       }
 
       @Override
-      @CheckForNull
-      public Void call() throws Exception {
+      public @Nullable Void call() throws Exception {
         wrappedRunnable.run();
         reschedule();
         return null;
@@ -615,7 +606,9 @@ public abstract class AbstractScheduledService implements Service {
         lock.lock();
         try {
           toReturn = initializeOrUpdateCancellationDelegate(schedule);
-        } catch (RuntimeException | Error e) {
+        } catch (Throwable e) {
+          // Any Exception is either a RuntimeException or sneaky checked exception.
+          //
           // If an exception is thrown by the subclass then we need to make sure that the service
           // notices and transitions to the FAILED state. We do it by calling notifyFailed directly
           // because the service does not monitor the state of the future so if the exception is not
@@ -675,6 +668,7 @@ public abstract class AbstractScheduledService implements Service {
       }
 
       @Override
+      @SuppressWarnings("Interruption") // We are propagating an interrupt from a caller.
       public void cancel(boolean mayInterruptIfRunning) {
         /*
          * Lock to ensure that a task cannot be rescheduled while a cancel is ongoing.
@@ -734,7 +728,7 @@ public abstract class AbstractScheduledService implements Service {
 
       /**
        * @param delay the time from now to delay execution
-       * @since 31.1
+       * @since 31.1 (but only since 33.4.0 in the Android flavor)
        */
       public Schedule(Duration delay) {
         this(toNanosSaturated(delay), NANOSECONDS);

@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.testing.ListTestSuiteBuilder;
 import com.google.common.collect.testing.SampleElements;
@@ -31,6 +32,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Test suite covering {@link Ints#asList(int[])}.
@@ -39,6 +41,7 @@ import junit.framework.TestSuite;
  */
 @GwtCompatible(emulated = true)
 @SuppressWarnings("cast") // redundant casts are intentional and harmless
+@NullUnmarked
 public class IntArrayAsListTest extends TestCase {
 
   private static List<Integer> asList(Integer[] values) {
@@ -49,6 +52,7 @@ public class IntArrayAsListTest extends TestCase {
     return Ints.asList(temp);
   }
 
+  @J2ktIncompatible
   @GwtIncompatible // suite
   public static Test suite() {
     List<ListTestSuiteBuilder<Integer>> builders =

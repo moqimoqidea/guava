@@ -16,7 +16,6 @@ package com.google.common.base;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import java.io.Serializable;
@@ -26,7 +25,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.annotation.CheckForNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Utility methods for working with {@link Enum} instances.
@@ -34,9 +33,8 @@ import javax.annotation.CheckForNull;
  * @author Steve McKay
  * @since 9.0
  */
-@GwtCompatible(emulated = true)
+@GwtIncompatible
 @J2ktIncompatible
-@ElementTypesAreNonnullByDefault
 public final class Enums {
 
   private Enums() {}
@@ -108,10 +106,12 @@ public final class Enums {
    *
    * @since 16.0
    */
+  @GwtIncompatible
   public static <T extends Enum<T>> Converter<String, T> stringConverter(Class<T> enumClass) {
     return new StringConverter<>(enumClass);
   }
 
+  @GwtIncompatible
   private static final class StringConverter<T extends Enum<T>> extends Converter<String, T>
       implements Serializable {
 
@@ -132,7 +132,7 @@ public final class Enums {
     }
 
     @Override
-    public boolean equals(@CheckForNull Object object) {
+    public boolean equals(@Nullable Object object) {
       if (object instanceof StringConverter) {
         StringConverter<?> that = (StringConverter<?>) object;
         return this.enumClass.equals(that.enumClass);

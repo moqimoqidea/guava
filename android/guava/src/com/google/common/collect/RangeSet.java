@@ -14,12 +14,11 @@
 
 package com.google.common.collect;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.errorprone.annotations.DoNotMock;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import javax.annotation.CheckForNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A set comprising zero or more {@linkplain Range#isEmpty nonempty}, {@linkplain
@@ -49,10 +48,9 @@ import javax.annotation.CheckForNull;
  * @author Louis Wasserman
  * @since 14.0
  */
-@Beta
+@SuppressWarnings("rawtypes") // https://github.com/google/guava/issues/989
 @DoNotMock("Use ImmutableRangeSet or TreeRangeSet")
 @GwtIncompatible
-@ElementTypesAreNonnullByDefault
 public interface RangeSet<C extends Comparable> {
 
   // Query methods
@@ -64,8 +62,7 @@ public interface RangeSet<C extends Comparable> {
    * Returns the unique range from this range set that {@linkplain Range#contains contains} {@code
    * value}, or {@code null} if this range set does not contain {@code value}.
    */
-  @CheckForNull
-  Range<C> rangeContaining(C value);
+  @Nullable Range<C> rangeContaining(C value);
 
   /**
    * Returns {@code true} if there exists a non-empty range enclosed by both a member range in this
@@ -248,7 +245,7 @@ public interface RangeSet<C extends Comparable> {
    * according to {@link Range#equals(Object)}.
    */
   @Override
-  boolean equals(@CheckForNull Object obj);
+  boolean equals(@Nullable Object obj);
 
   /** Returns {@code asRanges().hashCode()}. */
   @Override

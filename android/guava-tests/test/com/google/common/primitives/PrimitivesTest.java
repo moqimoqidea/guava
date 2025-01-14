@@ -16,13 +16,16 @@
 
 package com.google.common.primitives;
 
+import static com.google.common.primitives.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.testing.NullPointerTester;
 import java.util.Set;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Unit test for {@link Primitives}.
@@ -30,6 +33,7 @@ import junit.framework.TestCase;
  * @author Kevin Bourrillion
  */
 @GwtCompatible(emulated = true)
+@NullUnmarked
 public class PrimitivesTest extends TestCase {
   public void testIsWrapperType() {
     assertThat(Primitives.isWrapperType(Void.class)).isTrue();
@@ -62,11 +66,7 @@ public class PrimitivesTest extends TestCase {
             short.class,
             void.class);
 
-    try {
-      primitives.remove(boolean.class);
-      fail();
-    } catch (UnsupportedOperationException expected) {
-    }
+    assertThrows(UnsupportedOperationException.class, () -> primitives.remove(boolean.class));
   }
 
   public void testAllWrapperTypes() {
@@ -83,14 +83,11 @@ public class PrimitivesTest extends TestCase {
             Short.class,
             Void.class);
 
-    try {
-      wrappers.remove(Boolean.class);
-      fail();
-    } catch (UnsupportedOperationException expected) {
-    }
+    assertThrows(UnsupportedOperationException.class, () -> wrappers.remove(Boolean.class));
   }
 
   @GwtIncompatible
+  @J2ktIncompatible
   public void testNullPointerExceptions() {
     NullPointerTester tester = new NullPointerTester();
     tester.testAllPublicStaticMethods(Primitives.class);

@@ -21,12 +21,15 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@link Synchronized#deque} and {@link Queues#synchronizedDeque}.
  *
  * @author Kurt Alfred Kluever
  */
+@NullUnmarked
 public class SynchronizedDequeTest extends TestCase {
 
   protected Deque<String> create() {
@@ -38,7 +41,7 @@ public class SynchronizedDequeTest extends TestCase {
 
   private static final class TestDeque<E> implements Deque<E> {
     private final Deque<E> delegate = Lists.newLinkedList();
-    public final Object mutex = new Integer(1); // something Serializable
+    public final Object mutex = new Object[0]; // something Serializable
 
     @Override
     public boolean offer(E o) {
@@ -47,7 +50,7 @@ public class SynchronizedDequeTest extends TestCase {
     }
 
     @Override
-    public E poll() {
+    public @Nullable E poll() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.poll();
     }
@@ -65,7 +68,7 @@ public class SynchronizedDequeTest extends TestCase {
     }
 
     @Override
-    public E peek() {
+    public @Nullable E peek() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.peek();
     }
@@ -186,13 +189,13 @@ public class SynchronizedDequeTest extends TestCase {
     }
 
     @Override
-    public E pollFirst() {
+    public @Nullable E pollFirst() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.pollFirst();
     }
 
     @Override
-    public E pollLast() {
+    public @Nullable E pollLast() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.pollLast();
     }
@@ -210,13 +213,13 @@ public class SynchronizedDequeTest extends TestCase {
     }
 
     @Override
-    public E peekFirst() {
+    public @Nullable E peekFirst() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.peekFirst();
     }
 
     @Override
-    public E peekLast() {
+    public @Nullable E peekLast() {
       assertTrue(Thread.holdsLock(mutex));
       return delegate.peekLast();
     }

@@ -24,12 +24,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.concurrent.ExecutionException;
 import junit.framework.TestCase;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * Unit test for {@link ForwardingLoadingCache}.
  *
  * @author Charles Fry
  */
+@NullUnmarked
 public class ForwardingLoadingCacheTest extends TestCase {
   private LoadingCache<String, Boolean> forward;
   private LoadingCache<String, Boolean> mock;
@@ -112,7 +114,7 @@ public class ForwardingLoadingCacheTest extends TestCase {
   private static class OnlyGet<K, V> extends ForwardingLoadingCache<K, V> {
     @Override
     protected LoadingCache<K, V> delegate() {
-      return null;
+      throw new AssertionError();
     }
   }
 }
