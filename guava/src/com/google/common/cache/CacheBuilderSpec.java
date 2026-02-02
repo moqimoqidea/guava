@@ -377,7 +377,7 @@ public final class CacheBuilderSpec {
   private static final class KeyStrengthParser implements ValueParser {
     private final Strength strength;
 
-    public KeyStrengthParser(Strength strength) {
+    KeyStrengthParser(Strength strength) {
       this.strength = strength;
     }
 
@@ -393,7 +393,7 @@ public final class CacheBuilderSpec {
   private static final class ValueStrengthParser implements ValueParser {
     private final Strength strength;
 
-    public ValueStrengthParser(Strength strength) {
+    ValueStrengthParser(Strength strength) {
       this.strength = strength;
     }
 

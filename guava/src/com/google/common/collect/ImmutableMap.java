@@ -1067,9 +1067,8 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   }
 
   /*
-   * This could have a good default implementation of return new ImmutableKeySet<K, V>(this),
-   * but ProGuard can't figure out how to eliminate that default when RegularImmutableMap
-   * overrides it.
+   * This could have a good default implementation of `return new ImmutableKeySet<K, V>(this)`, but
+   * ProGuard can't figure out how to eliminate that default when RegularImmutableMap overrides it.
    */
   abstract ImmutableSet<K> createKeySet();
 
@@ -1109,9 +1108,9 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   }
 
   /*
-   * This could have a good default implementation of {@code return new
-   * ImmutableMapValues<K, V>(this)}, but ProGuard can't figure out how to eliminate that default
-   * when RegularImmutableMap overrides it.
+   * This could have a good default implementation of `return new ImmutableMapValues<K, V>(this)`,
+   * but ProGuard can't figure out how to eliminate that default when RegularImmutableMap overrides
+   * it.
    */
   abstract ImmutableCollection<V> createValues();
 

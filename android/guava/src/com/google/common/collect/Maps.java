@@ -2095,7 +2095,7 @@ public final class Maps {
           K extends @Nullable Object, V1 extends @Nullable Object, V2 extends @Nullable Object>
       extends TransformedEntriesMap<K, V1, V2> implements SortedMap<K, V2> {
 
-    protected SortedMap<K, V1> fromMap() {
+    SortedMap<K, V1> fromMap() {
       return (SortedMap<K, V1>) fromMap;
     }
 
@@ -2262,7 +2262,7 @@ public final class Maps {
     }
 
     @Override
-    protected NavigableMap<K, V1> fromMap() {
+    NavigableMap<K, V1> fromMap() {
       return (NavigableMap<K, V1>) super.fromMap();
     }
   }

@@ -440,7 +440,7 @@ public class MultimapTestSuiteBuilder<K, V, M extends Multimap<K, V>>
       implements TestCollectionGenerator<V> {
     private final OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator;
 
-    public ValuesGenerator(OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator) {
+    ValuesGenerator(OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator) {
       this.multimapGenerator = multimapGenerator;
     }
 
@@ -494,7 +494,7 @@ public class MultimapTestSuiteBuilder<K, V, M extends Multimap<K, V>>
       implements TestMultisetGenerator<K>, DerivedGenerator {
     private final OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator;
 
-    public KeysGenerator(OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator) {
+    KeysGenerator(OneSizeTestContainerGenerator<M, Entry<K, V>> multimapGenerator) {
       this.multimapGenerator = multimapGenerator;
     }
 
