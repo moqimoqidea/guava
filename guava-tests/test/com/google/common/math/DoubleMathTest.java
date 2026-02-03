@@ -653,6 +653,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_doubleVarargs() {
     assertThat(DoubleMath.mean(1.1, -2.2, 4.4, -8.8)).isWithin(1.0e-10).of(-1.375);
     assertThat(DoubleMath.mean(1.1)).isWithin(1.0e-10).of(1.1);
@@ -682,6 +683,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_doubleIterable() {
     assertThat(DoubleMath.mean(ImmutableList.of(1.1, -2.2, 4.4, -8.8)))
         .isWithin(1.0e-10)
@@ -697,6 +699,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_intIterable() {
     assertThat(DoubleMath.mean(ImmutableList.of(11, -22, 44, -88))).isWithin(1.0e-10).of(-13.75);
     assertThat(DoubleMath.mean(ImmutableList.of(11))).isWithin(1.0e-10).of(11);
@@ -706,6 +709,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_longIterable() {
     assertThat(DoubleMath.mean(ImmutableList.of(11L, -22L, 44L, -88L)))
         .isWithin(1.0e-10)
@@ -716,6 +720,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_intIterator() {
     assertThat(DoubleMath.mean(ImmutableList.of(11, -22, 44, -88).iterator()))
         .isWithin(1.0e-10)
@@ -728,6 +733,7 @@ public class DoubleMathTest extends TestCase {
 
   @GwtIncompatible // DoubleMath.mean
   @SuppressWarnings("deprecation") // test of deprecated method
+  @J2ktIncompatible // b/480968849
   public void testMean_longIterator() {
     assertThat(DoubleMath.mean(ImmutableList.of(11L, -22L, 44L, -88L).iterator()))
         .isWithin(1.0e-10)
