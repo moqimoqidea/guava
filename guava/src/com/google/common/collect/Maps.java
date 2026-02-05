@@ -56,6 +56,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -1324,7 +1325,12 @@ public final class Maps {
   @CanIgnoreReturnValue
   public static <K, V> ImmutableMap<K, V> uniqueIndex(
       Iterable<V> values, Function<? super V, K> keyFunction) {
-    if (values instanceof Collection) {
+    // We can provide a hint to the builder to preallocate the correct size when the iterable is
+    // either a List (which likely has a fast size() implementation), or an ImmutableCollection
+    // (which definitely has a fast size() implementation). While Collection also has a size()
+    // implementation, it _may_ require iteration over the entire collection (e.g., a
+    // FilteredCollection), which we want to avoid.
+    if (values instanceof List || values instanceof ImmutableCollection) {
       return uniqueIndex(
           values.iterator(),
           keyFunction,
