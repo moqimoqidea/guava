@@ -17,11 +17,9 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.NullnessCasts.uncheckedCastNullableTToT;
 import static java.util.Collections.emptyList;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.base.Supplier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,7 +43,7 @@ public final class MoreCollectors {
    */
   private static final Collector<Object, ?, Optional<Object>> TO_OPTIONAL =
       Collector.of(
-          () -> new ToOptionalState<>(null),
+          ToOptionalState::new,
           ToOptionalState::add,
           ToOptionalState::combine,
           ToOptionalState::getOptional,
@@ -67,8 +65,8 @@ public final class MoreCollectors {
   private static final Object NULL_PLACEHOLDER = new Object();
 
   private static final Collector<@Nullable Object, ?, @Nullable Object> ONLY_ELEMENT =
-      Collector.<@Nullable Object, ToOptionalState<Object>, @Nullable Object>of(
-          () -> new ToOptionalState<>(null),
+      Collector.<@Nullable Object, ToOptionalState, @Nullable Object>of(
+          ToOptionalState::new,
           (state, o) -> state.add((o == null) ? NULL_PLACEHOLDER : o),
           ToOptionalState::combine,
           state -> {
@@ -92,23 +90,18 @@ public final class MoreCollectors {
    * than one, not just two.
    */
   @SuppressWarnings("EmptyList") // ImmutableList doesn't support nullable element types
-  private static final class ToOptionalState<T> {
+  private static final class ToOptionalState {
     static final int MAX_EXTRAS = 4;
 
-    @Nullable T element;
-    List<T> extras;
-    final @Nullable Supplier<? extends RuntimeException> exceptionSupplier;
+    @Nullable Object element;
+    List<Object> extras;
 
-    ToOptionalState(@Nullable Supplier<? extends RuntimeException> exceptionSupplier) {
-      this.element = null;
-      this.extras = emptyList();
-      this.exceptionSupplier = exceptionSupplier;
+    ToOptionalState() {
+      element = null;
+      extras = emptyList();
     }
 
-    RuntimeException multiples(boolean overflow) {
-      if (exceptionSupplier != null) {
-        throw exceptionSupplier.get();
-      }
+    IllegalArgumentException multiples(boolean overflow) {
       StringBuilder sb =
           new StringBuilder().append("expected one element but was: <").append(element);
       for (Object o : extras) {
@@ -121,7 +114,7 @@ public final class MoreCollectors {
       throw new IllegalArgumentException(sb.toString());
     }
 
-    void add(T o) {
+    void add(Object o) {
       checkNotNull(o);
       if (element == null) {
         this.element = o;
@@ -136,7 +129,7 @@ public final class MoreCollectors {
       }
     }
 
-    ToOptionalState<T> combine(ToOptionalState<T> other) {
+    ToOptionalState combine(ToOptionalState other) {
       if (element == null) {
         return other;
       } else if (other.element == null) {
@@ -156,7 +149,7 @@ public final class MoreCollectors {
       }
     }
 
-    Optional<T> getOptional() {
+    Optional<Object> getOptional() {
       if (extras.isEmpty()) {
         return Optional.ofNullable(element);
       } else {
@@ -164,15 +157,11 @@ public final class MoreCollectors {
       }
     }
 
-    T getElement() {
+    Object getElement() {
       if (element == null) {
-        if (exceptionSupplier != null) {
-          throw exceptionSupplier.get();
-        } else {
-          throw new NoSuchElementException();
-        }
+        throw new NoSuchElementException();
       } else if (extras.isEmpty()) {
-        return uncheckedCastNullableTToT(element);
+        return element;
       } else {
         throw multiples(false);
       }
