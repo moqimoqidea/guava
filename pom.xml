@@ -55,18 +55,18 @@
     <surefire.toolchain.version>${java.specification.version}</surefire.toolchain.version>
     <!-- Override this with -Dtest.include="**/SomeTest.java" on the CLI -->
     <test.include>%regex[.*.class]</test.include>
-    <animal-sniffer-maven-plugin.version>1.26</animal-sniffer-maven-plugin.version>
+    <animal-sniffer-maven-plugin.version>1.27</animal-sniffer-maven-plugin.version>
     <asm.version>9.9.1</asm.version>
     <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
     <caliper.version>1.0-beta-3</caliper.version>
     <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
-    <error_prone_annotations.version>2.46.0</error_prone_annotations.version>
-    <error_prone_core.version>2.46.0</error_prone_core.version>
+    <error_prone_annotations.version>2.47.0</error_prone_annotations.version>
+    <error_prone_core.version>2.47.0</error_prone_core.version>
     <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
     <failureaccess.version>1.0.3</failureaccess.version>
     <gummy-bears-api-23-version>0.12.0</gummy-bears-api-23-version>
     <gwt-maven-plugin.version>2.10.0</gwt-maven-plugin.version>
-    <gwt.version>2.12.2</gwt.version>
+    <gwt.version>2.13.0</gwt.version>
     <j2objc.version>3.1</j2objc.version>
     <java18-signature.version>1.0</java18-signature.version>
     <javahome-resolver-maven-plugin.version>1.0.2</javahome-resolver-maven-plugin.version>
@@ -77,8 +77,8 @@
     <listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</listenablefuture.version>
     <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
-    <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-    <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-dependency-plugin.version>3.10.0</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
     <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
