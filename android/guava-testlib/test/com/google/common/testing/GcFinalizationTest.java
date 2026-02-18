@@ -16,12 +16,15 @@
 
 package com.google.common.testing;
 
+import static com.google.common.testing.SneakyThrows.sneakyThrow;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.testing.GcFinalization.FinalizationPredicate;
 import com.google.common.util.concurrent.SettableFuture;
+import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
 import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -180,12 +183,14 @@ public class GcFinalizationTest extends TestCase {
 
   public void testAwaitClear_interrupted() {
     Interruptenator interruptenator = new Interruptenator(Thread.currentThread());
+    Foo foo = new Foo();
     try {
-      WeakReference<Object> ref = new WeakReference<>(new Foo());
+      WeakReference<Object> ref = new WeakReference<>(foo);
       RuntimeException expected =
           assertThrows(RuntimeException.class, () -> GcFinalization.awaitClear(ref));
       assertWrapsInterruptedException(expected);
     } finally {
+      reachabilityFence(foo);
       interruptenator.shutdown();
       Thread.interrupted();
     }
@@ -240,5 +245,28 @@ public class GcFinalizationTest extends TestCase {
 
     assertEquals(0, finalizerRan.getCount());
     assertThat(ref.get()).isNull();
+  }
+
+  /*
+   * Once we can call Reference.reachabilityFence() directly, we will need to suppress
+   * https://errorprone.info/bugpattern/ReachabilityFenceUsage. Suppressing is fine: This method is a wrapper around that
+   * method, and we call that wrapper from a `finally` block, as the check wants. (Also, it's not
+   * entirely clear to me that we really need to use `finally` in this case: b/127970178.)
+   */
+  private static void reachabilityFence(Object o) {
+    try {
+      Reference.class.getMethod("reachabilityFence", Object.class).invoke(null, o);
+    } catch (InvocationTargetException e) {
+      // The method has no `throws` clause.
+      sneakyThrow(e.getCause());
+    } catch (IllegalAccessException e) {
+      /*
+       * The method should be public (though technically there's nothing preventing it from being
+       * present as non-public under older versions).
+       */
+      throw new LinkageError(e.toString(), e);
+    } catch (NoSuchMethodException e) {
+      // We're running under Java 8 or under Android before API Level 28.
+    }
   }
 }
