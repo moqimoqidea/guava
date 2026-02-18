@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -93,7 +94,7 @@ public final class MoreCollectors {
    */
   @SuppressWarnings("EmptyList") // ImmutableList doesn't support nullable element types
   @IgnoreJRERequirement // see enclosing class (whose annotation Animal Sniffer ignores here...)
-  private static final class ToOptionalState<T> {
+  private static final class ToOptionalState<T extends @Nullable Object> {
     static final int MAX_EXTRAS = 4;
 
     @Nullable T element;
@@ -157,7 +158,7 @@ public final class MoreCollectors {
       }
     }
 
-    Optional<T> getOptional() {
+    Optional<@NonNull T> getOptional() {
       if (extras.isEmpty()) {
         return Optional.ofNullable(element);
       } else {
