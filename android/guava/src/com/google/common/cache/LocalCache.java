@@ -3807,7 +3807,7 @@ final class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<
 
   // Cache support
 
-  public void cleanUp() {
+  void cleanUp() {
     for (Segment<?, ?> segment : segments) {
       segment.cleanUp();
     }
@@ -3875,7 +3875,7 @@ final class LocalCache<K, V> extends AbstractMap<K, V> implements ConcurrentMap<
     return segmentFor(hash).get(key, hash, loader);
   }
 
-  public @Nullable V getIfPresent(Object key) {
+  @Nullable V getIfPresent(Object key) {
     int hash = hash(checkNotNull(key));
     V value = segmentFor(hash).get(key, hash);
     if (value == null) {
