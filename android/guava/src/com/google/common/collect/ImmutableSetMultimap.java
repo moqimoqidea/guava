@@ -420,14 +420,21 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
    */
   public static <K, V> ImmutableSetMultimap<K, V> copyOf(
       Multimap<? extends K, ? extends V> multimap) {
-    return copyOf(multimap, null);
-  }
-
-  private static <K, V> ImmutableSetMultimap<K, V> copyOf(
-      Multimap<? extends K, ? extends V> multimap,
-      @Nullable Comparator<? super V> valueComparator) {
     checkNotNull(multimap); // eager for GWT
-    if (multimap.isEmpty() && valueComparator == null) {
+
+    /*
+     * TODO(cpovirk): When given an ImmutableSetMultimap that has a non-null valueComparator, should
+     * we always return a new instance with a null valueComparator, as we already do if the input is
+     * empty or a partial view?
+     *
+     * Related: Should methods that do accept a comparator (like fromMapEntries, or like this one if
+     * we were to choose to *preserve* an input comparator) return not the generic empty of()
+     * instance but instead an empty ImmutableSetMultimap instance with the requested
+     * valueComparator, since the comparator is visible when users call `get` on a key that's not
+     * present?
+     */
+
+    if (multimap.isEmpty()) {
       return of();
     }
 
@@ -439,7 +446,7 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
       }
     }
 
-    return fromMapEntries(multimap.asMap().entrySet(), valueComparator);
+    return fromMapEntries(multimap.asMap().entrySet(), /* valueComparator= */ null);
   }
 
   /**
@@ -680,7 +687,7 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
     Serialization.writeMultimap(this, stream);
   }
 
-  @Nullable Comparator<? super V> valueComparator() {
+  private @Nullable Comparator<? super V> valueComparator() {
     return emptySet instanceof ImmutableSortedSet
         ? ((ImmutableSortedSet<V>) emptySet).comparator()
         : null;
