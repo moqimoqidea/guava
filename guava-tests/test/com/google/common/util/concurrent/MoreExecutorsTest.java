@@ -473,7 +473,10 @@ public class MoreExecutorsTest extends JSR166TestCase {
   public void testInvokeAnyImpl_noTaskCompletes() throws Exception {
     ListeningExecutorService e = newDirectExecutorService();
     List<Callable<String>> l = new ArrayList<>();
-    l.add(new NPETask());
+    l.add(
+        () -> {
+          throw new NullPointerException();
+        });
     try {
       invokeAnyImpl(e, l, false, 0, NANOSECONDS);
       fail();
@@ -484,13 +487,15 @@ public class MoreExecutorsTest extends JSR166TestCase {
     }
   }
 
+  private static final String TEST_STRING = "a test string";
+
   /** invokeAny(c) returns result of some task in c if at least one completes */
   public void testInvokeAnyImpl() throws Exception {
     ListeningExecutorService e = newDirectExecutorService();
     try {
       List<Callable<String>> l = new ArrayList<>();
-      l.add(new StringTask());
-      l.add(new StringTask());
+      l.add(() -> TEST_STRING);
+      l.add(() -> TEST_STRING);
       String result = invokeAnyImpl(e, l, false, 0, NANOSECONDS);
       assertSame(TEST_STRING, result);
     } finally {
