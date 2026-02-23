@@ -434,9 +434,9 @@ public final class Queues {
    * {@snippet :
    * Queue<E> queue = Queues.synchronizedQueue(MinMaxPriorityQueue.<E>create());
    * ...
-   * queue.add(element);  // Needn't be in synchronized block
+   * queue.add(element); // Needn't be in synchronized block
    * ...
-   * synchronized (queue) {  // Must synchronize on queue!
+   * synchronized (queue) { // Must synchronize on queue!
    *   Iterator<E> i = queue.iterator(); // Must be in synchronized block
    *   while (i.hasNext()) {
    *     foo(i.next());
@@ -468,9 +468,9 @@ public final class Queues {
    * {@snippet :
    * Deque<E> deque = Queues.synchronizedDeque(Queues.newArrayDeque());
    * ...
-   * deque.add(element);  // Needn't be in synchronized block
+   * deque.add(element); // Needn't be in synchronized block
    * ...
-   * synchronized (deque) {  // Must synchronize on deque!
+   * synchronized (deque) { // Must synchronize on deque!
    *   Iterator<E> i = deque.iterator(); // Must be in synchronized block
    *   while (i.hasNext()) {
    *     foo(i.next());

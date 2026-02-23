@@ -615,9 +615,9 @@ public final class Multimaps {
    * {@snippet :
    * Multimap<K, V> multimap = Multimaps.synchronizedMultimap(HashMultimap.create());
    * ...
-   * Collection<V> values = multimap.get(key);  // Needn't be in synchronized block
+   * Collection<V> values = multimap.get(key); // Needn't be in synchronized block
    * ...
-   * synchronized (multimap) {  // Synchronizing on multimap, not values!
+   * synchronized (multimap) { // Synchronizing on multimap, not values!
    *   Iterator<V> i = values.iterator(); // Must be in synchronized block
    *   while (i.hasNext()) {
    *     foo(i.next());
@@ -1296,14 +1296,9 @@ public final class Multimaps {
    * {@snippet :
    * Multimap<String, Integer> multimap =
    *     ImmutableSetMultimap.of("a", 2, "b", -3, "b", -3, "a", 4, "c", 6);
-   * Function<Integer, String> square = new Function<Integer, String>() {
-   *     public String apply(Integer in) {
-   *       return Integer.toString(in * in);
-   *     }
-   * };
-   * Multimap<String, String> transformed =
-   *     Multimaps.transformValues(multimap, square);
-   *   System.out.println(transformed);
+   * Function<Integer, String> square = in -> Integer.toString(in * in);
+   * Multimap<String, String> transformed = Multimaps.transformValues(multimap, square);
+   * System.out.println(transformed);
    * }
    *
    * ... prints {@code {a=[4, 16], b=[9, 9], c=[36]}}.
@@ -1345,11 +1340,9 @@ public final class Multimaps {
    * code:
    *
    * {@snippet :
-   * ListMultimap<String, Integer> multimap =
-   *      ImmutableListMultimap.of("a", 4, "a", 16, "b", 9);
+   * ListMultimap<String, Integer> multimap = ImmutableListMultimap.of("a", 4, "a", 16, "b", 9);
    * Function<Integer, Double> sqrt = (Integer in) -> Math.sqrt((int) in);
-   * ListMultimap<String, Double> transformed = Multimaps.transformValues(map,
-   *     sqrt);
+   * ListMultimap<String, Double> transformed = Multimaps.transformValues(multimap, sqrt);
    * System.out.println(transformed);
    * }
    *
@@ -1392,16 +1385,10 @@ public final class Multimaps {
    * For example, the code:
    *
    * {@snippet :
-   * SetMultimap<String, Integer> multimap =
-   *     ImmutableSetMultimap.of("a", 1, "a", 4, "b", -6);
+   * SetMultimap<String, Integer> multimap = ImmutableSetMultimap.of("a", 1, "a", 4, "b", -6);
    * EntryTransformer<String, Integer, String> transformer =
-   *     new EntryTransformer<String, Integer, String>() {
-   *       public String transformEntry(String key, Integer value) {
-   *          return (value >= 0) ? key : "no" + key;
-   *       }
-   *     };
-   * Multimap<String, String> transformed =
-   *     Multimaps.transformEntries(multimap, transformer);
+   *     (key, value) -> value >= 0 ? key : "no" + key;
+   * Multimap<String, String> transformed = Multimaps.transformEntries(multimap, transformer);
    * System.out.println(transformed);
    * }
    *
@@ -1450,16 +1437,9 @@ public final class Multimaps {
    * For example, the code:
    *
    * {@snippet :
-   * Multimap<String, Integer> multimap =
-   *     ImmutableMultimap.of("a", 1, "a", 4, "b", 6);
-   * EntryTransformer<String, Integer, String> transformer =
-   *     new EntryTransformer<String, Integer, String>() {
-   *       public String transformEntry(String key, Integer value) {
-   *         return key + value;
-   *       }
-   *     };
-   * Multimap<String, String> transformed =
-   *     Multimaps.transformEntries(multimap, transformer);
+   * Multimap<String, Integer> multimap = ImmutableMultimap.of("a", 1, "a", 4, "b", 6);
+   * EntryTransformer<String, Integer, String> transformer = (key, value) -> key + value;
+   * Multimap<String, String> transformed = Multimaps.transformEntries(multimap, transformer);
    * System.out.println(transformed);
    * }
    *
@@ -1651,11 +1631,9 @@ public final class Multimaps {
    * <p>For example,
    *
    * {@snippet :
-   * List<String> badGuys =
-   *     Arrays.asList("Inky", "Blinky", "Pinky", "Pinky", "Clyde");
+   * List<String> badGuys = Arrays.asList("Inky", "Blinky", "Pinky", "Pinky", "Clyde");
    * Function<String, Integer> stringLengthFunction = ...;
-   * Multimap<Integer, String> index =
-   *     Multimaps.index(badGuys, stringLengthFunction);
+   * Multimap<Integer, String> index = Multimaps.index(badGuys, stringLengthFunction);
    * System.out.println(index);
    * }
    *
@@ -1691,11 +1669,9 @@ public final class Multimaps {
    * <p>For example,
    *
    * {@snippet :
-   * List<String> badGuys =
-   *     Arrays.asList("Inky", "Blinky", "Pinky", "Pinky", "Clyde");
+   * List<String> badGuys = Arrays.asList("Inky", "Blinky", "Pinky", "Pinky", "Clyde");
    * Function<String, Integer> stringLengthFunction = ...;
-   * Multimap<Integer, String> index =
-   *     Multimaps.index(badGuys.iterator(), stringLengthFunction);
+   * Multimap<Integer, String> index = Multimaps.index(badGuys.iterator(), stringLengthFunction);
    * System.out.println(index);
    * }
    *

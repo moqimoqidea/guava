@@ -265,8 +265,7 @@ public abstract class Traverser<N> {
    * number of nodes as follows:
    *
    * {@snippet :
-   * Iterables.limit(
-   *     Traverser.forGraph(graph).depthFirstPreOrder(node), maxNumberOfNodes);
+   * Iterables.limit(Traverser.forGraph(graph).depthFirstPreOrder(node), maxNumberOfNodes);
    * }
    *
    * <p>See <a href="https://en.wikipedia.org/wiki/Depth-first_search">Wikipedia</a> for more info.
@@ -315,8 +314,7 @@ public abstract class Traverser<N> {
    * number of nodes as follows:
    *
    * {@snippet :
-   * Iterables.limit(
-   *     Traverser.forGraph(graph).depthFirstPostOrder(node), maxNumberOfNodes);
+   * Iterables.limit(Traverser.forGraph(graph).depthFirstPostOrder(node), maxNumberOfNodes);
    * }
    *
    * <p>See <a href="https://en.wikipedia.org/wiki/Depth-first_search">Wikipedia</a> for more info.

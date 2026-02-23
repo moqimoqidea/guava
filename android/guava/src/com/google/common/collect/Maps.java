@@ -1259,8 +1259,7 @@ public final class Maps {
    * ...
    * ImmutableSet<Color> allColors = ImmutableSet.of(red, green, blue);
    *
-   * ImmutableMap<String, Color> colorForName =
-   *     uniqueIndex(allColors, c -> c.toString());
+   * ImmutableMap<String, Color> colorForName = uniqueIndex(allColors, c -> c.toString());
    * assertThat(colorForName).containsEntry("red", red);
    * }
    *
@@ -1316,8 +1315,7 @@ public final class Maps {
    * ...
    * Iterator<Color> allColors = ImmutableSet.of(red, green, blue).iterator();
    *
-   * Map<String, Color> colorForName =
-   *     uniqueIndex(allColors, toStringFunction());
+   * Map<String, Color> colorForName = uniqueIndex(allColors, toStringFunction());
    * assertThat(colorForName).containsEntry("red", red);
    * }
    *
@@ -1609,9 +1607,9 @@ public final class Maps {
    * {@snippet :
    * BiMap<Long, String> map = Maps.synchronizedBiMap(HashBiMap.create());
    * ...
-   * Set<Long> set = map.keySet();  // Needn't be in synchronized block
+   * Set<Long> set = map.keySet(); // Needn't be in synchronized block
    * ...
-   * synchronized (map) {  // Synchronizing on map, not set!
+   * synchronized (map) { // Synchronizing on map, not set!
    *   Iterator<Long> it = set.iterator(); // Must be in synchronized block
    *   while (it.hasNext()) {
    *     foo(it.next());
@@ -1734,8 +1732,7 @@ public final class Maps {
    * {@snippet :
    * SortedMap<String, Integer> map = ImmutableSortedMap.of("a", 4, "b", 9);
    * Function<Integer, Double> sqrt = (Integer in) -> Math.sqrt((int) in);
-   * SortedMap<String, Double> transformed =
-   *      Maps.transformValues(map, sqrt);
+   * SortedMap<String, Double> transformed = Maps.transformValues(map, sqrt);
    * System.out.println(transformed);
    * }
    *
@@ -1775,8 +1772,7 @@ public final class Maps {
    * map.put("a", 4);
    * map.put("b", 9);
    * Function<Integer, Double> sqrt = (Integer in) -> Math.sqrt((int) in);
-   * NavigableMap<String, Double> transformed =
-   *      Maps.transformNavigableValues(map, sqrt);
+   * NavigableMap<String, Double> transformed = Maps.transformNavigableValues(map, sqrt);
    * System.out.println(transformed);
    * }
    *
@@ -1817,16 +1813,10 @@ public final class Maps {
    * example, the code:
    *
    * {@snippet :
-   * Map<String, Boolean> options =
-   *     ImmutableMap.of("verbose", true, "sort", false);
+   * Map<String, Boolean> options = ImmutableMap.of("verbose", true, "sort", false);
    * EntryTransformer<String, Boolean, String> flagPrefixer =
-   *     new EntryTransformer<String, Boolean, String>() {
-   *       public String transformEntry(String key, Boolean value) {
-   *         return value ? key : "no" + key;
-   *       }
-   *     };
-   * Map<String, String> transformed =
-   *     Maps.transformEntries(options, flagPrefixer);
+   *     (key, value) -> value ? key : "no" + key;
+   * Map<String, String> transformed = Maps.transformEntries(options, flagPrefixer);
    * System.out.println(transformed);
    * }
    *
@@ -1871,20 +1861,14 @@ public final class Maps {
    * example, the code:
    *
    * {@snippet :
-   * Map<String, Boolean> options =
-   *     ImmutableSortedMap.of("verbose", true, "sort", false);
+   * Map<String, Boolean> options = ImmutableSortedMap.of("verbose", true, "sort", false);
    * EntryTransformer<String, Boolean, String> flagPrefixer =
-   *     new EntryTransformer<String, Boolean, String>() {
-   *       public String transformEntry(String key, Boolean value) {
-   *         return value ? key : "yes" + key;
-   *       }
-   *     };
-   * SortedMap<String, String> transformed =
-   *     Maps.transformEntries(options, flagPrefixer);
+   *     (key, value) -> value ? key : "no" + key;
+   * SortedMap<String, String> transformed = Maps.transformEntries(options, flagPrefixer);
    * System.out.println(transformed);
    * }
    *
-   * ... prints {@code {sort=yessort, verbose=verbose}}.
+   * ... prints {@code {sort=nosort, verbose=verbose}}.
    *
    * <p>Changes in the underlying map are reflected in this view. Conversely, this view supports
    * removal operations, and these are reflected in the underlying map.
@@ -1929,17 +1913,12 @@ public final class Maps {
    * options.put("verbose", false);
    * options.put("sort", true);
    * EntryTransformer<String, Boolean, String> flagPrefixer =
-   *     new EntryTransformer<String, Boolean, String>() {
-   *       public String transformEntry(String key, Boolean value) {
-   *         return value ? key : ("yes" + key);
-   *       }
-   *     };
-   * NavigableMap<String, String> transformed =
-   *     LabsMaps.transformNavigableEntries(options, flagPrefixer);
+   *     (key, value) -> value ? key : "no" + key;
+   * NavigableMap<String, String> transformed = Maps.transformEntries(options, flagPrefixer);
    * System.out.println(transformed);
    * }
    *
-   * ... prints {@code {sort=yessort, verbose=verbose}}.
+   * ... prints {@code {sort=nosort, verbose=verbose}}.
    *
    * <p>Changes in the underlying map are reflected in this view. Conversely, this view supports
    * removal operations, and these are reflected in the underlying map.

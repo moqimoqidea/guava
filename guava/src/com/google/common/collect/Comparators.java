@@ -117,8 +117,7 @@ public final class Comparators {
    * <p>For example:
    *
    * {@snippet :
-   * Stream.of("foo", "quux", "banana", "elephant")
-   *     .collect(least(2, comparingInt(String::length)))
+   * Stream.of("foo", "quux", "banana", "elephant").collect(least(2, comparingInt(String::length)))
    * // returns {"foo", "quux"}
    * }
    *

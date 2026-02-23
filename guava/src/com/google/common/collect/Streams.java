@@ -312,9 +312,9 @@ public final class Streams {
    *
    * {@snippet :
    * Streams.zip(
-   *   Stream.of("foo1", "foo2", "foo3"),
-   *   Stream.of("bar1", "bar2"),
-   *   (arg1, arg2) -> arg1 + ":" + arg2)
+   *     Stream.of("foo1", "foo2", "foo3"),
+   *     Stream.of("bar1", "bar2"),
+   *     (arg1, arg2) -> arg1 + ":" + arg2)
    * }
    *
    * <p>will return {@code Stream.of("foo1:bar1", "foo2:bar2")}.
@@ -370,9 +370,9 @@ public final class Streams {
    *
    * {@snippet :
    * Streams.forEachPair(
-   *   Stream.of("foo1", "foo2", "foo3"),
-   *   Stream.of("bar1", "bar2"),
-   *   (arg1, arg2) -> System.out.println(arg1 + ":" + arg2)
+   *     Stream.of("foo1", "foo2", "foo3"),
+   *     Stream.of("bar1", "bar2"),
+   *     (arg1, arg2) -> System.out.println(arg1 + ":" + arg2)
    * }
    *
    * <p>will print:

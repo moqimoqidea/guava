@@ -669,9 +669,9 @@ public final class Tables {
    * {@snippet :
    * Table<R, C, V> table = Tables.synchronizedTable(HashBasedTable.create());
    * ...
-   * Map<C, V> row = table.row(rowKey);  // Needn't be in synchronized block
+   * Map<C, V> row = table.row(rowKey); // Needn't be in synchronized block
    * ...
-   * synchronized (table) {  // Synchronizing on table, not row!
+   * synchronized (table) { // Synchronizing on table, not row!
    *   Iterator<Entry<C, V>> i = row.entrySet().iterator(); // Must be in synchronized block
    *   while (i.hasNext()) {
    *     foo(i.next());

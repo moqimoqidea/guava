@@ -59,11 +59,9 @@ import org.jspecify.annotations.Nullable;
  * Collections.unmodifiableList}'s iterator:
  *
  * {@snippet :
- * List<String> expectedElements =
- *     Arrays.asList("a", "b", "c", "d", "e");
+ * List<String> expectedElements = Arrays.asList("a", "b", "c", "d", "e");
  * List<String> actualElements =
- *     Collections.unmodifiableList(
- *         Arrays.asList("a", "b", "c", "d", "e"));
+ *     Collections.unmodifiableList(Arrays.asList("a", "b", "c", "d", "e"));
  * IteratorTester<String> iteratorTester =
  *     new IteratorTester<String>(
  *         6,

@@ -344,7 +344,7 @@ public class CycleDetectingLockFactory {
    * }
    *
    * CycleDetectingLockFactory.WithExplicitOrdering<MyLockOrder> factory =
-   *   CycleDetectingLockFactory.newInstanceWithExplicitOrdering(Policies.THROW);
+   *     CycleDetectingLockFactory.newInstanceWithExplicitOrdering(Policies.THROW);
    *
    * Lock lock1 = factory.newReentrantLock(MyLockOrder.FIRST);
    * Lock lock2 = factory.newReentrantLock(MyLockOrder.SECOND);
@@ -352,7 +352,7 @@ public class CycleDetectingLockFactory {
    *
    * lock1.lock();
    * lock3.lock();
-   * lock2.lock();  // will throw an IllegalStateException
+   * lock2.lock(); // will throw an IllegalStateException
    * }
    *
    * <p>As with all locks created by instances of {@code CycleDetectingLockFactory} explicitly
@@ -367,9 +367,9 @@ public class CycleDetectingLockFactory {
    *
    * {@snippet :
    * CycleDetectingLockFactory.WithExplicitOrdering<MyLockOrder> factory1 =
-   *   CycleDetectingLockFactory.newInstanceWithExplicitOrdering(...);
+   *     CycleDetectingLockFactory.newInstanceWithExplicitOrdering(...);
    * CycleDetectingLockFactory.WithExplicitOrdering<MyLockOrder> factory2 =
-   *   CycleDetectingLockFactory.newInstanceWithExplicitOrdering(...);
+   *     CycleDetectingLockFactory.newInstanceWithExplicitOrdering(...);
    *
    * Lock lockA = factory1.newReentrantLock(MyLockOrder.FIRST);
    * Lock lockB = factory1.newReentrantLock(MyLockOrder.FIRST);
@@ -377,10 +377,10 @@ public class CycleDetectingLockFactory {
    *
    * lockA.lock();
    *
-   * lockB.lock();  // will throw an IllegalStateException
-   * lockC.lock();  // will throw an IllegalStateException
+   * lockB.lock(); // will throw an IllegalStateException
+   * lockC.lock(); // will throw an IllegalStateException
    *
-   * lockA.lock();  // reentrant acquisition is okay
+   * lockA.lock(); // reentrant acquisition is okay
    * }
    *
    * <p>It is the responsibility of the application to ensure that multiple lock instances with the

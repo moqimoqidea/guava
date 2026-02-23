@@ -63,7 +63,7 @@ import org.jspecify.annotations.NullMarked;
  *   ...
  *   protected void finalize() { latch.countDown(); ... }
  * };
- * x = null;  // Hint to the JIT that x is stack-unreachable
+ * x = null; // Hint to the JIT that x is stack-unreachable
  * GcFinalization.await(latch);
  * }
  *
@@ -88,7 +88,7 @@ import org.jspecify.annotations.NullMarked;
  *   Foo x = ....;
  *   WeakReference<Foo> weakRef = new WeakReference<>(x);
  *   // ... use x ...
- *   x = null;  // Hint to the JIT that x is stack-unreachable
+ *   x = null; // Hint to the JIT that x is stack-unreachable
  *   return weakRef;
  * }
  * public void testFooLeak() {

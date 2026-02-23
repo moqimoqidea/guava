@@ -55,8 +55,7 @@ import java.util.Map;
  * <p>To compute median and the 90th and 99th percentiles:
  *
  * {@snippet :
- * Map<Integer, Double> myPercentiles =
- *     percentiles().indexes(50, 90, 99).compute(myDataset);
+ * Map<Integer, Double> myPercentiles = percentiles().indexes(50, 90, 99).compute(myDataset);
  * }
  *
  * where {@link #percentiles()} has been statically imported: {@code myPercentiles} maps the keys

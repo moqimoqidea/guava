@@ -34,14 +34,15 @@ import org.jspecify.annotations.Nullable;
  *
  * <p>Example usage:
  *
- * <pre>
- * HostAndPort hp = HostAndPort.fromString("[2001:db8::1]")
- *     .withDefaultPort(80)
- *     .requireBracketsForIPv6();
- * hp.getHost();   // returns "2001:db8::1"
- * hp.getPort();   // returns 80
- * hp.toString();  // returns "[2001:db8::1]:80"
- * </pre>
+ * {@snippet :
+ * HostAndPort hp =
+ *     HostAndPort.fromString("[2001:db8::1]")
+ *         .withDefaultPort(80)
+ *         .requireBracketsForIPv6();
+ * hp.getHost();  // returns "2001:db8::1"
+ * hp.getPort();  // returns 80
+ * hp.toString(); // returns "[2001:db8::1]:80"
+ * }
  *
  * <p>Here are some examples of recognized formats:
  *

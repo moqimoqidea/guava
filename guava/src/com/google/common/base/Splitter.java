@@ -58,9 +58,7 @@ import org.jspecify.annotations.Nullable;
  * behavior:
  *
  * {@snippet :
- * private static final Splitter MY_SPLITTER = Splitter.on(',')
- *     .trimResults()
- *     .omitEmptyStrings();
+ * private static final Splitter MY_SPLITTER = Splitter.on(',').trimResults().omitEmptyStrings();
  * }
  *
  * <p>Now {@code MY_SPLITTER.split("foo,,, bar ,")} returns just {@code ["foo", "bar"]}. Note that

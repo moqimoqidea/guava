@@ -110,7 +110,7 @@ import java.util.logging.Level;
  *         }
  *       }
  *     });
- *     manager.startAsync();  // start all the services asynchronously
+ *     manager.startAsync(); // start all the services asynchronously
  *   }
  * }
  * }

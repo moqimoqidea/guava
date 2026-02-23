@@ -146,8 +146,8 @@ public abstract class CharSource {
    * {@snippet :
    * try (Stream<String> lines = source.lines()) {
    *   lines.map(...)
-   *      .filter(...)
-   *      .forEach(...);
+   *       .filter(...)
+   *       .forEach(...);
    * }
    * }
    *

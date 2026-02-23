@@ -217,8 +217,7 @@ public final class Predicates {
    * (is a subtype of) {@code clazz}. Example:
    *
    * {@snippet :
-   * List<Class<?>> classes = Arrays.asList(
-   *     Object.class, String.class, Number.class, Long.class);
+   * List<Class<?>> classes = Arrays.asList(Object.class, String.class, Number.class, Long.class);
    * return Iterables.filter(classes, subtypeOf(Number.class));
    * }
    *

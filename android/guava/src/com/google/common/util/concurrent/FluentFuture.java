@@ -346,8 +346,7 @@ public abstract class FluentFuture<V extends @Nullable Object>
    * the function is not invoked). Example usage:
    *
    * {@snippet :
-   * ListenableFuture<List<Row>> rowsFuture =
-   *     queryFuture.transform(QueryResult::getRows, executor);
+   * ListenableFuture<List<Row>> rowsFuture = queryFuture.transform(QueryResult::getRows, executor);
    * }
    *
    * <p>When selecting an executor, note that {@code directExecutor} is dangerous in some cases. See

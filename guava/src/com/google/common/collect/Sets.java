@@ -561,8 +561,7 @@ public final class Sets {
    * in the following code fragment:
    *
    * {@snippet :
-   * Set<Object> identityHashSet = Sets.newSetFromMap(
-   *     new IdentityHashMap<Object, Boolean>());
+   * Set<Object> identityHashSet = Sets.newSetFromMap(new IdentityHashMap<Object, Boolean>());
    * }
    *
    * <p>The returned set is serializable if the backing map is.
@@ -926,8 +925,7 @@ public final class Sets {
    *
    * // impossible for a non-String to be in the intersection
    * SuppressWarnings("unchecked")
-   * Set<String> badStrings = (Set) Sets.intersection(
-   *     aFewBadObjects, manyBadStrings);
+   * Set<String> badStrings = (Set) Sets.intersection(aFewBadObjects, manyBadStrings);
    * }
    *
    * <p>This is unfortunate, but should come up only very rarely.
@@ -1426,9 +1424,7 @@ public final class Sets {
    * product</a>" of the sets. For example:
    *
    * {@snippet :
-   * Sets.cartesianProduct(ImmutableList.of(
-   *     ImmutableSet.of(1, 2),
-   *     ImmutableSet.of("A", "B", "C")))
+   * Sets.cartesianProduct(ImmutableList.of(ImmutableSet.of(1, 2), ImmutableSet.of("A", "B", "C")))
    * }
    *
    * <p>returns a set containing six lists:
@@ -1483,9 +1479,7 @@ public final class Sets {
    * product</a>" of the sets. For example:
    *
    * {@snippet :
-   * Sets.cartesianProduct(
-   *     ImmutableSet.of(1, 2),
-   *     ImmutableSet.of("A", "B", "C"))
+   * Sets.cartesianProduct(ImmutableSet.of(1, 2), ImmutableSet.of("A", "B", "C"))
    * }
    *
    * <p>returns a set containing six lists:
@@ -2088,7 +2082,7 @@ public final class Sets {
    * {@snippet :
    * NavigableSet<E> set = synchronizedNavigableSet(new TreeSet<E>());
    * NavigableSet<E> set2 = set.descendingSet().headSet(foo);
-   *  ...
+   * ...
    * synchronized (set) { // Note: set, not set2!!!
    *   // Must be in the synchronized block
    *   Iterator<E> it = set2.descendingIterator();

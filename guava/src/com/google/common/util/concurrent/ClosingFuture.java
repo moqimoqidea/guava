@@ -1188,15 +1188,15 @@ public final class ClosingFuture<V extends @Nullable Object> {
    * final ClosingFuture<BufferedReader> file1ReaderFuture = ...;
    * final ClosingFuture<BufferedReader> file2ReaderFuture = ...;
    * ListenableFuture<Integer> numberOfDifferentLines =
-   *       ClosingFuture.whenAllSucceed(file1ReaderFuture, file2ReaderFuture)
-   *           .call(
-   *               (closer, peeker) -> {
-   *                 BufferedReader file1Reader = peeker.getDone(file1ReaderFuture);
-   *                 BufferedReader file2Reader = peeker.getDone(file2ReaderFuture);
-   *                 return countDifferentLines(file1Reader, file2Reader);
-   *               },
-   *               executor)
-   *           .closing(executor);
+   *     ClosingFuture.whenAllSucceed(file1ReaderFuture, file2ReaderFuture)
+   *         .call(
+   *             (closer, peeker) -> {
+   *               BufferedReader file1Reader = peeker.getDone(file1ReaderFuture);
+   *               BufferedReader file2Reader = peeker.getDone(file2ReaderFuture);
+   *               return countDifferentLines(file1Reader, file2Reader);
+   *             },
+   *             executor)
+   *         .closing(executor);
    * }
    */
   @DoNotMock("Use ClosingFuture.whenAllSucceed() or .whenAllComplete() instead.")

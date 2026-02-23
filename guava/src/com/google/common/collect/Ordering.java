@@ -268,8 +268,7 @@ public abstract class Ordering<T extends @Nullable Object> implements Comparator
    * <p>Example:
    *
    * {@snippet :
-   * Ordering.allEqual().nullsLast().sortedCopy(
-   *     asList(t, null, e, s, null, t, null))
+   * Ordering.allEqual().nullsLast().sortedCopy(asList(t, null, e, s, null, t, null))
    * }
    *
    * <p>Assuming {@code t}, {@code e} and {@code s} are non-null, this returns {@code [t, e, s, t,
@@ -449,8 +448,7 @@ public abstract class Ordering<T extends @Nullable Object> implements Comparator
    * string forms, in a case-insensitive manner, use:
    *
    * {@snippet :
-   * Ordering.from(String.CASE_INSENSITIVE_ORDER)
-   *     .onResultOf(Functions.toStringFunction())
+   * Ordering.from(String.CASE_INSENSITIVE_ORDER).onResultOf(Functions.toStringFunction())
    * }
    *
    * <p><b>Java 8+ users:</b> Use {@code Comparator.comparing(function, thisComparator)} instead
