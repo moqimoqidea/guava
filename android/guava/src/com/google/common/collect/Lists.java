@@ -231,8 +231,7 @@ public final class Lists {
    * shortcut for creating an empty list then calling {@link Iterables#addAll}.
    *
    * <p><b>Note:</b> if mutability is not required and the elements are non-null, use {@link
-   * ImmutableList#copyOf(Iterable)} instead. (Or, change {@code elements} to be a {@link
-   * FluentIterable} and call {@code elements.toList()}.)
+   * ImmutableList#copyOf(Iterable)} instead.
    *
    * <p><b>Performance note:</b> {@link ArrayList} and {@link java.util.ArrayDeque} consistently
    * outperform {@code LinkedList} except in certain rare and specific situations. Unless you have
