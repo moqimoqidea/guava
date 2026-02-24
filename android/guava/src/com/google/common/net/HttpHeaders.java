@@ -265,6 +265,14 @@ public final class HttpHeaders {
   /** The HTTP {@code Allow} header field name. */
   public static final String ALLOW = "Allow";
 
+  /**
+   * The HTTP <a href="https://datatracker.ietf.org/doc/rfc9213/">{@code CDN-Cache-Control}</a>
+   * header field name.
+   *
+   * @since NEXT
+   */
+  public static final String CDN_CACHE_CONTROL = "CDN-Cache-Control";
+
   /** The HTTP {@code Content-Disposition} header field name. */
   public static final String CONTENT_DISPOSITION = "Content-Disposition";
 
