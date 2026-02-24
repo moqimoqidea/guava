@@ -105,7 +105,7 @@ public class Fingerprint2011Test extends TestCase {
         fingerprint(stringA.getBytes(ISO_8859_1)), fingerprint(stringB.getBytes(ISO_8859_1)));
   }
 
-  public void testMumurHash64() {
+  public void testMurmurHash64() {
     byte[] bytes = "test".getBytes(UTF_8);
     assertEquals(
         1618900948208871284L, Fingerprint2011.murmurHash64WithSeed(bytes, 0, bytes.length, 1));
