@@ -51,7 +51,7 @@ import org.jspecify.annotations.Nullable;
  * @author Jon Donovan
  */
 // TODO(b/474587250): If we keep sharing this with j2kt-native, we'll need to ensure thread safety.
-public class LocalCache<K, V> implements ConcurrentMap<K, V> {
+final class LocalCache<K, V> implements ConcurrentMap<K, V> {
   static final int UNSET_INT = CacheBuilder.UNSET_INT;
 
   private final CapacityEnforcingMap<K, V> cachingHashMap;
