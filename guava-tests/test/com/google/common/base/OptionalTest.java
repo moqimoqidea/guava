@@ -41,6 +41,7 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 @GwtCompatible
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public final class OptionalTest extends TestCase {
   @SuppressWarnings("NullOptional")
   public void testToJavaUtil_static() {

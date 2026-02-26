@@ -21,6 +21,7 @@ import static com.google.common.base.StandardSystemProperty.JAVA_EXT_DIRS;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import junit.framework.TestCase;
 import org.jspecify.annotations.NullUnmarked;
 
@@ -29,6 +30,7 @@ import org.jspecify.annotations.NullUnmarked;
  *
  * @author Kurt Alfred Kluever
  */
+@J2ktIncompatible
 @GwtIncompatible
 @NullUnmarked
 public class StandardSystemPropertyTest extends TestCase {

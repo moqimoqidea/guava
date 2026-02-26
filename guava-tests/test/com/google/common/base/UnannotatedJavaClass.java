@@ -21,6 +21,8 @@ import org.jspecify.annotations.NullUnmarked;
 /** Class containing an unannotated Java method for use from {@code OptionalExtensionsTest}. */
 @NullUnmarked
 final class UnannotatedJavaClass {
+  // The Checker Framework assumes that unannotated types are non-null instead of unspecified.
+  @SuppressWarnings("nullness:return.type.incompatible")
   static Object getNull() {
     return null;
   }

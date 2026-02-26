@@ -17,11 +17,13 @@
 package com.google.common.base;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.testing.AbstractPackageSanityTests;
 import org.jspecify.annotations.NullUnmarked;
 
 /** Basic sanity tests for classes in {@code common.base}. */
 
+@J2ktIncompatible
 @GwtIncompatible
 @NullUnmarked
 public class PackageSanityTests extends AbstractPackageSanityTests {

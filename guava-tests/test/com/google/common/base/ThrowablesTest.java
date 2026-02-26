@@ -54,7 +54,10 @@ import org.jspecify.annotations.NullUnmarked;
  * @author Kevin Bourrillion
  */
 @GwtCompatible
-@SuppressWarnings("deprecation") // tests of numerous deprecated methods
+@SuppressWarnings({
+  "deprecation", // tests of numerous deprecated methods
+  "nullness", // TODO(cpovirk): fix errors
+})
 @NullUnmarked
 public class ThrowablesTest extends TestCase {
   // We're testing that the method is in fact equivalent to throwing the exception directly.

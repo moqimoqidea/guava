@@ -19,6 +19,7 @@ package com.google.common.base;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import junit.framework.TestCase;
 import org.jspecify.annotations.NullUnmarked;
 
@@ -27,6 +28,7 @@ import org.jspecify.annotations.NullUnmarked;
  *
  * @author Jige Yu
  */
+@J2ktIncompatible
 @GwtIncompatible
 @NullUnmarked
 public class DefaultsTest extends TestCase {

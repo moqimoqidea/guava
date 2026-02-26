@@ -33,6 +33,7 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @GwtCompatible
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class StringsTest extends TestCase {
   public void testNullToEmpty() {
     assertEquals("", Strings.nullToEmpty(null));

@@ -20,6 +20,8 @@ import static com.google.common.base.StandardSystemProperty.JAVA_CLASS_PATH;
 import static com.google.common.base.StandardSystemProperty.PATH_SEPARATOR;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.GcFinalization;
 import java.io.File;
@@ -43,6 +45,8 @@ import org.junit.runners.JUnit4;
  * @author Eamonn McManus
  */
 @AndroidIncompatible
+@GwtIncompatible
+@J2ktIncompatible
 @RunWith(JUnit4.class)
 @NullUnmarked
 public class FinalizableReferenceQueueClassLoaderUnloadingTest {

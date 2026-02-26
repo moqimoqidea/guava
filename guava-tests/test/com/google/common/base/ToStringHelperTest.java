@@ -41,6 +41,7 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullUnmarked
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class ToStringHelperTest extends TestCase {
 
   @GwtIncompatible // Class names are obfuscated in GWT

@@ -46,6 +46,7 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullMarked
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class JoinerTest extends TestCase {
   private static final Joiner J = Joiner.on("-");
 

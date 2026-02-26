@@ -35,6 +35,7 @@ import org.jspecify.annotations.NullUnmarked;
 /** Unit tests for {@link Converter}. */
 @GwtCompatible
 @NullUnmarked
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class ConverterTest extends TestCase {
 
   private static final Converter<String, Long> STR_TO_LONG =

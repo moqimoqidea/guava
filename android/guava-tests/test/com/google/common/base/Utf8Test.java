@@ -43,6 +43,7 @@ import org.jspecify.annotations.NullUnmarked;
  */
 @GwtCompatible
 @NullUnmarked
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class Utf8Test extends TestCase {
 
   private static final ImmutableList<String> ILL_FORMED_STRINGS;

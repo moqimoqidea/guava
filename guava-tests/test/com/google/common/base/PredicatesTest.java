@@ -48,6 +48,7 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 @GwtCompatible
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class PredicatesTest extends TestCase {
   private static final Predicate<@Nullable Integer> TRUE = Predicates.alwaysTrue();
   private static final Predicate<@Nullable Integer> FALSE = Predicates.alwaysFalse();

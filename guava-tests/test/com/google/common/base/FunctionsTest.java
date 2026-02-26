@@ -42,6 +42,7 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullMarked
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class FunctionsTest extends TestCase {
 
   public void testIdentity_same() {

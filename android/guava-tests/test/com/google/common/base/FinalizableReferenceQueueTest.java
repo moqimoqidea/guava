@@ -19,6 +19,7 @@ package com.google.common.base;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.internal.Finalizer;
 import com.google.common.collect.Sets;
 import com.google.common.testing.GcFinalization;
@@ -51,6 +52,7 @@ import org.junit.runners.JUnit4;
 // - .class files aren't available
 // - possibly no real concept of separate ClassLoaders?
 @AndroidIncompatible
+@J2ktIncompatible
 @GwtIncompatible
 @RunWith(JUnit4.class)
 @NullUnmarked

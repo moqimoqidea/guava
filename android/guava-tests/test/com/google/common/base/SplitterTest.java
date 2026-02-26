@@ -38,6 +38,7 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @GwtCompatible
+@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class SplitterTest extends TestCase {
 
   private static final Splitter COMMA_SPLITTER = Splitter.on(',');
