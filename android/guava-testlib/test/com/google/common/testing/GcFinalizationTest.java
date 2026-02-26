@@ -16,15 +16,14 @@
 
 package com.google.common.testing;
 
-import static com.google.common.testing.SneakyThrows.sneakyThrow;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
-import com.google.common.testing.GcFinalization.FinalizationPredicate;
 import com.google.common.util.concurrent.SettableFuture;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,7 +50,7 @@ public class GcFinalizationTest extends TestCase {
     CountDownLatch latch = new CountDownLatch(1);
     Object unused =
         new Object() {
-          @SuppressWarnings({"removal", "Finalize"}) // b/260137033
+          @SuppressWarnings({"removal", "Finalize"}) // b/487687332
           @Override
           protected void finalize() {
             latch.countDown();
@@ -66,7 +65,7 @@ public class GcFinalizationTest extends TestCase {
     SettableFuture<@Nullable Void> future = SettableFuture.create();
     Object unused =
         new Object() {
-          @SuppressWarnings({"removal", "Finalize"}) // b/260137033
+          @SuppressWarnings({"removal", "Finalize"}) // b/487687332
           @Override
           protected void finalize() {
             future.set(null);
@@ -82,7 +81,7 @@ public class GcFinalizationTest extends TestCase {
     SettableFuture<@Nullable Void> future = SettableFuture.create();
     Object unused =
         new Object() {
-          @SuppressWarnings({"removal", "Finalize"}) // b/260137033
+          @SuppressWarnings({"removal", "Finalize"}) // b/487687332
           @Override
           protected void finalize() {
             future.cancel(false);
@@ -103,13 +102,7 @@ public class GcFinalizationTest extends TestCase {
   public void testAwaitDone_finalizationPredicate() {
     WeakHashMap<Object, Object> map = new WeakHashMap<>();
     map.put(new Object(), Boolean.TRUE);
-    GcFinalization.awaitDone(
-        new FinalizationPredicate() {
-          @Override
-          public boolean isDone() {
-            return map.isEmpty();
-          }
-        });
+    GcFinalization.awaitDone(map::isEmpty);
     assertTrue(map.isEmpty());
   }
 
@@ -202,16 +195,7 @@ public class GcFinalizationTest extends TestCase {
     Interruptenator interruptenator = new Interruptenator(Thread.currentThread());
     try {
       RuntimeException expected =
-          assertThrows(
-              RuntimeException.class,
-              () ->
-                  GcFinalization.awaitDone(
-                      new FinalizationPredicate() {
-                        @Override
-                        public boolean isDone() {
-                          return false;
-                        }
-                      }));
+          assertThrows(RuntimeException.class, () -> GcFinalization.awaitDone(() -> false));
       assertWrapsInterruptedException(expected);
     } finally {
       interruptenator.shutdown();
@@ -227,9 +211,9 @@ public class GcFinalizationTest extends TestCase {
   public void testAwaitFullGc() {
     CountDownLatch finalizerRan = new CountDownLatch(1);
     WeakReference<Object> ref =
-        new WeakReference<Object>(
+        new WeakReference<>(
             new Object() {
-              @SuppressWarnings({"removal", "Finalize"}) // b/260137033
+              @SuppressWarnings({"removal", "Finalize"}) // b/487687332
               @Override
               protected void finalize() {
                 finalizerRan.countDown();
@@ -247,26 +231,35 @@ public class GcFinalizationTest extends TestCase {
     assertThat(ref.get()).isNull();
   }
 
-  /*
-   * Once we can call Reference.reachabilityFence() directly, we will need to suppress
-   * https://errorprone.info/bugpattern/ReachabilityFenceUsage. Suppressing is fine: This method is a wrapper around that
-   * method, and we call that wrapper from a `finally` block, as the check wants. (Also, it's not
-   * entirely clear to me that we really need to use `finally` in this case: b/127970178.)
-   */
-  private static void reachabilityFence(Object o) {
+  // We call the method only after checking that it's present.
+  @IgnoreJRERequirement
+  @SuppressWarnings({
+    "Java8ApiChecker",
+    // This method is a helper, which we call from a `finally` block, as recommended.
+    "ReachabilityFenceUsage",
+  })
+  static void reachabilityFence(@Nullable Object o) {
+    if (IS_REACHABILITY_FENCE_METHOD_USABLE) {
+      Reference.reachabilityFence(o);
+    }
+  }
+
+  private static final boolean IS_REACHABILITY_FENCE_METHOD_USABLE =
+      computeIsReachabilityFenceMethodUsable();
+
+  private static boolean computeIsReachabilityFenceMethodUsable() {
     try {
-      Reference.class.getMethod("reachabilityFence", Object.class).invoke(null, o);
-    } catch (InvocationTargetException e) {
-      // The method has no `throws` clause.
-      sneakyThrow(e.getCause());
-    } catch (IllegalAccessException e) {
+      Method method = Reference.class.getMethod("reachabilityFence", Object.class);
+      method.invoke(null, GcFinalizationTest.class); // to make sure the method is accessible
+      return true;
+    } catch (NoSuchMethodException | IllegalAccessException probablyBeforeJava9OrAndroid28) {
       /*
-       * The method should be public (though technically there's nothing preventing it from being
-       * present as non-public under older versions).
+       * It's theoretically possible for Reference.reachabilityFence to exist under older VMs in an
+       * inaccessible form.
        */
-      throw new LinkageError(e.toString(), e);
-    } catch (NoSuchMethodException e) {
-      // We're running under Java 8 or under Android before API Level 28.
+      return false;
+    } catch (InvocationTargetException e) {
+      throw new AssertionError(e.getCause());
     }
   }
 }

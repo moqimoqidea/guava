@@ -17,7 +17,10 @@
 package com.google.common.io;
 
 import static com.google.common.base.StandardSystemProperty.OS_NAME;
+import static com.google.common.io.FileBackedOutputStream.reachabilityFence;
 import static com.google.common.primitives.Bytes.concat;
+import static com.google.common.testing.GcFinalization.awaitClear;
+import static com.google.common.testing.GcFinalization.awaitDone;
 import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.min;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
@@ -27,6 +30,7 @@ import static org.junit.Assert.assertThrows;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import org.jspecify.annotations.NullUnmarked;
@@ -54,10 +58,11 @@ public class FileBackedOutputStreamTest extends IoTestCase {
   }
 
   private void testThreshold(
-      int fileThreshold, int dataSize, boolean singleByte, boolean resetOnFinalize)
+      int fileThreshold, int dataSize, boolean singleByte, boolean resetWhenGarbageCollected)
       throws IOException {
     byte[] data = newPreFilledByteArray(dataSize);
-    FileBackedOutputStream out = new FileBackedOutputStream(fileThreshold, resetOnFinalize);
+    FileBackedOutputStream out =
+        new FileBackedOutputStream(fileThreshold, resetWhenGarbageCollected);
     ByteSource source = out.asByteSource();
     int chunk1 = min(dataSize, fileThreshold);
     int chunk2 = dataSize - chunk1;
@@ -97,7 +102,7 @@ public class FileBackedOutputStreamTest extends IoTestCase {
   }
 
 
-  public void testThreshold_resetOnFinalize() throws Exception {
+  public void testThreshold_resetWhenGarbageCollected() throws Exception {
     testThreshold(0, 100, true, true);
     testThreshold(10, 100, true, true);
     testThreshold(100, 100, true, true);
@@ -196,5 +201,21 @@ public class FileBackedOutputStreamTest extends IoTestCase {
     assertThat(source.read()).isEqualTo(concat(chunk1, chunk2, chunk3));
 
     out.reset();
+  }
+
+
+  @AndroidIncompatible // depends on details of GC
+  public void testResetWhenGarbageCollected() throws Exception {
+    FileBackedOutputStream out =
+        new FileBackedOutputStream(0, /* resetWhenGarbageCollected= */ true);
+    out.write(new byte[10]);
+    File file = out.getFile();
+    assertThat(file.exists()).isTrue();
+    reachabilityFence(out); // not sure if this is necessary even in theory
+
+    WeakReference<ByteSource> sourceRef = new WeakReference<>(out.asByteSource());
+    out = null;
+    awaitClear(sourceRef);
+    awaitDone(() -> !file.exists());
   }
 }
