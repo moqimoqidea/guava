@@ -48,10 +48,6 @@ import org.junit.runners.JUnit4;
  *
  * @author Bob Lee
  */
-// - depends on details of GC and classloading
-// - .class files aren't available
-// - possibly no real concept of separate ClassLoaders?
-@AndroidIncompatible
 @J2ktIncompatible
 @GwtIncompatible
 @RunWith(JUnit4.class)
@@ -121,6 +117,7 @@ public class FinalizableReferenceQueueTest {
         };
   }
 
+  @AndroidIncompatible
   @Test
   public void testDecoupledLoader() {
     FinalizableReferenceQueue.DecoupledLoader decoupledLoader =
@@ -161,6 +158,7 @@ public class FinalizableReferenceQueueTest {
     }
   }
 
+  @AndroidIncompatible
   @Test
   public void testGetFinalizerUrl() {
     assertThat(getClass().getResource("internal/Finalizer.class")).isNotNull();
