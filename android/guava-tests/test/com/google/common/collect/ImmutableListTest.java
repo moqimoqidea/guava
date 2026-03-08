@@ -476,7 +476,7 @@ public class ImmutableListTest extends TestCase {
     assertEquals(asList("a", "b", "a", "c"), list);
   }
 
-  @GwtIncompatible("Builder impl")
+  @GwtIncompatible // Builder impl
   public void testBuilderForceCopy() {
     ImmutableList.Builder<Integer> builder = ImmutableList.builder();
     Object[] prevArray = null;
@@ -606,7 +606,7 @@ public class ImmutableListTest extends TestCase {
     assertSame(list, list.asList());
   }
 
-  @GwtIncompatible("builder internals")
+  @GwtIncompatible // builder internals
   public void testReusedBuilder() {
     ImmutableList.Builder<String> builder = new ImmutableList.Builder<String>();
     for (int i = 0; i < 10; i++) {

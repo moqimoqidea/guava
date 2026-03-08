@@ -299,7 +299,7 @@ public final class Predicates {
    *
    * @since 3.0
    */
-  @GwtIncompatible(value = "java.util.regex.Pattern")
+  @GwtIncompatible // java.util.regex.Pattern
   public static Predicate<CharSequence> contains(Pattern pattern) {
     return new ContainsPatternPredicate(new JdkPattern(pattern));
   }

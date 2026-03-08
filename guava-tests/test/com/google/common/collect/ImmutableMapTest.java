@@ -1046,7 +1046,7 @@ public class ImmutableMapTest extends TestCase {
   }
 
   @J2ktIncompatible
-  @GwtIncompatible("assumptions about splitting")
+  @GwtIncompatible // assumptions about splitting
   public void testKeySetSplittable() {
     ImmutableMap<Integer, Integer> map =
         ImmutableMap.<Integer, Integer>builder()

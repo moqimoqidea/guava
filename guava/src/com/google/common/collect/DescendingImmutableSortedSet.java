@@ -66,19 +66,19 @@ final class DescendingImmutableSortedSet<E> extends ImmutableSortedSet<E> {
   }
 
   @Override
-  @GwtIncompatible("NavigableSet")
+  @GwtIncompatible // NavigableSet
   public ImmutableSortedSet<E> descendingSet() {
     return forward;
   }
 
   @Override
-  @GwtIncompatible("NavigableSet")
+  @GwtIncompatible // NavigableSet
   public UnmodifiableIterator<E> descendingIterator() {
     return forward.iterator();
   }
 
   @Override
-  @GwtIncompatible("NavigableSet")
+  @GwtIncompatible // NavigableSet
   ImmutableSortedSet<E> createDescendingSet() {
     throw new AssertionError("should never be called");
   }

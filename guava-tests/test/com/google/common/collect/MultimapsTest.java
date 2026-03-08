@@ -882,7 +882,7 @@ public class MultimapsTest extends TestCase {
         NullPointerException.class, () -> Multimaps.index(values, Functions.constant(null)));
   }
 
-  @GwtIncompatible(value = "untested")
+  @GwtIncompatible // untested
   public void testTransformValues() {
     SetMultimap<String, Integer> multimap =
         ImmutableSetMultimap.of("a", 2, "b", -3, "b", 3, "a", 4, "c", 6);
@@ -904,7 +904,7 @@ public class MultimapsTest extends TestCase {
         .inOrder();
   }
 
-  @GwtIncompatible(value = "untested")
+  @GwtIncompatible // untested
   public void testTransformValuesIsView() {
     Multimap<String, String> multimap = LinkedListMultimap.create();
     multimap.put("a", "a");
@@ -923,7 +923,7 @@ public class MultimapsTest extends TestCase {
     assertThat(transformed.entries()).containsExactly(immutableEntry("a", 3));
   }
 
-  @GwtIncompatible(value = "untested")
+  @GwtIncompatible // untested
   public void testTransformListValues() {
     ListMultimap<String, Integer> multimap =
         ImmutableListMultimap.of("a", 2, "b", -3, "b", 3, "a", 4, "c", 6);
@@ -945,7 +945,7 @@ public class MultimapsTest extends TestCase {
         .inOrder();
   }
 
-  @GwtIncompatible(value = "untested")
+  @GwtIncompatible // untested
   public void testTransformEntries() {
     SetMultimap<String, Integer> multimap = ImmutableSetMultimap.of("a", 1, "a", 4, "b", -6);
     EntryTransformer<String, Integer, String> transformer =
@@ -962,7 +962,7 @@ public class MultimapsTest extends TestCase {
         .inOrder();
   }
 
-  @GwtIncompatible(value = "untested")
+  @GwtIncompatible // untested
   public void testTransformListEntries() {
     ListMultimap<String, Integer> multimap =
         ImmutableListMultimap.of("a", 1, "a", 4, "b", 6, "a", 4);

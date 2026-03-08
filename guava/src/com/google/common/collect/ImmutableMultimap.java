@@ -678,7 +678,7 @@ public abstract class ImmutableMultimap<K, V> extends BaseImmutableMultimap<K, V
   }
 
   @Override
-  @GwtIncompatible("Spliterator")
+  @GwtIncompatible // Spliterator
   Spliterator<Entry<K, V>> entrySpliterator() {
     return CollectSpliterators.flatMap(
         asMap().entrySet().spliterator(),

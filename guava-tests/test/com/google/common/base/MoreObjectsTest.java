@@ -50,7 +50,7 @@ public class MoreObjectsTest extends TestCase {
   // ToStringHelper's tests are in ToStringHelperTest
 
   @J2ktIncompatible
-  @GwtIncompatible("NullPointerTester")
+  @GwtIncompatible // NullPointerTester
   public void testNulls() throws Exception {
     NullPointerTester tester = new NullPointerTester();
     tester.ignore(MoreObjects.class.getMethod("firstNonNull", Object.class, Object.class));

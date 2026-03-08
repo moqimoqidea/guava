@@ -1152,7 +1152,7 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
     assertThat(reverse).isNotNull();
   }
 
-  @GwtIncompatible("internals")
+  @GwtIncompatible // internals
   public void testControlsArraySize() {
     ImmutableSet.Builder<String> builder = ImmutableSortedSet.naturalOrder();
     for (int i = 0; i < 10; i++) {
@@ -1164,7 +1164,7 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
     assertTrue(list.array.length <= 2 * set.size());
   }
 
-  @GwtIncompatible("internals")
+  @GwtIncompatible // internals
   public void testReusedBuilder() {
     ImmutableSortedSet.Builder<String> builder = ImmutableSortedSet.naturalOrder();
     for (int i = 0; i < 10; i++) {

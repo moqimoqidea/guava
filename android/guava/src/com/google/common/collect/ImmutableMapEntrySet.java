@@ -54,7 +54,7 @@ abstract class ImmutableMapEntrySet<K, V> extends ImmutableSet<Entry<K, V>> {
     }
 
     @Override
-    @GwtIncompatible("not used in GWT")
+    @GwtIncompatible // not used in GWT
     int copyIntoArray(@Nullable Object[] dst, int offset) {
       return entries.copyIntoArray(dst, offset);
     }

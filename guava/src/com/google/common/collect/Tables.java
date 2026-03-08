@@ -320,7 +320,7 @@ public final class Tables {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Cell<C, R, V>> cellSpliterator() {
       return CollectSpliterators.map(
           original.cellSet().spliterator(),
@@ -492,7 +492,7 @@ public final class Tables {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Cell<R, C, V2>> cellSpliterator() {
       return CollectSpliterators.map(
           fromTable.cellSet().spliterator(),

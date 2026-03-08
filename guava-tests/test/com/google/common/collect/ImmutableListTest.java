@@ -474,7 +474,7 @@ public class ImmutableListTest extends TestCase {
     assertEquals(asList("a", "b", "a", "c"), list);
   }
 
-  @GwtIncompatible("Builder impl")
+  @GwtIncompatible // Builder impl
   public void testBuilderForceCopy() {
     ImmutableList.Builder<Integer> builder = ImmutableList.builder();
     Object[] prevArray = null;

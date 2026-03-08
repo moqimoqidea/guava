@@ -297,7 +297,7 @@ public class PreconditionsTest extends TestCase {
         .isEqualTo("end index (0) must not be less than start index (1)");
   }
 
-  @GwtIncompatible("Reflection")
+  @GwtIncompatible // Reflection
   @J2ktIncompatible
   public void testAllOverloads_checkArgument() throws Exception {
     for (ImmutableList<Class<?>> sig : allSignatures(boolean.class)) {
@@ -314,7 +314,7 @@ public class PreconditionsTest extends TestCase {
     }
   }
 
-  @GwtIncompatible("Reflection")
+  @GwtIncompatible // Reflection
   @J2ktIncompatible
   public void testAllOverloads_checkState() throws Exception {
     for (ImmutableList<Class<?>> sig : allSignatures(boolean.class)) {
@@ -331,7 +331,7 @@ public class PreconditionsTest extends TestCase {
     }
   }
 
-  @GwtIncompatible("Reflection")
+  @GwtIncompatible // Reflection
   @J2ktIncompatible
   public void testAllOverloads_checkNotNull() throws Exception {
     for (ImmutableList<Class<?>> sig : allSignatures(Object.class)) {
@@ -374,7 +374,7 @@ public class PreconditionsTest extends TestCase {
    * @param firstParam The first parameter
    * @param sig The method signature
    */
-  @GwtIncompatible("ArbitraryInstances")
+  @GwtIncompatible // ArbitraryInstances
   @J2ktIncompatible
   private Object[] getParametersForSignature(
       @Nullable Object firstParam, ImmutableList<Class<?>> sig) {

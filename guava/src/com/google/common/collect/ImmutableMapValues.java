@@ -64,7 +64,7 @@ final class ImmutableMapValues<K, V> extends ImmutableCollection<V> {
   }
 
   @Override
-  @GwtIncompatible("Spliterator")
+  @GwtIncompatible // Spliterator
   public Spliterator<V> spliterator() {
     return CollectSpliterators.map(
         map.entrySet().spliterator(),

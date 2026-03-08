@@ -225,7 +225,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     assertThat(set).containsExactly("a", "b", "c").inOrder();
   }
 
-  @GwtIncompatible("Builder impl")
+  @GwtIncompatible // Builder impl
   public void testBuilderForceCopy() {
     ImmutableSet.Builder<Integer> builder = ImmutableSet.builder();
     builder.add(-1);
@@ -238,7 +238,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     }
   }
 
-  @GwtIncompatible("Builder impl")
+  @GwtIncompatible // Builder impl
   public void testPresizedBuilderDedups() {
     ImmutableSet.Builder<String> builder = ImmutableSet.builderWithExpectedSize(4);
     builder.add("a");
@@ -252,7 +252,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     assertSame(table, ((RegularImmutableSet<String>) builder.build()).table);
   }
 
-  @GwtIncompatible("Builder impl")
+  @GwtIncompatible // Builder impl
   public void testPresizedBuilderForceCopy() {
     for (int expectedSize = 1; expectedSize < 4; expectedSize++) {
       ImmutableSet.Builder<Integer> builder = ImmutableSet.builderWithExpectedSize(expectedSize);
@@ -352,7 +352,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
         .testEquals();
   }
 
-  @GwtIncompatible("internals")
+  @GwtIncompatible // internals
   public void testControlsArraySize() {
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
     for (int i = 0; i < 10; i++) {
@@ -363,7 +363,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     assertTrue(set.elements.length <= 2 * set.size());
   }
 
-  @GwtIncompatible("internals")
+  @GwtIncompatible // internals
   public void testReusedBuilder() {
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<String>();
     for (int i = 0; i < 10; i++) {

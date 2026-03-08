@@ -297,7 +297,7 @@ class StandardTable<R, C, V> extends AbstractTable<R, C, V> implements Serializa
   }
 
   @Override
-  @GwtIncompatible("Spliterator")
+  @GwtIncompatible // Spliterator
   Spliterator<Cell<R, C, V>> cellSpliterator() {
     return CollectSpliterators.flatMap(
         backingMap.entrySet().spliterator(),
@@ -419,7 +419,7 @@ class StandardTable<R, C, V> extends AbstractTable<R, C, V> implements Serializa
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Entry<C, V>> entrySpliterator() {
       updateBackingRowMapField();
       if (backingRowMap == null) {

@@ -745,7 +745,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   abstract static class IteratorBasedImmutableMap<K, V> extends ImmutableMap<K, V> {
     abstract UnmodifiableIterator<Entry<K, V>> entryIterator();
 
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Entry<K, V>> entrySpliterator() {
       return Spliterators.spliterator(
           entryIterator(),
@@ -1087,7 +1087,7 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
     };
   }
 
-  @GwtIncompatible("Spliterator")
+  @GwtIncompatible // Spliterator
   Spliterator<K> keySpliterator() {
     return CollectSpliterators.map(
         entrySet().spliterator(),

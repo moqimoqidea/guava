@@ -202,7 +202,7 @@ abstract class AbstractTable<
     };
   }
 
-  @GwtIncompatible("Spliterator")
+  @GwtIncompatible // Spliterator
   Spliterator<V> valuesSpliterator() {
     return CollectSpliterators.map(cellSpliterator(), 0, Table.Cell::getValue);
   }
@@ -215,7 +215,7 @@ abstract class AbstractTable<
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     public Spliterator<V> spliterator() {
       return valuesSpliterator();
     }

@@ -592,7 +592,7 @@ public final class Iterables {
       }
 
       @Override
-      @GwtIncompatible("Spliterator")
+      @GwtIncompatible // Spliterator
       public Spliterator<T> spliterator() {
         return CollectSpliterators.filter(unfiltered.spliterator(), retainIfTrue);
       }
@@ -747,7 +747,7 @@ public final class Iterables {
       }
 
       @Override
-      @GwtIncompatible("Spliterator")
+      @GwtIncompatible // Spliterator
       public Spliterator<T> spliterator() {
         return CollectSpliterators.map(fromIterable.spliterator(), 0, function);
       }

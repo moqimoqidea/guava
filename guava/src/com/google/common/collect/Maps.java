@@ -1074,7 +1074,7 @@ public final class Maps {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Entry<K, V>> entrySpliterator() {
       return CollectSpliterators.map(
           set.spliterator(),
@@ -2163,7 +2163,7 @@ public final class Maps {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     Spliterator<Entry<K, V2>> entrySpliterator() {
       return CollectSpliterators.map(
           fromMap.entrySet().spliterator(),

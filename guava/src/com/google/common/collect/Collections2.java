@@ -178,7 +178,7 @@ public final class Collections2 {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     public Spliterator<E> spliterator() {
       return CollectSpliterators.filter(unfiltered.spliterator(), predicate);
     }
@@ -290,7 +290,7 @@ public final class Collections2 {
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     public Spliterator<T> spliterator() {
       return CollectSpliterators.map(fromCollection.spliterator(), 0, function);
     }

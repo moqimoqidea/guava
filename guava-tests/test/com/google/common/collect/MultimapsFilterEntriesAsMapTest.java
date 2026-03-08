@@ -29,7 +29,7 @@ import org.jspecify.annotations.NullUnmarked;
  *
  * @author Jared Levy
  */
-@GwtIncompatible(value = "untested")
+@GwtIncompatible // untested
 @NullUnmarked
 public class MultimapsFilterEntriesAsMapTest extends AbstractMultimapAsMapImplementsMapTest {
   private static final Predicate<Entry<String, Integer>> PREDICATE =

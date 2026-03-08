@@ -1035,7 +1035,7 @@ public final class HashBiMap<K extends @Nullable Object, V extends @Nullable Obj
       return (result == null) ? inverseEntrySet = new InverseEntrySet<>(obverse) : result;
     }
 
-    @GwtIncompatible("serialization")
+    @GwtIncompatible // serialization
     private void readObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
       in.defaultReadObject();
       this.obverse.inverse = this;

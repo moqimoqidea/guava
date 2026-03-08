@@ -59,7 +59,7 @@ abstract class ImmutableMapEntrySet<K, V> extends ImmutableSet.CachingAsList<Ent
     }
 
     @Override
-    @GwtIncompatible("not used in GWT")
+    @GwtIncompatible // not used in GWT
     int copyIntoArray(@Nullable Object[] dst, int offset) {
       return entries.copyIntoArray(dst, offset);
     }
@@ -70,7 +70,7 @@ abstract class ImmutableMapEntrySet<K, V> extends ImmutableSet.CachingAsList<Ent
     }
 
     @Override
-    @GwtIncompatible("Spliterator")
+    @GwtIncompatible // Spliterator
     public Spliterator<Entry<K, V>> spliterator() {
       return entries.spliteratorWithCharacteristics(SPLITERATOR_CHARACTERISTICS);
     }
