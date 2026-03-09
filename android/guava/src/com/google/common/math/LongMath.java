@@ -104,7 +104,8 @@ public final class LongMath {
    */
   @VisibleForTesting
   static int lessThanBranchFree(long x, long y) {
-    // Returns the sign bit of x - y.
+    // The double negation is optimized away by normal Java, but is necessary for GWT
+    // to make sure bit twiddling works as expected.
     return (int) (~~(x - y) >>> (Long.SIZE - 1));
   }
 
