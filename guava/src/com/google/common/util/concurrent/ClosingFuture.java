@@ -1246,7 +1246,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
     }
 
     private final boolean allMustSucceed;
-    protected final ImmutableList<ClosingFuture<?>> inputs;
+    private final ImmutableList<ClosingFuture<?>> inputs;
 
     private Combiner(boolean allMustSucceed, Iterable<? extends ClosingFuture<?>> inputs) {
       this.allMustSucceed = allMustSucceed;
