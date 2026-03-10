@@ -239,6 +239,25 @@ public final class BloomFilter<T extends @Nullable Object> implements Predicate<
   }
 
   /**
+   * Returns the number of bytes required to serialize this bloom filter using the {@link
+   * #writeTo(OutputStream)} method. This method can be useful if you need to know the serialization
+   * size before writing to pre-allocated space (e.g., for memory-mapped files or fixed-size
+   * records).
+   *
+   * @since NEXT
+   */
+  public long serializedSize() {
+    // We return a long (and not an int) because the max serialized size is approximately
+    // 17 billion bytes (2^31 * 8 bytes).
+
+    // The serialization header is 6 bytes:
+    //   1 byte for the strategy
+    //   1 byte for the number of hash functions
+    //   4 bytes for the array length
+    return (bits.bitSize() / 8) + 6;
+  }
+
+  /**
    * Determines whether a given Bloom filter is compatible with this Bloom filter. For two Bloom
    * filters to be compatible, they must:
    *

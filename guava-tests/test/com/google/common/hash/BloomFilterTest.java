@@ -380,11 +380,13 @@ public class BloomFilterTest extends TestCase {
         // Header: 1 byte (strategy) + 1 byte (hash functions) + 4 bytes (array length) = 6 bytes
         // Data: bitSize / 8 bytes
         long predictedSize = bf.bitSize() / 8 + 6;
+        assertThat(bf.serializedSize()).isEqualTo(predictedSize);
 
         // Serialize and measure actual size
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         bf.writeTo(out);
         int actualSize = out.size();
+        assertThat(bf.serializedSize()).isEqualTo(actualSize);
 
         assertWithMessage(
                 "Serialization size mismatch for expectedInsertions=%s, fpp=%s",
