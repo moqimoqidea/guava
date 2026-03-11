@@ -16,7 +16,6 @@
 
 package com.google.common.graph;
 
-import com.google.common.annotations.Beta;
 import com.google.errorprone.annotations.DoNotMock;
 import java.util.Set;
 import org.jspecify.annotations.Nullable;
@@ -103,7 +102,6 @@ import org.jspecify.annotations.Nullable;
  * @param <E> Edge parameter type
  * @since 20.0
  */
-@Beta
 @DoNotMock("Use NetworkBuilder to create a real instance")
 public interface Network<N, E> extends ArchetypeGraph<N> {
   //

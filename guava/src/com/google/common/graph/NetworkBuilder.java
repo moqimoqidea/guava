@@ -19,7 +19,6 @@ package com.google.common.graph;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.graph.Graphs.checkNonNegative;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
@@ -72,7 +71,6 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
  *     constructed based on an existing {@code Network} using {@link #from(Network)}.
  * @since 20.0
  */
-@Beta
 public final class NetworkBuilder<N, E> extends AbstractGraphBuilder<N> {
   boolean allowsParallelEdges = false;
   ElementOrder<? super E> edgeOrder = ElementOrder.insertion();

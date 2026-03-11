@@ -19,7 +19,6 @@ package com.google.common.graph;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -42,7 +41,6 @@ import com.google.errorprone.annotations.InlineMe;
  * @param <V> Value parameter type
  * @since 20.0
  */
-@Beta
 @Immutable(containerOf = {"N", "V"})
 @SuppressWarnings("Immutable") // Extends StandardValueGraph but uses ImmutableMaps.
 public final class ImmutableValueGraph<N, V> extends StandardValueGraph<N, V> {

@@ -16,7 +16,6 @@
 
 package com.google.common.graph;
 
-import com.google.common.annotations.Beta;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.jspecify.annotations.Nullable;
 
@@ -29,7 +28,6 @@ import org.jspecify.annotations.Nullable;
  * @param <V> Value parameter type
  * @since 20.0
  */
-@Beta
 public interface MutableValueGraph<N, V> extends ValueGraph<N, V> {
 
   /**

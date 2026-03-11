@@ -18,7 +18,6 @@ package com.google.common.graph;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +36,6 @@ import org.jspecify.annotations.Nullable;
  * @param <V> Value parameter type
  * @since 20.0
  */
-@Beta
 public abstract class AbstractValueGraph<N, V> extends AbstractBaseGraph<N>
     implements ValueGraph<N, V> {
   /** Constructor for use by subclasses. */

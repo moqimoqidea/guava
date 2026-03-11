@@ -21,7 +21,6 @@ import static com.google.common.graph.GraphConstants.NODE_NOT_IN_GRAPH;
 import static com.google.common.graph.Graphs.TransitiveClosureSelfLoopStrategy.ADD_SELF_LOOPS_ALWAYS;
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
@@ -44,7 +43,6 @@ import org.jspecify.annotations.Nullable;
  * @author Joshua O'Madadhain
  * @since 20.0
  */
-@Beta
 public final class Graphs extends GraphsBridgeMethods {
 
   private Graphs() {}

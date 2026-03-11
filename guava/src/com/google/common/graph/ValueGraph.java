@@ -16,7 +16,6 @@
 
 package com.google.common.graph;
 
-import com.google.common.annotations.Beta;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -107,7 +106,6 @@ import org.jspecify.annotations.Nullable;
  * @param <V> Value parameter type
  * @since 20.0
  */
-@Beta
 public interface ValueGraph<N, V> extends BaseGraph<N> {
   //
   // ValueGraph-level accessors

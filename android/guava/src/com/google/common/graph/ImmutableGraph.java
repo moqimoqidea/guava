@@ -18,7 +18,6 @@ package com.google.common.graph;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
@@ -44,7 +43,6 @@ import com.google.errorprone.annotations.InlineMe;
  * @param <N> Node parameter type
  * @since 20.0
  */
-@Beta
 @Immutable(containerOf = {"N"})
 public class ImmutableGraph<N> extends ForwardingGraph<N> {
   @SuppressWarnings("Immutable") // The backing graph must be immutable.

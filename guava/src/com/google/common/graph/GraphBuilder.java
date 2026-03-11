@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.graph.Graphs.checkNonNegative;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Optional;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.DoNotMock;
@@ -69,7 +68,6 @@ import com.google.errorprone.annotations.DoNotMock;
  *     constructed based on an existing {@code Graph} using {@link #from(Graph)}.
  * @since 20.0
  */
-@Beta
 @DoNotMock
 public final class GraphBuilder<N> extends AbstractGraphBuilder<N> {
 

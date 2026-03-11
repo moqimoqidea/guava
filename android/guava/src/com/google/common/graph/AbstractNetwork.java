@@ -25,7 +25,6 @@ import static com.google.common.graph.GraphConstants.NODE_PAIR_REMOVED_FROM_GRAP
 import static com.google.common.graph.GraphConstants.NODE_REMOVED_FROM_GRAPH;
 import static java.util.Collections.unmodifiableSet;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterators;
@@ -50,7 +49,6 @@ import org.jspecify.annotations.Nullable;
  * @param <E> Edge parameter type
  * @since 20.0
  */
-@Beta
 public abstract class AbstractNetwork<N, E> implements Network<N, E> {
   /** Constructor for use by subclasses. */
   public AbstractNetwork() {}

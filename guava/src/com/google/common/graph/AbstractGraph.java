@@ -16,7 +16,6 @@
 
 package com.google.common.graph;
 
-import com.google.common.annotations.Beta;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -27,7 +26,6 @@ import org.jspecify.annotations.Nullable;
  * @param <N> Node parameter type
  * @since 20.0
  */
-@Beta
 public abstract class AbstractGraph<N> extends AbstractBaseGraph<N> implements Graph<N> {
   /** Constructor for use by subclasses. */
   public AbstractGraph() {}
