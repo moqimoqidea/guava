@@ -21,13 +21,15 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Throwables.throwIfUnchecked;
 import static com.google.common.collect.Lists.asList;
-import static com.google.common.util.concurrent.ClosingFuture.State.CLOSED;
-import static com.google.common.util.concurrent.ClosingFuture.State.CLOSING;
-import static com.google.common.util.concurrent.ClosingFuture.State.OPEN;
-import static com.google.common.util.concurrent.ClosingFuture.State.SUBSUMED;
-import static com.google.common.util.concurrent.ClosingFuture.State.WILL_CLOSE;
-import static com.google.common.util.concurrent.ClosingFuture.State.WILL_CREATE_VALUE_AND_CLOSER;
+import static com.google.common.collect.Sets.newConcurrentHashSet;
+import static com.google.common.util.concurrent.ClosingFuture.Status.CLOSED;
+import static com.google.common.util.concurrent.ClosingFuture.Status.CLOSING;
+import static com.google.common.util.concurrent.ClosingFuture.Status.OPEN;
+import static com.google.common.util.concurrent.ClosingFuture.Status.SUBSUMED;
+import static com.google.common.util.concurrent.ClosingFuture.Status.WILL_CLOSE;
+import static com.google.common.util.concurrent.ClosingFuture.Status.WILL_CREATE_VALUE_AND_CLOSER;
 import static com.google.common.util.concurrent.Futures.getDone;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.google.common.util.concurrent.Futures.nonCancellationPropagating;
@@ -40,6 +42,8 @@ import static java.util.logging.Level.WARNING;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.FinalizablePhantomReference;
+import com.google.common.base.FinalizableReferenceQueue;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ClosingFuture.Combiner.AsyncCombiningCallable;
@@ -47,9 +51,14 @@ import com.google.common.util.concurrent.ClosingFuture.Combiner.CombiningCallabl
 import com.google.common.util.concurrent.Futures.FutureCombiner;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.errorprone.annotations.DoNotMock;
+import com.google.j2objc.annotations.J2ObjCIncompatible;
 import com.google.j2objc.annotations.RetainedWith;
+import java.lang.ref.Reference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -319,10 +328,10 @@ public final class ClosingFuture<V extends @Nullable Object> {
    */
   public static final class ValueAndCloser<V extends @Nullable Object> {
 
-    private final ClosingFuture<? extends V> closingFuture;
+    private final State<? extends V> state;
 
-    ValueAndCloser(ClosingFuture<? extends V> closingFuture) {
-      this.closingFuture = checkNotNull(closingFuture);
+    ValueAndCloser(State<? extends V> state) {
+      this.state = state;
     }
 
     /**
@@ -337,7 +346,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
      */
     @ParametricNullness
     public V get() throws ExecutionException {
-      return getDone(closingFuture.future);
+      return getDone(state.future);
     }
 
     /**
@@ -351,7 +360,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
      * <p>Idempotent: objects will be closed at most once.
      */
     public void closeAsync() {
-      closingFuture.close();
+      state.close();
     }
   }
 
@@ -417,7 +426,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
                 try {
                   ClosingFuture<V> closingFuture = callable.call(newCloseables.closer);
                   closingFuture.becomeSubsumedInto(closeables);
-                  return closingFuture.future;
+                  return closingFuture.state.future;
                 } finally {
                   closeables.add(newCloseables, directExecutor());
                 }
@@ -474,7 +483,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         new FutureCallback<@Nullable AutoCloseable>() {
           @Override
           public void onSuccess(@Nullable AutoCloseable result) {
-            closingFuture.closeables.closer.eventuallyClose(result, closingExecutor);
+            closingFuture.state.closeables.closer.eventuallyClose(result, closingExecutor);
           }
 
           @Override
@@ -616,17 +625,15 @@ public final class ClosingFuture<V extends @Nullable Object> {
             .append(moreFutures));
   }
 
-  private final AtomicReference<State> state = new AtomicReference<>(OPEN);
-  private final CloseableList closeables;
-  private final FluentFuture<V> future;
+  private final State<V> state;
 
   private ClosingFuture(ListenableFuture<V> future) {
     this(future, new CloseableList());
   }
 
   private ClosingFuture(ListenableFuture<V> future, CloseableList closeables) {
-    this.future = FluentFuture.from(future);
-    this.closeables = closeables;
+    this.state = new State<>(FluentFuture.from(future), closeables);
+    FinalizableReference.register(this);
   }
 
   /**
@@ -641,7 +648,11 @@ public final class ClosingFuture<V extends @Nullable Object> {
    * statusFuture} alone does not provide a way to close the pipeline.
    */
   public ListenableFuture<?> statusFuture() {
-    return nonCancellationPropagating(future.transform(constant(null), directExecutor()));
+    try {
+      return nonCancellationPropagating(state.future.transform(constant(null), directExecutor()));
+    } finally {
+      reachabilityFence(this);
+    }
   }
 
   /**
@@ -684,7 +695,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         new AsyncFunction<V, U>() {
           @Override
           public ListenableFuture<U> apply(V input) throws Exception {
-            return closeables.applyClosingFunction(function, input);
+            return state.closeables.applyClosingFunction(function, input);
           }
 
           @Override
@@ -693,7 +704,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
           }
         };
     // TODO(dpb): Switch to future.transformSync when that exists (passing a throwing function).
-    return derive(future.transformAsync(applyFunction, executor));
+    return derive(state.future.transformAsync(applyFunction, executor));
   }
 
   /**
@@ -778,7 +789,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         new AsyncFunction<V, U>() {
           @Override
           public ListenableFuture<U> apply(V input) throws Exception {
-            return closeables.applyAsyncClosingFunction(function, input);
+            return state.closeables.applyAsyncClosingFunction(function, input);
           }
 
           @Override
@@ -786,7 +797,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
             return function.toString();
           }
         };
-    return derive(future.transformAsync(applyFunction, executor));
+    return derive(state.future.transformAsync(applyFunction, executor));
   }
 
   /**
@@ -875,7 +886,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         new AsyncFunction<X, W>() {
           @Override
           public ListenableFuture<W> apply(X exception) throws Exception {
-            return closeables.applyClosingFunction(fallback, exception);
+            return state.closeables.applyClosingFunction(fallback, exception);
           }
 
           @Override
@@ -884,7 +895,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
           }
         };
     // TODO(dpb): Switch to future.catchingSync when that exists (passing a throwing function).
-    return derive(future.catchingAsync(exceptionType, applyFallback, executor));
+    return derive(state.future.catchingAsync(exceptionType, applyFallback, executor));
   }
 
   /**
@@ -971,7 +982,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         new AsyncFunction<X, W>() {
           @Override
           public ListenableFuture<W> apply(X exception) throws Exception {
-            return closeables.applyAsyncClosingFunction(fallback, exception);
+            return state.closeables.applyAsyncClosingFunction(fallback, exception);
           }
 
           @Override
@@ -979,7 +990,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
             return fallback.toString();
           }
         };
-    return derive(future.catchingAsync(exceptionType, asyncFunction, executor));
+    return derive(state.future.catchingAsync(exceptionType, asyncFunction, executor));
   }
 
   /**
@@ -999,35 +1010,11 @@ public final class ClosingFuture<V extends @Nullable Object> {
    * @return a {@link Future} that represents the final value or exception of the pipeline
    */
   public FluentFuture<V> finishToFuture() {
-    if (compareAndUpdateState(OPEN, WILL_CLOSE)) {
-      logger.get().log(FINER, "will close {0}", this);
-      future.addListener(
-          () -> {
-            checkAndUpdateState(WILL_CLOSE, CLOSING);
-            close();
-            checkAndUpdateState(CLOSING, CLOSED);
-          },
-          directExecutor());
-    } else {
-      switch (state.get()) {
-        case SUBSUMED:
-          throw new IllegalStateException(
-              "Cannot call finishToFuture() after deriving another step");
-
-        case WILL_CREATE_VALUE_AND_CLOSER:
-          throw new IllegalStateException(
-              "Cannot call finishToFuture() after calling finishToValueAndCloser()");
-
-        case WILL_CLOSE:
-        case CLOSING:
-        case CLOSED:
-          throw new IllegalStateException("Cannot call finishToFuture() twice");
-
-        case OPEN:
-          throw new AssertionError();
-      }
+    try {
+      return state.finishToFuture();
+    } finally {
+      reachabilityFence(this);
     }
-    return future;
   }
 
   /**
@@ -1043,33 +1030,16 @@ public final class ClosingFuture<V extends @Nullable Object> {
    */
   public void finishToValueAndCloser(
       ValueAndCloserConsumer<? super V> consumer, Executor executor) {
-    checkNotNull(consumer);
-    if (!compareAndUpdateState(OPEN, WILL_CREATE_VALUE_AND_CLOSER)) {
-      switch (state.get()) {
-        case SUBSUMED:
-          throw new IllegalStateException(
-              "Cannot call finishToValueAndCloser() after deriving another step");
-
-        case WILL_CLOSE:
-        case CLOSING:
-        case CLOSED:
-          throw new IllegalStateException(
-              "Cannot call finishToValueAndCloser() after calling finishToFuture()");
-
-        case WILL_CREATE_VALUE_AND_CLOSER:
-          throw new IllegalStateException("Cannot call finishToValueAndCloser() twice");
-
-        case OPEN:
-          break;
-      }
-      throw new AssertionError(state);
+    try {
+      state.finishToValueAndCloser(consumer, executor);
+    } finally {
+      reachabilityFence(this);
     }
-    future.addListener(() -> provideValueAndCloser(consumer, ClosingFuture.this), executor);
   }
 
   private static <C extends @Nullable Object, V extends C> void provideValueAndCloser(
-      ValueAndCloserConsumer<C> consumer, ClosingFuture<V> closingFuture) {
-    consumer.accept(new ValueAndCloser<C>(closingFuture));
+      ValueAndCloserConsumer<C> consumer, State<V> state) {
+    consumer.accept(new ValueAndCloser<>(state));
   }
 
   /**
@@ -1089,30 +1059,26 @@ public final class ClosingFuture<V extends @Nullable Object> {
    *     completed normally; {@code true} otherwise
    */
   @CanIgnoreReturnValue
-  @SuppressWarnings("Interruption") // We are propagating an interrupt from a caller.
   public boolean cancel(boolean mayInterruptIfRunning) {
-    logger.get().log(FINER, "cancelling {0}", this);
-    boolean cancelled = future.cancel(mayInterruptIfRunning);
-    if (cancelled) {
-      close();
+    try {
+      return state.cancel(mayInterruptIfRunning);
+    } finally {
+      reachabilityFence(this);
     }
-    return cancelled;
-  }
-
-  private void close() {
-    logger.get().log(FINER, "closing {0}", this);
-    closeables.close();
   }
 
   private <U extends @Nullable Object> ClosingFuture<U> derive(FluentFuture<U> future) {
-    ClosingFuture<U> derived = new ClosingFuture<>(future);
-    becomeSubsumedInto(derived.closeables);
-    return derived;
+    try {
+      ClosingFuture<U> derived = new ClosingFuture<>(future);
+      state.becomeSubsumedInto(derived.state.closeables);
+      return derived;
+    } finally {
+      reachabilityFence(this);
+    }
   }
 
   private void becomeSubsumedInto(CloseableList otherCloseables) {
-    checkAndUpdateState(OPEN, SUBSUMED);
-    otherCloseables.add(closeables, directExecutor());
+    state.becomeSubsumedInto(otherCloseables);
   }
 
   /**
@@ -1145,7 +1111,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
         throws ExecutionException {
       checkState(beingCalled);
       checkArgument(futures.contains(closingFuture));
-      return Futures.getDone(closingFuture.future);
+      return Futures.getDone(closingFuture.state.future);
     }
 
     @ParametricNullness
@@ -1168,7 +1134,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
       try {
         ClosingFuture<V> closingFuture = combiner.call(newCloseables.closer, this);
         closingFuture.becomeSubsumedInto(closeables);
-        return closingFuture.future;
+        return closingFuture.state.future;
       } finally {
         closeables.add(newCloseables, directExecutor());
         beingCalled = false;
@@ -1286,7 +1252,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
             }
           };
       ClosingFuture<V> derived = new ClosingFuture<>(futureCombiner().call(callable, executor));
-      derived.closeables.add(closeables, directExecutor());
+      derived.state.closeables.add(closeables, directExecutor());
       return derived;
     }
 
@@ -1342,7 +1308,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
           };
       ClosingFuture<V> derived =
           new ClosingFuture<>(futureCombiner().callAsync(asyncCallable, executor));
-      derived.closeables.add(closeables, directExecutor());
+      derived.state.closeables.add(closeables, directExecutor());
       return derived;
     }
 
@@ -1354,7 +1320,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
 
     private ImmutableList<FluentFuture<?>> inputFutures() {
       return FluentIterable.from(inputs)
-          .<FluentFuture<?>>transform(future -> future.future)
+          .<FluentFuture<?>>transform(future -> future.state.future)
           .toList();
     }
   }
@@ -2104,17 +2070,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
 
   @Override
   public String toString() {
-    // TODO(dpb): Better toString, in the style of Futures.transform etc.
-    return toStringHelper(this).add("state", state.get()).addValue(future).toString();
-  }
-
-  @SuppressWarnings({"removal", "Finalize"}) // b/487687332
-  @Override
-  protected void finalize() {
-    if (state.get().equals(OPEN)) {
-      logger.get().log(SEVERE, "Uh oh! An open ClosingFuture has leaked and will close: {0}", this);
-      FluentFuture<V> unused = finishToFuture();
-    }
+    return state.closingFutureToString();
   }
 
   private static void closeQuietly(@Nullable AutoCloseable closeable, Executor executor) {
@@ -2144,16 +2100,124 @@ public final class ClosingFuture<V extends @Nullable Object> {
     }
   }
 
-  private void checkAndUpdateState(State oldState, State newState) {
-    checkState(
-        compareAndUpdateState(oldState, newState),
-        "Expected state to be %s, but it was %s",
-        oldState,
-        newState);
-  }
+  private static final class State<V extends @Nullable Object> {
+    final AtomicReference<Status> status = new AtomicReference<>(OPEN);
+    final CloseableList closeables;
+    final FluentFuture<V> future;
 
-  private boolean compareAndUpdateState(State oldState, State newState) {
-    return state.compareAndSet(oldState, newState);
+    State(FluentFuture<V> future, CloseableList closeables) {
+      this.future = future;
+      this.closeables = closeables;
+    }
+
+    void checkAndUpdateStatus(Status oldStatus, Status newStatus) {
+      checkState(
+          compareAndUpdateStatus(oldStatus, newStatus),
+          "Expected status to be %s, but it was %s",
+          oldStatus,
+          newStatus);
+    }
+
+    boolean compareAndUpdateStatus(Status oldStatus, Status newStatus) {
+      return status.compareAndSet(oldStatus, newStatus);
+    }
+
+    void close() {
+      logger.get().log(FINER, "closing {0}", closingFutureToString());
+      closeables.close();
+    }
+
+    void becomeSubsumedInto(CloseableList otherCloseables) {
+      checkAndUpdateStatus(OPEN, SUBSUMED);
+      otherCloseables.add(closeables, directExecutor());
+    }
+
+    FluentFuture<V> finishToFuture() {
+      if (compareAndUpdateStatus(OPEN, WILL_CLOSE)) {
+        logger.get().log(FINER, "will close {0}", closingFutureToString());
+        future.addListener(
+            () -> {
+              checkAndUpdateStatus(WILL_CLOSE, CLOSING);
+              close();
+              checkAndUpdateStatus(CLOSING, CLOSED);
+            },
+            directExecutor());
+      } else {
+        switch (status.get()) {
+          case SUBSUMED:
+            throw new IllegalStateException(
+                "Cannot call finishToFuture() after deriving another step");
+
+          case WILL_CREATE_VALUE_AND_CLOSER:
+            throw new IllegalStateException(
+                "Cannot call finishToFuture() after calling finishToValueAndCloser()");
+
+          case WILL_CLOSE:
+          case CLOSING:
+          case CLOSED:
+            throw new IllegalStateException("Cannot call finishToFuture() twice");
+
+          case OPEN:
+            throw new AssertionError();
+        }
+      }
+      return future;
+    }
+
+    void finishToValueAndCloser(ValueAndCloserConsumer<? super V> consumer, Executor executor) {
+      checkNotNull(consumer);
+      if (!compareAndUpdateStatus(OPEN, WILL_CREATE_VALUE_AND_CLOSER)) {
+        switch (status.get()) {
+          case SUBSUMED:
+            throw new IllegalStateException(
+                "Cannot call finishToValueAndCloser() after deriving another step");
+
+          case WILL_CLOSE:
+          case CLOSING:
+          case CLOSED:
+            throw new IllegalStateException(
+                "Cannot call finishToValueAndCloser() after calling finishToFuture()");
+
+          case WILL_CREATE_VALUE_AND_CLOSER:
+            throw new IllegalStateException("Cannot call finishToValueAndCloser() twice");
+
+          case OPEN:
+            break;
+        }
+        throw new AssertionError(status);
+      }
+      future.addListener(() -> provideValueAndCloser(consumer, this), executor);
+    }
+
+    @SuppressWarnings("Interruption") // We are propagating an interrupt from a caller.
+    boolean cancel(boolean mayInterruptIfRunning) {
+      logger.get().log(FINER, "cancelling {0}", closingFutureToString());
+      boolean cancelled = future.cancel(mayInterruptIfRunning);
+      if (cancelled) {
+        close();
+      }
+      return cancelled;
+    }
+
+    void closeIfLeaked() {
+      if (status.get().equals(OPEN)) {
+        logger
+            .get()
+            .log(
+                SEVERE,
+                "Uh oh! An open ClosingFuture has leaked and will close: {0}",
+                closingFutureToString());
+        FluentFuture<V> unused = finishToFuture();
+      }
+    }
+
+    String closingFutureToString() {
+      // TODO(dpb): Better toString, in the style of Futures.transform etc.
+      return toStringHelper("ClosingFuture")
+          .add("status", status.get())
+          .addValue(future)
+          .toString();
+    }
   }
 
   // TODO(dpb): Should we use a pair of ArrayLists instead of an IdentityHashMap?
@@ -2185,7 +2249,7 @@ public final class ClosingFuture<V extends @Nullable Object> {
       try {
         ClosingFuture<U> closingFuture = transformation.apply(newCloseables.closer, input);
         closingFuture.becomeSubsumedInto(newCloseables);
-        return closingFuture.future;
+        return closingFuture.state.future;
       } finally {
         add(newCloseables, directExecutor());
       }
@@ -2248,11 +2312,15 @@ public final class ClosingFuture<V extends @Nullable Object> {
    */
   @VisibleForTesting
   CountDownLatch whenClosedCountDown() {
-    return closeables.whenClosedCountDown();
+    try {
+      return state.closeables.whenClosedCountDown();
+    } finally {
+      reachabilityFence(this);
+    }
   }
 
-  /** The state of a {@link CloseableList}. */
-  enum State {
+  /** The status of a {@link CloseableList}. */
+  enum Status {
     /** The {@link CloseableList} has not been subsumed or closed. */
     OPEN,
 
@@ -2282,5 +2350,91 @@ public final class ClosingFuture<V extends @Nullable Object> {
      * called. The step may not be further subsumed, nor may {@link #finishToFuture()} be called.
      */
     WILL_CREATE_VALUE_AND_CLOSER,
+  }
+
+  private static final class FinalizableReference
+      extends FinalizablePhantomReference<ClosingFuture<?>> {
+    static final FinalizableReferenceQueue referenceQueue = new FinalizableReferenceQueue();
+    static final Set<FinalizableReference> references = newConcurrentHashSet();
+
+    static void register(ClosingFuture<?> future) {
+      references.add(new FinalizableReference(future));
+    }
+
+    final State<?> state;
+
+    FinalizableReference(ClosingFuture<?> referent) {
+      super(referent, referenceQueue);
+      this.state = referent.state;
+    }
+
+    @Override
+    public void finalizeReferent() {
+      references.remove(this);
+      state.closeIfLeaked();
+    }
+  }
+
+  /** Ensures that {@code o} is not garbage collected until this point in the code. */
+  @VisibleForTesting
+  static void reachabilityFence(@Nullable Object o) {
+    REACHABILITY_FENCE_CALLER.reachabilityFence(o);
+  }
+
+  private enum ReachabilityFenceCaller {
+    @J2ObjCIncompatible
+    REAL_CALLER {
+      // We call the method only after checking that it's present.
+      @IgnoreJRERequirement
+      @SuppressWarnings({
+        "Java8ApiChecker",
+        "NewApi",
+        // This method is a helper, which we call from a `finally` block, as recommended.
+        "ReachabilityFenceUsage",
+      })
+      @Override
+      void reachabilityFence(@Nullable Object o) {
+        if (IS_REACHABILITY_FENCE_METHOD_USABLE) {
+          Reference.reachabilityFence(o);
+        }
+      }
+    },
+    /** No-op implementation used under J2ObjC (if ClosingFuture even has J2ObjC users). */
+    NO_OP_CALLER {
+      @Override
+      void reachabilityFence(@Nullable Object o) {}
+    };
+
+    abstract void reachabilityFence(@Nullable Object o);
+  }
+
+  private static final ReachabilityFenceCaller REACHABILITY_FENCE_CALLER =
+      ReachabilityFenceCaller.values()[0];
+
+  private static final boolean IS_REACHABILITY_FENCE_METHOD_USABLE =
+      computeIsReachabilityFenceMethodUsable();
+
+  private static boolean computeIsReachabilityFenceMethodUsable() {
+    try {
+      Method method = Reference.class.getMethod("reachabilityFence", Object.class);
+      method.invoke(null, ClosingFuture.class); // to make sure the method is accessible
+      return true;
+    } catch (NoSuchMethodException | IllegalAccessException probablyBeforeJava9OrAndroid28) {
+      /*
+       * It's theoretically possible for Reference.reachabilityFence to exist under older VMs in an
+       * inaccessible form.
+       */
+      return false;
+    } catch (InvocationTargetException e) {
+      /*
+       * It's theoretically possible for Reference.reachabilityFence to exist under older VMs but
+       * not work. (Under Android in particular, we really should check the API Level instead of
+       * probing for methods....) But it's hard to imagine how reachabilityFence in particular could
+       * exist but throw, so we propagate anything that's thrown, presumably an unchecked Exception
+       * or Error.
+       */
+      throwIfUnchecked(e.getCause());
+      throw new AssertionError(e.getCause());
+    }
   }
 }

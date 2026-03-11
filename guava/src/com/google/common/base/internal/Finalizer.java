@@ -72,7 +72,7 @@ public class Finalizer implements Runnable {
      */
 
     Finalizer finalizer = new Finalizer(finalizableReferenceClass, queue, frqReference);
-    String threadName = Finalizer.class.getName();
+    String threadName = "com.google.common.base.internal.Finalizer";
     Thread thread = null;
     if (bigThreadConstructor != null) {
       try {
