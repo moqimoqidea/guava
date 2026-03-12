@@ -16,16 +16,20 @@
 
 package com.google.common.testing;
 
+import static com.google.common.collect.Sets.newConcurrentHashSet;
 import static java.lang.Math.max;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
+import com.google.common.base.FinalizablePhantomReference;
+import com.google.common.base.FinalizableReferenceQueue;
 import com.google.errorprone.annotations.DoNotMock;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.j2objc.annotations.J2ObjCIncompatible;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -230,14 +234,7 @@ public final class GcFinalization {
    * separate method to make it somewhat more likely to be unreachable.
    */
   private static void createUnreachableLatchFinalizer(CountDownLatch latch) {
-    Object unused =
-        new Object() {
-          @SuppressWarnings({"removal", "Finalize"}) // b/487687332
-          @Override
-          protected void finalize() {
-            latch.countDown();
-          }
-        };
+    FinalizableReference.register(new Object(), latch);
   }
 
   /**
@@ -309,16 +306,33 @@ public final class GcFinalization {
     System.runFinalization();
   }
 
-  @SuppressWarnings({"removal", "Finalize"}) // b/487687332
   private static WeakReference<Object> createWeakReferenceWithFinalizer(
       CountDownLatch finalizerRan) {
-    return new WeakReference<>(
-        new Object() {
-          @Override
-          protected void finalize() {
-            finalizerRan.countDown();
-          }
-        });
+    Object referent = new Object();
+    FinalizableReference.register(referent, finalizerRan);
+    return new WeakReference<>(referent);
+  }
+
+  private static final class FinalizableReference extends FinalizablePhantomReference<Object> {
+    static final FinalizableReferenceQueue referenceQueue = new FinalizableReferenceQueue();
+    static final Set<FinalizableReference> references = newConcurrentHashSet();
+
+    static void register(Object referent, CountDownLatch latch) {
+      references.add(new FinalizableReference(referent, latch));
+    }
+
+    final CountDownLatch latch;
+
+    FinalizableReference(Object referent, CountDownLatch latch) {
+      super(referent, referenceQueue);
+      this.latch = latch;
+    }
+
+    @Override
+    public void finalizeReferent() {
+      references.remove(this);
+      latch.countDown();
+    }
   }
 
   @FormatMethod
