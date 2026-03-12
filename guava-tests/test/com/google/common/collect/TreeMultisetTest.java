@@ -303,7 +303,7 @@ public class TreeMultisetTest extends TestCase {
     assertEquals(3, ms.count(null));
 
     SortedSet<@Nullable String> elementSet = ms.elementSet();
-    assertEquals(null, elementSet.first());
+    assertThat(elementSet.first()).isNull();
     assertEquals("b", elementSet.last());
     assertEquals(comparator, elementSet.comparator());
   }

@@ -74,7 +74,7 @@ public class TypesTest extends TestCase {
     assertEquals(
         Arrays.asList(String.class, Types.newArrayType(Types.newArrayType(int.class))),
         Arrays.asList(ourType.getActualTypeArguments()));
-    assertEquals(null, ourType.getOwnerType());
+    assertThat(ourType.getOwnerType()).isNull();
   }
 
   public void testNewParameterizedType_nonStaticLocalClass() {

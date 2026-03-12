@@ -16,6 +16,7 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -38,11 +39,11 @@ public class AtomicsTest extends TestCase {
   private static final Object OBJECT = new Object();
 
   public void testNewReference() throws Exception {
-    assertEquals(null, Atomics.newReference().get());
+    assertThat(Atomics.newReference().get()).isNull();
   }
 
   public void testNewReference_withInitialValue() throws Exception {
-    assertEquals(null, Atomics.newReference(null).get());
+    assertThat(Atomics.newReference(null).get()).isNull();
     assertEquals(OBJECT, Atomics.newReference(OBJECT).get());
   }
 
@@ -50,7 +51,7 @@ public class AtomicsTest extends TestCase {
     int length = 42;
     AtomicReferenceArray<String> refArray = Atomics.newReferenceArray(length);
     for (int i = 0; i < length; ++i) {
-      assertEquals(null, refArray.get(i));
+      assertThat(refArray.get(i)).isNull();
     }
     assertThrows(IndexOutOfBoundsException.class, () -> refArray.get(length));
   }

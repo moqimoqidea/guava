@@ -183,7 +183,7 @@ public final class TestThread<L> extends Thread implements TearDown {
    * normally.
    */
   public void assertPriorCallReturns(@Nullable String methodName) throws Exception {
-    assertEquals(null, getResponse(methodName).getResult());
+    assertThat(getResponse(methodName).getResult()).isNull();
   }
 
   /**

@@ -198,9 +198,9 @@ public class ConverterTest extends TestCase {
   public void testNullIsNotPassedThrough() {
     Converter<String, String> nullsAreHandled = sillyConverter(true);
     assertEquals("forward", nullsAreHandled.convert("foo"));
-    assertEquals(null, nullsAreHandled.convert(null));
+    assertThat(nullsAreHandled.convert(null)).isNull();
     assertEquals("backward", nullsAreHandled.reverse().convert("foo"));
-    assertEquals(null, nullsAreHandled.reverse().convert(null));
+    assertThat(nullsAreHandled.reverse().convert(null)).isNull();
   }
 
   private static Converter<String, String> sillyConverter(boolean handleNullAutomatically) {

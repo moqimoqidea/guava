@@ -344,8 +344,8 @@ public class FunctionsTest extends TestCase {
     assertEquals("correct", f.apply(null));
 
     Function<@Nullable Object, @Nullable String> g = Functions.constant(null);
-    assertEquals(null, g.apply(2));
-    assertEquals(null, g.apply(null));
+    assertThat(g.apply(2)).isNull();
+    assertThat(g.apply(null)).isNull();
 
     new EqualsTester()
         .addEqualityGroup(f, Functions.constant("correct"))
