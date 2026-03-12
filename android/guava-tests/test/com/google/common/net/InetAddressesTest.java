@@ -17,6 +17,7 @@
 package com.google.common.net;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -136,7 +137,7 @@ public class InetAddressesTest extends TestCase {
     String ipStr = "192.168.0.1";
     // Shouldn't hit DNS, because it's an IP string literal.
     InetAddress ipv4Addr = InetAddress.getByName(ipStr);
-    assertEquals(ipv4Addr, InetAddresses.forString(ipStr));
+    assertThat(InetAddresses.forString(ipStr)).isEqualTo(ipv4Addr);
     assertTrue(InetAddresses.isInetAddress(ipStr));
   }
 
@@ -150,7 +151,7 @@ public class InetAddressesTest extends TestCase {
       // OK: this is probably Android, which is stricter.
       return;
     }
-    assertEquals(ipv4Addr, InetAddresses.forString(ipStr));
+    assertThat(InetAddresses.forString(ipStr)).isEqualTo(ipv4Addr);
     assertTrue(InetAddresses.isInetAddress(ipStr));
   }
 
@@ -158,7 +159,7 @@ public class InetAddressesTest extends TestCase {
     String ipStr = "3ffe::1";
     // Shouldn't hit DNS, because it's an IP string literal.
     InetAddress ipv6Addr = InetAddress.getByName(ipStr);
-    assertEquals(ipv6Addr, InetAddresses.forString(ipStr));
+    assertThat(InetAddresses.forString(ipStr)).isEqualTo(ipv6Addr);
     assertTrue(InetAddresses.isInetAddress(ipStr));
   }
 
@@ -172,7 +173,7 @@ public class InetAddressesTest extends TestCase {
       // OK: this is probably Android, which is stricter.
       return;
     }
-    assertEquals(ipv6Addr, InetAddresses.forString(ipStr));
+    assertThat(InetAddresses.forString(ipStr)).isEqualTo(ipv6Addr);
     assertTrue(InetAddresses.isInetAddress(ipStr));
   }
 
@@ -183,7 +184,7 @@ public class InetAddressesTest extends TestCase {
     for (String ipString : eightColons) {
       // Shouldn't hit DNS, because it's an IP string literal.
       InetAddress ipv6Addr = InetAddress.getByName(ipString);
-      assertEquals(ipv6Addr, InetAddresses.forString(ipString));
+      assertThat(InetAddresses.forString(ipString)).isEqualTo(ipv6Addr);
       assertTrue(InetAddresses.isInetAddress(ipString));
     }
   }
@@ -195,7 +196,7 @@ public class InetAddressesTest extends TestCase {
     for (String ipString : ipStrings) {
       // Shouldn't hit DNS, because it's an IP string literal.
       InetAddress ipv6Addr = InetAddress.getByName(ipString);
-      assertEquals(ipv6Addr, InetAddresses.forString(ipString));
+      assertThat(InetAddresses.forString(ipString)).isEqualTo(ipv6Addr);
       assertTrue(InetAddresses.isInetAddress(ipString));
     }
   }
@@ -266,7 +267,7 @@ public class InetAddressesTest extends TestCase {
         }
         Inet6Address reparsed =
             (Inet6Address) InetAddresses.forString(InetAddresses.toAddrString(parsed));
-        assertEquals(reparsed, parsed);
+        assertThat(reparsed).isEqualTo(parsed);
         assertEquals(reparsed.getScopeId(), parsed.getScopeId());
       }
     }
@@ -315,7 +316,7 @@ public class InetAddressesTest extends TestCase {
           }
           throw e;
         }
-        assertEquals(platformValue, parsed);
+        assertThat(parsed).isEqualTo(platformValue);
         assertEquals(platformValue.getScopeId(), parsed.getScopeId());
       }
     }
@@ -375,17 +376,17 @@ public class InetAddressesTest extends TestCase {
 
   public void testForUriStringIPv4() {
     Inet4Address expected = (Inet4Address) InetAddresses.forString("192.168.1.1");
-    assertEquals(expected, InetAddresses.forUriString("192.168.1.1"));
+    assertThat(InetAddresses.forUriString("192.168.1.1")).isEqualTo(expected);
   }
 
   public void testForUriStringIPv6() {
     Inet6Address expected = (Inet6Address) InetAddresses.forString("3ffe:0:0:0:0:0:0:1");
-    assertEquals(expected, InetAddresses.forUriString("[3ffe:0:0:0:0:0:0:1]"));
+    assertThat(InetAddresses.forUriString("[3ffe:0:0:0:0:0:0:1]")).isEqualTo(expected);
   }
 
   public void testForUriStringIPv4Mapped() {
     Inet4Address expected = (Inet4Address) InetAddresses.forString("192.0.2.1");
-    assertEquals(expected, InetAddresses.forUriString("[::ffff:192.0.2.1]"));
+    assertThat(InetAddresses.forUriString("[::ffff:192.0.2.1]")).isEqualTo(expected);
   }
 
   public void testIsUriInetAddress() {
@@ -457,10 +458,9 @@ public class InetAddressesTest extends TestCase {
       assertTrue(
           "checking '" + validCompatAddress + "'",
           InetAddresses.isCompatIPv4Address((Inet6Address) ip));
-      assertEquals(
-          "checking '" + validCompatAddress + "'",
-          compat,
-          InetAddresses.getCompatIPv4Address((Inet6Address) ip));
+      assertWithMessage("checking '%s'", validCompatAddress)
+          .that(InetAddresses.getCompatIPv4Address((Inet6Address) ip))
+          .isEqualTo(compat);
     }
   }
 
@@ -474,26 +474,26 @@ public class InetAddressesTest extends TestCase {
     assertTrue(InetAddresses.isMappedIPv4Address(mappedStr));
     InetAddress mapped = InetAddresses.forString(mappedStr);
     assertThat(mapped).isNotInstanceOf(Inet6Address.class);
-    assertEquals(InetAddress.getByName("192.168.0.1"), mapped);
+    assertThat(mapped).isEqualTo(InetAddress.getByName("192.168.0.1"));
 
     // check upper case
     mappedStr = "::FFFF:192.168.0.1";
     assertTrue(InetAddresses.isMappedIPv4Address(mappedStr));
     mapped = InetAddresses.forString(mappedStr);
     assertThat(mapped).isNotInstanceOf(Inet6Address.class);
-    assertEquals(InetAddress.getByName("192.168.0.1"), mapped);
+    assertThat(mapped).isEqualTo(InetAddress.getByName("192.168.0.1"));
 
     mappedStr = "0:00:000:0000:0:ffff:1.2.3.4";
     assertTrue(InetAddresses.isMappedIPv4Address(mappedStr));
     mapped = InetAddresses.forString(mappedStr);
     assertThat(mapped).isNotInstanceOf(Inet6Address.class);
-    assertEquals(InetAddress.getByName("1.2.3.4"), mapped);
+    assertThat(mapped).isEqualTo(InetAddress.getByName("1.2.3.4"));
 
     mappedStr = "::ffff:0102:0304";
     assertTrue(InetAddresses.isMappedIPv4Address(mappedStr));
     mapped = InetAddresses.forString(mappedStr);
     assertThat(mapped).isNotInstanceOf(Inet6Address.class);
-    assertEquals(InetAddress.getByName("1.2.3.4"), mapped);
+    assertThat(mapped).isEqualTo(InetAddress.getByName("1.2.3.4"));
 
     assertFalse(InetAddresses.isMappedIPv4Address("::"));
     assertFalse(InetAddresses.isMappedIPv4Address("::ffff"));
@@ -522,7 +522,7 @@ public class InetAddressesTest extends TestCase {
     InetAddress ipv4 = InetAddresses.forString(ipv4Str);
     InetAddress ip = InetAddresses.forString(valid6to4Address);
     assertTrue(InetAddresses.is6to4Address((Inet6Address) ip));
-    assertEquals(ipv4, InetAddresses.get6to4IPv4Address((Inet6Address) ip));
+    assertThat(InetAddresses.get6to4IPv4Address((Inet6Address) ip)).isEqualTo(ipv4);
   }
 
   public void testTeredoAddresses() {
@@ -548,10 +548,10 @@ public class InetAddressesTest extends TestCase {
     InetAddresses.TeredoInfo teredo = InetAddresses.getTeredoInfo((Inet6Address) ip);
 
     InetAddress server = InetAddresses.forString(serverStr);
-    assertEquals(server, teredo.getServer());
+    assertThat(teredo.getServer()).isEqualTo(server);
 
     InetAddress client = InetAddresses.forString(clientStr);
-    assertEquals(client, teredo.getClient());
+    assertThat(teredo.getClient()).isEqualTo(client);
 
     assertEquals(port, teredo.getPort());
     assertEquals(flags, teredo.getFlags());
@@ -559,8 +559,8 @@ public class InetAddressesTest extends TestCase {
 
   public void testTeredoAddress_nullServer() {
     InetAddresses.TeredoInfo info = new InetAddresses.TeredoInfo(null, null, 80, 1000);
-    assertEquals(InetAddresses.forString("0.0.0.0"), info.getServer());
-    assertEquals(InetAddresses.forString("0.0.0.0"), info.getClient());
+    assertThat(info.getServer()).isEqualTo(InetAddresses.forString("0.0.0.0"));
+    assertThat(info.getClient()).isEqualTo(InetAddresses.forString("0.0.0.0"));
     assertEquals(80, info.getPort());
     assertEquals(1000, info.getFlags());
   }
@@ -589,10 +589,9 @@ public class InetAddressesTest extends TestCase {
     for (String validIsatapAddress : validIsatapAddresses) {
       InetAddress ip = InetAddresses.forString(validIsatapAddress);
       assertTrue(InetAddresses.isIsatapAddress((Inet6Address) ip));
-      assertEquals(
-          "checking '" + validIsatapAddress + "'",
-          ipv4,
-          InetAddresses.getIsatapIPv4Address((Inet6Address) ip));
+      assertWithMessage("checking '%s'", validIsatapAddress)
+          .that(InetAddresses.getIsatapIPv4Address((Inet6Address) ip))
+          .isEqualTo(ipv4);
     }
     for (String nonIsatapAddress : nonIsatapAddresses) {
       InetAddress ip = InetAddresses.forString(nonIsatapAddress);
@@ -619,19 +618,19 @@ public class InetAddressesTest extends TestCase {
     testIp = (Inet6Address) InetAddresses.forString("::1.2.3.4");
     assertTrue(InetAddresses.hasEmbeddedIPv4ClientAddress(testIp));
     InetAddress ipv4 = InetAddresses.forString("1.2.3.4");
-    assertEquals(ipv4, InetAddresses.getEmbeddedIPv4ClientAddress(testIp));
+    assertThat(InetAddresses.getEmbeddedIPv4ClientAddress(testIp)).isEqualTo(ipv4);
 
     // Test 6to4 address.
     testIp = (Inet6Address) InetAddresses.forString("2002:0102:0304::1");
     assertTrue(InetAddresses.hasEmbeddedIPv4ClientAddress(testIp));
     ipv4 = InetAddresses.forString("1.2.3.4");
-    assertEquals(ipv4, InetAddresses.getEmbeddedIPv4ClientAddress(testIp));
+    assertThat(InetAddresses.getEmbeddedIPv4ClientAddress(testIp)).isEqualTo(ipv4);
 
     // Test Teredo address.
     testIp = (Inet6Address) InetAddresses.forString("2001:0000:4136:e378:8000:63bf:3fff:fdd2");
     assertTrue(InetAddresses.hasEmbeddedIPv4ClientAddress(testIp));
     ipv4 = InetAddresses.forString("192.0.2.45");
-    assertEquals(ipv4, InetAddresses.getEmbeddedIPv4ClientAddress(testIp));
+    assertThat(InetAddresses.getEmbeddedIPv4ClientAddress(testIp)).isEqualTo(ipv4);
   }
 
   public void testGetCoercedIPv4Address() {
@@ -710,15 +709,15 @@ public class InetAddressesTest extends TestCase {
   }
 
   public void testFromLittleEndianByteArray() throws UnknownHostException {
-    assertEquals(
-        InetAddresses.fromLittleEndianByteArray(new byte[] {1, 2, 3, 4}),
-        InetAddress.getByAddress(new byte[] {4, 3, 2, 1}));
+    assertThat(InetAddresses.fromLittleEndianByteArray(new byte[] {1, 2, 3, 4}))
+        .isEqualTo(InetAddress.getByAddress(new byte[] {4, 3, 2, 1}));
 
-    assertEquals(
-        InetAddresses.fromLittleEndianByteArray(
-            new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}),
-        InetAddress.getByAddress(
-            new byte[] {16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}));
+    assertThat(
+            InetAddresses.fromLittleEndianByteArray(
+                new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}))
+        .isEqualTo(
+            InetAddress.getByAddress(
+                new byte[] {16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1}));
 
     assertThrows(
         UnknownHostException.class, () -> InetAddresses.fromLittleEndianByteArray(new byte[3]));
@@ -748,10 +747,10 @@ public class InetAddressesTest extends TestCase {
     for (int i = 0; i < 255; i++) {
       address = InetAddresses.increment(address);
     }
-    assertEquals(address_66_255, address);
+    assertThat(address).isEqualTo(address_66_255);
 
     address = InetAddresses.increment(address);
-    assertEquals(address_67_0, address);
+    assertThat(address).isEqualTo(address_67_0);
 
     InetAddress address_ffffff = InetAddress.getByName("255.255.255.255");
     assertThrows(IllegalArgumentException.class, () -> InetAddresses.increment(address_ffffff));
@@ -767,10 +766,10 @@ public class InetAddressesTest extends TestCase {
     for (int i = 0; i < 255; i++) {
       address = InetAddresses.increment(address);
     }
-    assertEquals(addressV6_66_ff, address);
+    assertThat(address).isEqualTo(addressV6_66_ff);
 
     address = InetAddresses.increment(address);
-    assertEquals(addressV6_67_0, address);
+    assertThat(address).isEqualTo(addressV6_67_0);
 
     InetAddress addressV6_ffffff = InetAddress.getByName("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff");
     assertThrows(IllegalArgumentException.class, () -> InetAddresses.increment(addressV6_ffffff));
@@ -784,12 +783,12 @@ public class InetAddressesTest extends TestCase {
     InetAddress address = address670;
     address = InetAddresses.decrement(address);
 
-    assertEquals(address66255, address);
+    assertThat(address).isEqualTo(address66255);
 
     for (int i = 0; i < 255; i++) {
       address = InetAddresses.decrement(address);
     }
-    assertEquals(address660, address);
+    assertThat(address).isEqualTo(address660);
 
     InetAddress address0000 = InetAddress.getByName("0.0.0.0");
     assertThrows(IllegalArgumentException.class, () -> InetAddresses.decrement(address0000));
@@ -803,12 +802,12 @@ public class InetAddressesTest extends TestCase {
     InetAddress address = addressV6670;
     address = InetAddresses.decrement(address);
 
-    assertEquals(addressV666ff, address);
+    assertThat(address).isEqualTo(addressV666ff);
 
     for (int i = 0; i < 255; i++) {
       address = InetAddresses.decrement(address);
     }
-    assertEquals(addressV6660, address);
+    assertThat(address).isEqualTo(addressV6660);
 
     InetAddress addressV6000000 = InetAddress.getByName("0:0:0:0:0:0:0:0");
     assertThrows(IllegalArgumentException.class, () -> InetAddresses.decrement(addressV6000000));
@@ -899,11 +898,11 @@ public class InetAddressesTest extends TestCase {
   private static void checkBigIntegerConversion(String ip, BigInteger bigIntegerIp) {
     InetAddress address = InetAddresses.forString(ip);
     boolean isIpv6 = address instanceof Inet6Address;
-    assertEquals(bigIntegerIp, InetAddresses.toBigInteger(address));
-    assertEquals(
-        address,
-        isIpv6
-            ? InetAddresses.fromIPv6BigInteger(bigIntegerIp)
-            : InetAddresses.fromIPv4BigInteger(bigIntegerIp));
+    assertThat(InetAddresses.toBigInteger(address)).isEqualTo(bigIntegerIp);
+    assertThat(
+            isIpv6
+                ? InetAddresses.fromIPv6BigInteger(bigIntegerIp)
+                : InetAddresses.fromIPv4BigInteger(bigIntegerIp))
+        .isEqualTo(address);
   }
 }

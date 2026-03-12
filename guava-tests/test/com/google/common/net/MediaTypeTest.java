@@ -333,12 +333,10 @@ public class MediaTypeTest extends TestCase {
   }
 
   public void testWithCharset() {
-    assertEquals(
-        MediaType.parse("text/plain; charset=utf-8"),
-        MediaType.parse("text/plain").withCharset(UTF_8));
-    assertEquals(
-        MediaType.parse("text/plain; charset=utf-8"),
-        MediaType.parse("text/plain; charset=utf-16").withCharset(UTF_8));
+    assertThat(MediaType.parse("text/plain").withCharset(UTF_8))
+        .isEqualTo(MediaType.parse("text/plain; charset=utf-8"));
+    assertThat(MediaType.parse("text/plain; charset=utf-16").withCharset(UTF_8))
+        .isEqualTo(MediaType.parse("text/plain; charset=utf-8"));
   }
 
   public void testHasWildcard() {

@@ -270,7 +270,7 @@ public final class InternetDomainNameTest extends TestCase {
       assertTrue(name, domain.hasPublicSuffix());
       assertFalse(name, domain.isUnderPublicSuffix());
       assertFalse(name, domain.isTopPrivateDomain());
-      assertEquals(domain, domain.publicSuffix());
+      assertThat(domain.publicSuffix()).isEqualTo(domain);
     }
 
     for (String name : NO_PS) {
@@ -306,7 +306,7 @@ public final class InternetDomainNameTest extends TestCase {
       assertTrue(name, domain.hasPublicSuffix());
       assertTrue(name, domain.isUnderPublicSuffix());
       assertTrue(name, domain.isTopPrivateDomain());
-      assertEquals(domain.parent(), domain.publicSuffix());
+      assertThat(domain.publicSuffix()).isEqualTo(domain.parent());
     }
   }
 
@@ -327,7 +327,7 @@ public final class InternetDomainNameTest extends TestCase {
       assertTrue(name, domain.hasRegistrySuffix());
       assertFalse(name, domain.isUnderRegistrySuffix());
       assertFalse(name, domain.isTopDomainUnderRegistrySuffix());
-      assertEquals(domain, domain.registrySuffix());
+      assertThat(domain.registrySuffix()).isEqualTo(domain);
     }
 
     for (String name : NO_RS) {
@@ -363,7 +363,7 @@ public final class InternetDomainNameTest extends TestCase {
       assertTrue(name, domain.hasRegistrySuffix());
       assertTrue(name, domain.isUnderRegistrySuffix());
       assertTrue(name, domain.isTopDomainUnderRegistrySuffix());
-      assertEquals(domain.parent(), domain.registrySuffix());
+      assertThat(domain.registrySuffix()).isEqualTo(domain.parent());
     }
   }
 
@@ -408,9 +408,9 @@ public final class InternetDomainNameTest extends TestCase {
   public void testValidTopPrivateDomain() {
     InternetDomainName googleDomain = InternetDomainName.from("google.com");
 
-    assertEquals(googleDomain, googleDomain.topPrivateDomain());
-    assertEquals(googleDomain, googleDomain.child("mail").topPrivateDomain());
-    assertEquals(googleDomain, googleDomain.child("foo.bar").topPrivateDomain());
+    assertThat(googleDomain.topPrivateDomain()).isEqualTo(googleDomain);
+    assertThat(googleDomain.child("mail").topPrivateDomain()).isEqualTo(googleDomain);
+    assertThat(googleDomain.child("foo.bar").topPrivateDomain()).isEqualTo(googleDomain);
   }
 
   public void testInvalidTopPrivateDomain() {

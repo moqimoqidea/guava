@@ -64,8 +64,8 @@ public class HttpHeadersTest extends TestCase {
             "RTT", "TE", "UA", "UID", "URL", "WWW", "XSS");
 
     for (Field field : httpHeadersFields()) {
-      assertEquals(
-          upperToHttpHeaderName(field.getName(), specialCases, uppercaseAcronyms), field.get(null));
+      assertThat(field.get(null))
+          .isEqualTo(upperToHttpHeaderName(field.getName(), specialCases, uppercaseAcronyms));
     }
   }
 
