@@ -121,15 +121,15 @@ public class FilesTest extends IoTestCase {
   public void testToString() throws IOException {
     File asciiFile = getTestFile("ascii.txt");
     File i18nFile = getTestFile("i18n.txt");
-    assertEquals(ASCII, Files.toString(asciiFile, US_ASCII));
-    assertEquals(I18N, Files.toString(i18nFile, UTF_8));
+    assertThat(Files.toString(asciiFile, US_ASCII)).isEqualTo(ASCII);
+    assertThat(Files.toString(i18nFile, UTF_8)).isEqualTo(I18N);
     assertThat(Files.toString(i18nFile, US_ASCII)).isNotEqualTo(I18N);
   }
 
   public void testWriteString() throws IOException {
     File temp = createTempFile();
     Files.write(I18N, temp, UTF_16LE);
-    assertEquals(I18N, Files.toString(temp, UTF_16LE));
+    assertThat(Files.toString(temp, UTF_16LE)).isEqualTo(I18N);
   }
 
   public void testWriteBytes() throws IOException {
@@ -144,32 +144,32 @@ public class FilesTest extends IoTestCase {
   public void testAppendString() throws IOException {
     File temp = createTempFile();
     Files.append(I18N, temp, UTF_16LE);
-    assertEquals(I18N, Files.toString(temp, UTF_16LE));
+    assertThat(Files.toString(temp, UTF_16LE)).isEqualTo(I18N);
     Files.append(I18N, temp, UTF_16LE);
-    assertEquals(I18N + I18N, Files.toString(temp, UTF_16LE));
+    assertThat(Files.toString(temp, UTF_16LE)).isEqualTo(I18N + I18N);
     Files.append(I18N, temp, UTF_16LE);
-    assertEquals(I18N + I18N + I18N, Files.toString(temp, UTF_16LE));
+    assertThat(Files.toString(temp, UTF_16LE)).isEqualTo(I18N + I18N + I18N);
   }
 
   public void testCopyToOutputStream() throws IOException {
     File i18nFile = getTestFile("i18n.txt");
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     Files.copy(i18nFile, out);
-    assertEquals(I18N, out.toString("UTF-8"));
+    assertThat(out.toString("UTF-8")).isEqualTo(I18N);
   }
 
   public void testCopyToAppendable() throws IOException {
     File i18nFile = getTestFile("i18n.txt");
     StringBuilder sb = new StringBuilder();
     Files.copy(i18nFile, UTF_8, sb);
-    assertEquals(I18N, sb.toString());
+    assertThat(sb.toString()).isEqualTo(I18N);
   }
 
   public void testCopyFile() throws IOException {
     File i18nFile = getTestFile("i18n.txt");
     File temp = createTempFile();
     Files.copy(i18nFile, temp);
-    assertEquals(I18N, Files.toString(temp, UTF_8));
+    assertThat(Files.toString(temp, UTF_8)).isEqualTo(I18N);
   }
 
   public void testCopyEqualFiles() throws IOException {
@@ -178,14 +178,14 @@ public class FilesTest extends IoTestCase {
     assertEquals(temp1, temp2);
     Files.write(ASCII, temp1, UTF_8);
     assertThrows(IllegalArgumentException.class, () -> Files.copy(temp1, temp2));
-    assertEquals(ASCII, Files.toString(temp1, UTF_8));
+    assertThat(Files.toString(temp1, UTF_8)).isEqualTo(ASCII);
   }
 
   public void testCopySameFile() throws IOException {
     File temp = createTempFile();
     Files.write(ASCII, temp, UTF_8);
     assertThrows(IllegalArgumentException.class, () -> Files.copy(temp, temp));
-    assertEquals(ASCII, Files.toString(temp, UTF_8));
+    assertThat(Files.toString(temp, UTF_8)).isEqualTo(ASCII);
   }
 
   public void testCopyIdenticalFiles() throws IOException {
@@ -194,7 +194,7 @@ public class FilesTest extends IoTestCase {
     File temp2 = createTempFile();
     Files.write(ASCII, temp2, UTF_8);
     Files.copy(temp1, temp2);
-    assertEquals(ASCII, Files.toString(temp2, UTF_8));
+    assertThat(Files.toString(temp2, UTF_8)).isEqualTo(ASCII);
   }
 
   public void testEqual() throws IOException {
@@ -231,7 +231,7 @@ public class FilesTest extends IoTestCase {
 
     BufferedReader r = Files.newReader(asciiFile, US_ASCII);
     try {
-      assertEquals(ASCII, r.readLine());
+      assertThat(r.readLine()).isEqualTo(ASCII);
     } finally {
       r.close();
     }
@@ -419,7 +419,7 @@ public class FilesTest extends IoTestCase {
     w.println("");
     w.close();
 
-    assertEquals("hello", Files.readFirstLine(temp, UTF_8));
+    assertThat(Files.readFirstLine(temp, UTF_8)).isEqualTo("hello");
     assertEquals(ImmutableList.of("hello", "", " world  ", ""), Files.readLines(temp, UTF_8));
 
     assertTrue(temp.delete());
@@ -481,13 +481,13 @@ public class FilesTest extends IoTestCase {
     File i18nFile = getTestFile("i18n.txt");
 
     String init = "d41d8cd98f00b204e9800998ecf8427e";
-    assertEquals(init, Hashing.md5().newHasher().hash().toString());
+    assertThat(Hashing.md5().newHasher().hash().toString()).isEqualTo(init);
 
     String asciiHash = "e5df5a39f2b8cb71b24e1d8038f93131";
-    assertEquals(asciiHash, Files.hash(asciiFile, Hashing.md5()).toString());
+    assertThat(Files.hash(asciiFile, Hashing.md5()).toString()).isEqualTo(asciiHash);
 
     String i18nHash = "7fa826962ce2079c8334cd4ebf33aea4";
-    assertEquals(i18nHash, Files.hash(i18nFile, Hashing.md5()).toString());
+    assertThat(Files.hash(i18nFile, Hashing.md5()).toString()).isEqualTo(i18nHash);
   }
 
   public void testMap() throws IOException {
@@ -572,39 +572,39 @@ public class FilesTest extends IoTestCase {
   }
 
   public void testGetFileExtension() {
-    assertEquals("txt", Files.getFileExtension(".txt"));
-    assertEquals("txt", Files.getFileExtension("blah.txt"));
-    assertEquals("txt", Files.getFileExtension("blah..txt"));
-    assertEquals("txt", Files.getFileExtension(".blah.txt"));
-    assertEquals("txt", Files.getFileExtension("/tmp/blah.txt"));
-    assertEquals("gz", Files.getFileExtension("blah.tar.gz"));
-    assertEquals("", Files.getFileExtension("/"));
-    assertEquals("", Files.getFileExtension("."));
-    assertEquals("", Files.getFileExtension(".."));
-    assertEquals("", Files.getFileExtension("..."));
-    assertEquals("", Files.getFileExtension("blah"));
-    assertEquals("", Files.getFileExtension("blah."));
-    assertEquals("", Files.getFileExtension(".blah."));
-    assertEquals("", Files.getFileExtension("/foo.bar/blah"));
-    assertEquals("", Files.getFileExtension("/foo/.bar/blah"));
+    assertThat(Files.getFileExtension(".txt")).isEqualTo("txt");
+    assertThat(Files.getFileExtension("blah.txt")).isEqualTo("txt");
+    assertThat(Files.getFileExtension("blah..txt")).isEqualTo("txt");
+    assertThat(Files.getFileExtension(".blah.txt")).isEqualTo("txt");
+    assertThat(Files.getFileExtension("/tmp/blah.txt")).isEqualTo("txt");
+    assertThat(Files.getFileExtension("blah.tar.gz")).isEqualTo("gz");
+    assertThat(Files.getFileExtension("/")).isEqualTo("");
+    assertThat(Files.getFileExtension(".")).isEqualTo("");
+    assertThat(Files.getFileExtension("..")).isEqualTo("");
+    assertThat(Files.getFileExtension("...")).isEqualTo("");
+    assertThat(Files.getFileExtension("blah")).isEqualTo("");
+    assertThat(Files.getFileExtension("blah.")).isEqualTo("");
+    assertThat(Files.getFileExtension(".blah.")).isEqualTo("");
+    assertThat(Files.getFileExtension("/foo.bar/blah")).isEqualTo("");
+    assertThat(Files.getFileExtension("/foo/.bar/blah")).isEqualTo("");
   }
 
   public void testGetNameWithoutExtension() {
-    assertEquals("", Files.getNameWithoutExtension(".txt"));
-    assertEquals("blah", Files.getNameWithoutExtension("blah.txt"));
-    assertEquals("blah.", Files.getNameWithoutExtension("blah..txt"));
-    assertEquals(".blah", Files.getNameWithoutExtension(".blah.txt"));
-    assertEquals("blah", Files.getNameWithoutExtension("/tmp/blah.txt"));
-    assertEquals("blah.tar", Files.getNameWithoutExtension("blah.tar.gz"));
-    assertEquals("", Files.getNameWithoutExtension("/"));
-    assertEquals("", Files.getNameWithoutExtension("."));
-    assertEquals(".", Files.getNameWithoutExtension(".."));
-    assertEquals("..", Files.getNameWithoutExtension("..."));
-    assertEquals("blah", Files.getNameWithoutExtension("blah"));
-    assertEquals("blah", Files.getNameWithoutExtension("blah."));
-    assertEquals(".blah", Files.getNameWithoutExtension(".blah."));
-    assertEquals("blah", Files.getNameWithoutExtension("/foo.bar/blah"));
-    assertEquals("blah", Files.getNameWithoutExtension("/foo/.bar/blah"));
+    assertThat(Files.getNameWithoutExtension(".txt")).isEqualTo("");
+    assertThat(Files.getNameWithoutExtension("blah.txt")).isEqualTo("blah");
+    assertThat(Files.getNameWithoutExtension("blah..txt")).isEqualTo("blah.");
+    assertThat(Files.getNameWithoutExtension(".blah.txt")).isEqualTo(".blah");
+    assertThat(Files.getNameWithoutExtension("/tmp/blah.txt")).isEqualTo("blah");
+    assertThat(Files.getNameWithoutExtension("blah.tar.gz")).isEqualTo("blah.tar");
+    assertThat(Files.getNameWithoutExtension("/")).isEqualTo("");
+    assertThat(Files.getNameWithoutExtension(".")).isEqualTo("");
+    assertThat(Files.getNameWithoutExtension("..")).isEqualTo(".");
+    assertThat(Files.getNameWithoutExtension("...")).isEqualTo("..");
+    assertThat(Files.getNameWithoutExtension("blah")).isEqualTo("blah");
+    assertThat(Files.getNameWithoutExtension("blah.")).isEqualTo("blah");
+    assertThat(Files.getNameWithoutExtension(".blah.")).isEqualTo(".blah");
+    assertThat(Files.getNameWithoutExtension("/foo.bar/blah")).isEqualTo("blah");
+    assertThat(Files.getNameWithoutExtension("/foo/.bar/blah")).isEqualTo("blah");
   }
 
   public void testReadBytes() throws IOException {

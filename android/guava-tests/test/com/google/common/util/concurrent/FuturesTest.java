@@ -768,9 +768,9 @@ public class FuturesTest extends TestCase {
     Future<String> input = immediateFuture("foo");
     Future<String> transformed = lazyTransform(input, spy);
     spy.verifyCallCount(0);
-    assertEquals("bar", getDone(transformed));
+    assertThat(getDone(transformed)).isEqualTo("bar");
     spy.verifyCallCount(1);
-    assertEquals("bar", getDone(transformed));
+    assertThat(getDone(transformed)).isEqualTo("bar");
     spy.verifyCallCount(2);
   }
 
@@ -2445,7 +2445,7 @@ public class FuturesTest extends TestCase {
     // Future complete
     resultOfCombiner.set(createCombinedResult(getDone(futureInteger), getDone(futureBoolean)));
     String expectedResult = createCombinedResult(integerPartial, booleanPartial);
-    assertEquals(expectedResult, futureResult.get());
+    assertThat(futureResult.get()).isEqualTo(expectedResult);
     assertThat(futureResult.toString())
         .matches("CombinedFuture@\\w+\\[status=SUCCESS, result=\\[java.lang.String@\\w+]]");
   }
@@ -2570,7 +2570,7 @@ public class FuturesTest extends TestCase {
     Boolean booleanPartial = true;
     futureBoolean.set(booleanPartial);
     futureResult.get();
-    assertEquals(createCombinedResult(integerPartial, booleanPartial), result[0]);
+    assertThat(result[0]).isEqualTo(createCombinedResult(integerPartial, booleanPartial));
   }
 
   public void testWhenAllComplete_runnableError() throws Exception {

@@ -137,7 +137,7 @@ public class EnumBiMapTest extends TestCase {
   public void testCreate() {
     EnumBiMap<Currency, Country> bimap = EnumBiMap.create(Currency.class, Country.class);
     assertTrue(bimap.isEmpty());
-    assertEquals("{}", bimap.toString());
+    assertThat(bimap.toString()).isEqualTo("{}");
     assertEquals(HashBiMap.create(), bimap);
     bimap.put(Currency.DOLLAR, Country.CANADA);
     assertEquals(Country.CANADA, bimap.get(Currency.DOLLAR));

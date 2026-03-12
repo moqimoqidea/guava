@@ -496,6 +496,6 @@ public class Collections2Test extends TestCase {
     list.add("foo");
     list.add(null);
 
-    assertEquals(list.toString(), Collections2.toStringImpl(list));
+    assertThat(Collections2.toStringImpl(list)).isEqualTo(list.toString());
   }
 }

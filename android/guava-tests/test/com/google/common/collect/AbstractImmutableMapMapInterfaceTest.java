@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Joiner;
 import com.google.common.collect.testing.MapInterfaceTest;
@@ -43,13 +45,13 @@ abstract class AbstractImmutableMapMapInterfaceTest<K, V> extends MapInterfaceTe
   protected final void assertMoreInvariants(Map<K, V> map) {
     // TODO: can these be moved to MapInterfaceTest?
     for (Entry<K, V> entry : map.entrySet()) {
-      assertEquals(entry.getKey() + "=" + entry.getValue(), entry.toString());
+      assertThat(entry.toString()).isEqualTo(entry.getKey() + "=" + entry.getValue());
     }
 
-    assertEquals("{" + JOINER.join(map.entrySet()) + "}", map.toString());
-    assertEquals("[" + JOINER.join(map.entrySet()) + "]", map.entrySet().toString());
-    assertEquals("[" + JOINER.join(map.keySet()) + "]", map.keySet().toString());
-    assertEquals("[" + JOINER.join(map.values()) + "]", map.values().toString());
+    assertThat(map.toString()).isEqualTo("{" + JOINER.join(map.entrySet()) + "}");
+    assertThat(map.entrySet().toString()).isEqualTo("[" + JOINER.join(map.entrySet()) + "]");
+    assertThat(map.keySet().toString()).isEqualTo("[" + JOINER.join(map.keySet()) + "]");
+    assertThat(map.values().toString()).isEqualTo("[" + JOINER.join(map.values()) + "]");
 
     assertEquals(MinimalSet.from(map.entrySet()), map.entrySet());
     assertEquals(new HashSet<>(map.keySet()), map.keySet());

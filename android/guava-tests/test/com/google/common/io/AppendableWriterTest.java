@@ -16,6 +16,7 @@
 
 package com.google.common.io;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import java.io.Closeable;
@@ -78,7 +79,7 @@ public class AppendableWriterTest extends IoTestCase {
     writer.write("Whirled".toCharArray(), 3, 2);
     writer.write("Mad! Mad, I say", 2, 2);
 
-    assertEquals("Hello, World!", builder.toString());
+    assertThat(builder.toString()).isEqualTo("Hello, World!");
   }
 
   public void testAppendMethods() throws IOException {
@@ -90,7 +91,7 @@ public class AppendableWriterTest extends IoTestCase {
     writer.append("The World Wide Web", 4, 9);
     writer.append("!");
 
-    assertEquals("Hello, World!", builder.toString());
+    assertThat(builder.toString()).isEqualTo("Hello, World!");
   }
 
   public void testCloseFlush() throws IOException {

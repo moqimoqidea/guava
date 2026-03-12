@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 
 import com.google.common.annotations.GwtCompatible;
@@ -132,7 +133,7 @@ public class EnumMultisetTest extends TestCase {
     ms.add(Color.BLUE, 3);
     ms.add(Color.YELLOW, 1);
     ms.add(Color.RED, 2);
-    assertEquals("[BLUE x 3, RED x 2, YELLOW]", ms.toString());
+    assertThat(ms.toString()).isEqualTo("[BLUE x 3, RED x 2, YELLOW]");
   }
 
   @GwtIncompatible // SerializableTester

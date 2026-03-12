@@ -113,7 +113,7 @@ public class LittleEndianDataInputStreamTest extends TestCase {
     assertEquals(20675, in.readUnsignedShort());
     assertEquals(0xBEBAFECA, in.readInt());
     assertEquals(0xBEBAFECAEFBEADDEL, in.readLong());
-    assertEquals("Herby Derby", in.readUTF());
+    assertThat(in.readUTF()).isEqualTo("Herby Derby");
     assertEquals(0xBEBAFECA, Float.floatToIntBits(in.readFloat()));
     assertEquals(0xBEBAFECAEFBEADDEL, Double.doubleToLongBits(in.readDouble()));
   }

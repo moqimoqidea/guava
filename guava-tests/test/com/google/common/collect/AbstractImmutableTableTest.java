@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import junit.framework.TestCase;
@@ -61,7 +62,7 @@ public abstract class AbstractImmutableTableTest extends TestCase {
 
   public final void testConsistentToString() {
     for (ImmutableTable<Character, Integer, String> testInstance : getTestInstances()) {
-      assertEquals(testInstance.rowMap().toString(), testInstance.toString());
+      assertThat(testInstance.toString()).isEqualTo(testInstance.rowMap().toString());
     }
   }
 

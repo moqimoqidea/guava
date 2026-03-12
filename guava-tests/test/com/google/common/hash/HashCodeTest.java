@@ -112,12 +112,12 @@ public class HashCodeTest extends TestCase {
     String expectedToString = "cdab0000";
 
     assertEquals(expectedInt, hashCode.asInt());
-    assertEquals(expectedToString, hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo(expectedToString);
 
     bytes[0] = (byte) 0x00;
 
     assertEquals(expectedInt, hashCode.asInt());
-    assertEquals(expectedToString, hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo(expectedToString);
   }
 
   public void testFromBytesNoCopy_noCopyOccurs() {
@@ -125,12 +125,12 @@ public class HashCodeTest extends TestCase {
     HashCode hashCode = HashCode.fromBytesNoCopy(bytes);
 
     assertEquals(0x0000abcd, hashCode.asInt());
-    assertEquals("cdab0000", hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo("cdab0000");
 
     bytes[0] = (byte) 0x00;
 
     assertEquals(0x0000ab00, hashCode.asInt());
-    assertEquals("00ab0000", hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo("00ab0000");
   }
 
   public void testGetBytesInternal_noCloneOccurs() {
@@ -138,12 +138,12 @@ public class HashCodeTest extends TestCase {
     HashCode hashCode = HashCode.fromBytes(bytes);
 
     assertEquals(0x0000abcd, hashCode.asInt());
-    assertEquals("cdab0000", hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo("cdab0000");
 
     hashCode.getBytesInternal()[0] = (byte) 0x00;
 
     assertEquals(0x0000ab00, hashCode.asInt());
-    assertEquals("00ab0000", hashCode.toString());
+    assertThat(hashCode.toString()).isEqualTo("00ab0000");
   }
 
   public void testPadToLong() {
@@ -173,8 +173,8 @@ public class HashCodeTest extends TestCase {
 
   public void testToString() {
     byte[] data = new byte[] {127, -128, 5, -1, 14};
-    assertEquals("7f8005ff0e", HashCode.fromBytes(data).toString());
-    assertEquals("7f8005ff0e", base16().lowerCase().encode(data));
+    assertThat(HashCode.fromBytes(data).toString()).isEqualTo("7f8005ff0e");
+    assertThat(base16().lowerCase().encode(data)).isEqualTo("7f8005ff0e");
   }
 
   public void testHashCode_nulls() throws Exception {
@@ -226,10 +226,9 @@ public class HashCodeTest extends TestCase {
   public void testRoundTrip() {
     for (ExpectedHashCode expected : expectedHashCodes) {
       String string = HashCode.fromBytes(expected.bytes).toString();
-      assertEquals(expected.toString, string);
-      assertEquals(
-          expected.toString,
-          HashCode.fromBytes(BaseEncoding.base16().lowerCase().decode(string)).toString());
+      assertThat(string).isEqualTo(expected.toString);
+      assertThat(HashCode.fromBytes(BaseEncoding.base16().lowerCase().decode(string)).toString())
+          .isEqualTo(expected.toString);
     }
   }
 
@@ -333,7 +332,7 @@ public class HashCodeTest extends TestCase {
     } else {
       assertEquals(expectedHashCode.asLong.longValue(), hash.asLong());
     }
-    assertEquals(expectedHashCode.toString, hash.toString());
+    assertThat(hash.toString()).isEqualTo(expectedHashCode.toString);
     assertSideEffectFree(hash);
     assertReadableBytes(hash);
   }

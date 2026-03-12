@@ -389,7 +389,7 @@ public class ConcurrentHashMultisetTest extends TestCase {
 
     String s1 = new String("a");
     String s2 = new String("a");
-    assertEquals(s1, s2); // Stating the obvious.
+    assertThat(s1).isEqualTo(s2); // Stating the obvious.
     assertTrue(s1 != s2); // Stating the obvious.
 
     multiset.add(s1);
@@ -425,7 +425,7 @@ public class ConcurrentHashMultisetTest extends TestCase {
 
     String s1 = new String("a");
     String s2 = new String("a");
-    assertEquals(s1, s2); // Stating the obvious.
+    assertThat(s2).isEqualTo(s1); // Stating the obvious.
 
     multiset.add(s1);
     assertTrue(multiset.contains(s1));
@@ -471,7 +471,7 @@ public class ConcurrentHashMultisetTest extends TestCase {
 
     String s1 = new String("a");
     String s2 = new String("a");
-    assertEquals(s1, s2); // Stating the obvious.
+    assertThat(s2).isEqualTo(s1); // Stating the obvious.
     assertTrue(s1 != s2); // Stating the obvious.
 
     multiset.add(s1);

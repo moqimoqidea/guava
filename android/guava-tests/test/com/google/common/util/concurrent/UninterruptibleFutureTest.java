@@ -16,6 +16,7 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.util.concurrent.InterruptionUtil.repeatedlyInterruptTestThread;
 import static com.google.common.util.concurrent.Uninterruptibles.getUninterruptibly;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -233,7 +234,7 @@ public class UninterruptibleFutureTest extends TestCase {
      * wait of 0 seconds (and it should succeed, since the result is already
      * available).
      */
-    assertEquals(RESULT, getUninterruptibly(future, 0, SECONDS));
+    assertThat(getUninterruptibly(future, 0, SECONDS)).isEqualTo(RESULT);
   }
 
   public void testMakeUninterruptible_timedGetNegativeTimeoutAttempted()
@@ -245,7 +246,7 @@ public class UninterruptibleFutureTest extends TestCase {
      * wait of -1 seconds (and it should succeed, since the result is already
      * available).
      */
-    assertEquals(RESULT, getUninterruptibly(future, -1, SECONDS));
+    assertThat(getUninterruptibly(future, -1, SECONDS)).isEqualTo(RESULT);
   }
 
   private static FutureTask<Boolean> untimedInterruptReporter(

@@ -454,24 +454,23 @@ public class FreshValueGeneratorTest extends TestCase {
   public void testAddSampleInstances_twoInstances() {
     FreshValueGenerator generator = new FreshValueGenerator();
     generator.addSampleInstances(String.class, ImmutableList.of("a", "b"));
-    assertEquals("a", generator.generateFresh(String.class));
-    assertEquals("b", generator.generateFresh(String.class));
-    assertEquals("a", generator.generateFresh(String.class));
+    assertThat(generator.generateFresh(String.class)).isEqualTo("a");
+    assertThat(generator.generateFresh(String.class)).isEqualTo("b");
+    assertThat(generator.generateFresh(String.class)).isEqualTo("a");
   }
 
   public void testAddSampleInstances_oneInstance() {
     FreshValueGenerator generator = new FreshValueGenerator();
     generator.addSampleInstances(String.class, ImmutableList.of("a"));
-    assertEquals("a", generator.generateFresh(String.class));
-    assertEquals("a", generator.generateFresh(String.class));
+    assertThat(generator.generateFresh(String.class)).isEqualTo("a");
+    assertThat(generator.generateFresh(String.class)).isEqualTo("a");
   }
 
   public void testAddSampleInstances_noInstance() {
     FreshValueGenerator generator = new FreshValueGenerator();
     generator.addSampleInstances(String.class, ImmutableList.<String>of());
-    assertEquals(
-        new FreshValueGenerator().generateFresh(String.class),
-        generator.generateFresh(String.class));
+    assertThat(generator.generateFresh(String.class))
+        .isEqualTo(new FreshValueGenerator().generateFresh(String.class));
   }
 
   public void testFreshCurrency() {

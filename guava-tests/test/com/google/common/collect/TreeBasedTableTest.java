@@ -136,23 +136,23 @@ public class TreeBasedTableTest extends AbstractTableTest<Character> {
 
   public void testToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("{bar={1=b}, foo={1=a, 3=c}}", table.toString());
-    assertEquals("{bar={1=b}, foo={1=a, 3=c}}", table.rowMap().toString());
+    assertThat(table.toString()).isEqualTo("{bar={1=b}, foo={1=a, 3=c}}");
+    assertThat(table.rowMap().toString()).isEqualTo("{bar={1=b}, foo={1=a, 3=c}}");
   }
 
   public void testCellSetToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[(bar,1)=b, (foo,1)=a, (foo,3)=c]", table.cellSet().toString());
+    assertThat(table.cellSet().toString()).isEqualTo("[(bar,1)=b, (foo,1)=a, (foo,3)=c]");
   }
 
   public void testRowKeySetToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[bar, foo]", table.rowKeySet().toString());
+    assertThat(table.rowKeySet().toString()).isEqualTo("[bar, foo]");
   }
 
   public void testValuesToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[b, a, c]", table.values().toString());
+    assertThat(table.values().toString()).isEqualTo("[b, a, c]");
   }
 
   @SuppressWarnings({"deprecation", "InlineMeInliner"}) // test of a deprecated method
@@ -284,7 +284,7 @@ public class TreeBasedTableTest extends AbstractTableTest<Character> {
         create(
             "a", 2, 'X', "a", 2, 'X', "b", 3, 'X', "b", 2, 'X', "c", 10, 'X', "c", 10, 'X', "c", 20,
             'X', "d", 15, 'X', "d", 20, 'X', "d", 1, 'X', "e", 5, 'X');
-    assertEquals("[1, 2, 3, 5, 10, 15, 20]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[1, 2, 3, 5, 10, 15, 20]");
   }
 
   public void testColumnKeySet_isSortedWithRealComparator() {
@@ -325,27 +325,27 @@ public class TreeBasedTableTest extends AbstractTableTest<Character> {
             "e",
             5,
             'X');
-    assertEquals("[20, 15, 10, 5, 3, 2, 1]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[20, 15, 10, 5, 3, 2, 1]");
   }
 
   public void testColumnKeySet_empty() {
     table = create();
-    assertEquals("[]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[]");
   }
 
   public void testColumnKeySet_oneRow() {
     table = create("a", 2, 'X', "a", 1, 'X');
-    assertEquals("[1, 2]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[1, 2]");
   }
 
   public void testColumnKeySet_oneColumn() {
     table = create("a", 1, 'X', "b", 1, 'X');
-    assertEquals("[1]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[1]");
   }
 
   public void testColumnKeySet_oneEntry() {
     table = create("a", 1, 'X');
-    assertEquals("[1]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[1]");
   }
 
   public void testRowEntrySetContains() {

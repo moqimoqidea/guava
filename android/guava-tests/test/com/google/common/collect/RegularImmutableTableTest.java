@@ -94,9 +94,9 @@ public class RegularImmutableTableTest extends AbstractImmutableTableTest {
 
   public void testGet() {
     for (ImmutableTable<Character, Integer, String> testInstance : getTestInstances()) {
-      assertEquals("foo", testInstance.get('a', 1));
-      assertEquals("bar", testInstance.get('b', 1));
-      assertEquals("baz", testInstance.get('a', 2));
+      assertThat(testInstance.get('a', 1)).isEqualTo("foo");
+      assertThat(testInstance.get('b', 1)).isEqualTo("bar");
+      assertThat(testInstance.get('a', 2)).isEqualTo("baz");
       assertThat(testInstance.get('b', 2)).isNull();
       assertThat(testInstance.get('c', 3)).isNull();
     }

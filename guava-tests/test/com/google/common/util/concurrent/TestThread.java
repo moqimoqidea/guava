@@ -220,7 +220,7 @@ public final class TestThread<L> extends Thread implements TearDown {
     if (response == null) {
       throw new TimeoutException();
     }
-    assertEquals(methodName, response.methodName);
+    assertThat(response.methodName).isEqualTo(methodName);
     return response;
   }
 

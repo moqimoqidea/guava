@@ -126,7 +126,7 @@ public class SettableFutureTest extends TestCase {
     nested.set("foo");
     assertTrue(future.isDone());
     assertFalse(future.isCancelled());
-    assertEquals("foo", future.get());
+    assertThat(future.get()).isEqualTo("foo");
   }
 
   private static class Foo {}

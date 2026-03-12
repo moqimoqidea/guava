@@ -322,7 +322,7 @@ public class UninterruptiblesTest extends TestCase {
     BlockingQueue<String> queue = new ArrayBlockingQueue<>(999);
     putUninterruptibly(queue, "");
     assertTimeNotPassed(stopwatch, LONG_DELAY_MS);
-    assertEquals("", queue.peek());
+    assertThat(queue.peek()).isEqualTo("");
   }
 
   public void testPutNoInterrupt() {
@@ -350,7 +350,7 @@ public class UninterruptiblesTest extends TestCase {
     Stopwatch stopwatch = Stopwatch.createStarted();
     BlockingQueue<String> queue = new ArrayBlockingQueue<>(1);
     assertTrue(queue.offer(""));
-    assertEquals("", takeUninterruptibly(queue));
+    assertThat(takeUninterruptibly(queue)).isEqualTo("");
     assertTimeNotPassed(stopwatch, LONG_DELAY_MS);
   }
 
@@ -765,7 +765,7 @@ public class UninterruptiblesTest extends TestCase {
     void putSuccessfully() {
       putUninterruptibly(queue, "");
       completed.assertCompletionExpected();
-      assertEquals("", queue.peek());
+      assertThat(queue.peek()).isEqualTo("");
     }
 
     private static void scheduleEnableWrites(BlockingQueue<String> queue, long countdownInMillis) {
@@ -797,7 +797,7 @@ public class UninterruptiblesTest extends TestCase {
 
     /** Perform a {@code take} and assert that operation completed in the expected timeframe. */
     void takeSuccessfully() {
-      assertEquals(EXPECTED_TAKE, takeUninterruptibly(queue));
+      assertThat(takeUninterruptibly(queue)).isEqualTo(EXPECTED_TAKE);
       completed.assertCompletionExpected();
       assertTrue(queue.isEmpty());
     }

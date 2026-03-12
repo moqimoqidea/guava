@@ -378,9 +378,10 @@ public final class InternetDomainNameTest extends TestCase {
   }
 
   public void testParent() {
-    assertEquals("com", InternetDomainName.from("google.com").parent().toString());
-    assertEquals("uk", InternetDomainName.from("co.uk").parent().toString());
-    assertEquals("google.com", InternetDomainName.from("www.google.com").parent().toString());
+    assertThat(InternetDomainName.from("google.com").parent().toString()).isEqualTo("com");
+    assertThat(InternetDomainName.from("co.uk").parent().toString()).isEqualTo("uk");
+    assertThat(InternetDomainName.from("www.google.com").parent().toString())
+        .isEqualTo("google.com");
 
     assertThrows(IllegalStateException.class, () -> InternetDomainName.from("com").parent());
   }
@@ -388,7 +389,7 @@ public final class InternetDomainNameTest extends TestCase {
   public void testChild() {
     InternetDomainName domain = InternetDomainName.from("foo.com");
 
-    assertEquals("www.foo.com", domain.child("www").toString());
+    assertThat(domain.child("www").toString()).isEqualTo("www.foo.com");
 
     assertThrows(IllegalArgumentException.class, () -> domain.child("www."));
   }
@@ -396,7 +397,7 @@ public final class InternetDomainNameTest extends TestCase {
   public void testParentChild() {
     InternetDomainName origin = InternetDomainName.from("foo.com");
     InternetDomainName parent = origin.parent();
-    assertEquals("com", parent.toString());
+    assertThat(parent.toString()).isEqualTo("com");
 
     // These would throw an exception if leniency were not preserved during parent() and child()
     // calls.
@@ -452,14 +453,14 @@ public final class InternetDomainNameTest extends TestCase {
         expectedName = expectedName.substring(0, expectedName.length() - 1);
       }
 
-      assertEquals(expectedName, domain.toString());
+      assertThat(domain.toString()).isEqualTo(expectedName);
     }
   }
 
   public void testPublicSuffixExclusion() {
     InternetDomainName domain = InternetDomainName.from("foo.city.yokohama.jp");
     assertTrue(domain.hasPublicSuffix());
-    assertEquals("yokohama.jp", domain.publicSuffix().toString());
+    assertThat(domain.publicSuffix().toString()).isEqualTo("yokohama.jp");
 
     // Behold the weirdness!
     assertFalse(domain.publicSuffix().isPublicSuffix());
@@ -471,14 +472,14 @@ public final class InternetDomainNameTest extends TestCase {
 
     InternetDomainName domain = InternetDomainName.from("www.essex.sch.uk");
     assertTrue(domain.hasPublicSuffix());
-    assertEquals("essex.sch.uk", domain.publicSuffix().toString());
-    assertEquals("www.essex.sch.uk", domain.topPrivateDomain().toString());
+    assertThat(domain.publicSuffix().toString()).isEqualTo("essex.sch.uk");
+    assertThat(domain.topPrivateDomain().toString()).isEqualTo("www.essex.sch.uk");
   }
 
   public void testRegistrySuffixExclusion() {
     InternetDomainName domain = InternetDomainName.from("foo.city.yokohama.jp");
     assertTrue(domain.hasRegistrySuffix());
-    assertEquals("yokohama.jp", domain.registrySuffix().toString());
+    assertThat(domain.registrySuffix().toString()).isEqualTo("yokohama.jp");
 
     // Behold the weirdness!
     assertFalse(domain.registrySuffix().isRegistrySuffix());
@@ -490,8 +491,8 @@ public final class InternetDomainNameTest extends TestCase {
 
     InternetDomainName domain = InternetDomainName.from("www.essex.sch.uk");
     assertTrue(domain.hasRegistrySuffix());
-    assertEquals("essex.sch.uk", domain.registrySuffix().toString());
-    assertEquals("www.essex.sch.uk", domain.topDomainUnderRegistrySuffix().toString());
+    assertThat(domain.registrySuffix().toString()).isEqualTo("essex.sch.uk");
+    assertThat(domain.topDomainUnderRegistrySuffix().toString()).isEqualTo("www.essex.sch.uk");
   }
 
   public void testEquality() {

@@ -16,6 +16,8 @@
 
 package com.google.common.io;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.ImmutableList;
 import java.io.FilterReader;
 import java.io.IOException;
@@ -73,7 +75,7 @@ public class MultiReaderTest extends TestCase {
     Reader joinedReader = CharSource.concat(source, source).openStream();
 
     String expectedString = testString + testString;
-    assertEquals(expectedString, CharStreams.toString(joinedReader));
+    assertThat(CharStreams.toString(joinedReader)).isEqualTo(expectedString);
   }
 
   private static CharSource newCharSource(String text) {

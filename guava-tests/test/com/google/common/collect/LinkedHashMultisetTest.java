@@ -95,7 +95,7 @@ public class LinkedHashMultisetTest extends TestCase {
     multiset.add("bar");
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
-    assertEquals("[foo x 2, bar]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[foo x 2, bar]");
   }
 
   public void testCreateWithSize() {
@@ -104,14 +104,14 @@ public class LinkedHashMultisetTest extends TestCase {
     multiset.add("bar");
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
-    assertEquals("[foo x 2, bar]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[foo x 2, bar]");
   }
 
   public void testCreateFromIterable() {
     Multiset<String> multiset = LinkedHashMultiset.create(asList("foo", "bar", "foo"));
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
-    assertEquals("[foo x 2, bar]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[foo x 2, bar]");
   }
 
   public void testToString() {
@@ -120,7 +120,7 @@ public class LinkedHashMultisetTest extends TestCase {
     ms.add("c", 1);
     ms.add("b", 2);
 
-    assertEquals("[a x 3, c, b x 2]", ms.toString());
+    assertThat(ms.toString()).isEqualTo("[a x 3, c, b x 2]");
   }
 
   public void testLosesPlaceInLine() throws Exception {

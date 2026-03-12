@@ -298,10 +298,10 @@ public class AtomicDoubleTest extends JSR166TestCase {
   /** toString returns current value */
   public void testToString() {
     AtomicDouble at = new AtomicDouble();
-    assertEquals("0.0", at.toString());
+    assertThat(at.toString()).isEqualTo("0.0");
     for (double x : VALUES) {
       at.set(x);
-      assertEquals(Double.toString(x), at.toString());
+      assertThat(at.toString()).isEqualTo(Double.toString(x));
     }
   }
 

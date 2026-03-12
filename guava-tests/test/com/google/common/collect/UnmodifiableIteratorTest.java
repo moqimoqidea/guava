@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import java.util.Iterator;
@@ -56,7 +57,7 @@ public class UnmodifiableIteratorTest extends TestCase {
         };
 
     assertTrue(iterator.hasNext());
-    assertEquals("a", iterator.next());
+    assertThat(iterator.next()).isEqualTo("a");
     assertThrows(UnsupportedOperationException.class, () -> iterator.remove());
   }
 }

@@ -16,6 +16,7 @@
 
 package com.google.common.io;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
 import com.google.common.primitives.Bytes;
@@ -76,7 +77,7 @@ public class LittleEndianDataOutputStreamTest extends TestCase {
     assertEquals(20675, in.readUnsignedShort());
     assertEquals(0xBEBAFECA, in.readInt());
     assertEquals(0xBEBAFECAEFBEADDEL, in.readLong());
-    assertEquals("Herby Derby", in.readUTF());
+    assertThat(in.readUTF()).isEqualTo("Herby Derby");
     assertEquals(0xBEBAFECA, Float.floatToIntBits(in.readFloat()));
     assertEquals(0xBEBAFECAEFBEADDEL, Double.doubleToLongBits(in.readDouble()));
   }

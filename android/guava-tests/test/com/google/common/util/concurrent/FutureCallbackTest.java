@@ -123,7 +123,7 @@ public class FutureCallbackTest extends TestCase {
         };
     addCallback(future, callback, directExecutor());
     future.set(result);
-    assertEquals(result, future.get());
+    assertThat(future.get()).isEqualTo(result);
     assertThat(successCalls[0]).isEqualTo(1);
     assertThat(failureCalls[0]).isEqualTo(0);
   }
@@ -150,7 +150,7 @@ public class FutureCallbackTest extends TestCase {
     addCallback(future, callback, directExecutor());
     SomeError e = assertThrows(SomeError.class, () -> future.set(result));
     assertSame(error, e);
-    assertEquals(result, future.get());
+    assertThat(future.get()).isEqualTo(result);
     assertThat(successCalls[0]).isEqualTo(1);
     assertThat(failureCalls[0]).isEqualTo(0);
   }
@@ -198,7 +198,7 @@ public class FutureCallbackTest extends TestCase {
       synchronized (monitor) {
         assertFalse(wasCalled);
         wasCalled = true;
-        assertEquals(value, result);
+        assertThat(result).isEqualTo(value);
       }
     }
 

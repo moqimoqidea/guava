@@ -245,23 +245,23 @@ public class MapsTest extends TestCase {
     Iterator<Entry<String, String>> iter = copy.entrySet().iterator();
     assertTrue(iter.hasNext());
     Entry<String, String> entry = iter.next();
-    assertEquals("Hello", entry.getKey());
-    assertEquals("World", entry.getValue());
+    assertThat(entry.getKey()).isEqualTo("Hello");
+    assertThat(entry.getValue()).isEqualTo("World");
     assertTrue(iter.hasNext());
 
     entry = iter.next();
-    assertEquals("first", entry.getKey());
-    assertEquals("second", entry.getValue());
+    assertThat(entry.getKey()).isEqualTo("first");
+    assertThat(entry.getValue()).isEqualTo("second");
     assertTrue(iter.hasNext());
 
     entry = iter.next();
-    assertEquals("polygene", entry.getKey());
-    assertEquals("lubricants", entry.getValue());
+    assertThat(entry.getKey()).isEqualTo("polygene");
+    assertThat(entry.getValue()).isEqualTo("lubricants");
     assertTrue(iter.hasNext());
 
     entry = iter.next();
-    assertEquals("alpha", entry.getKey());
-    assertEquals("betical", entry.getValue());
+    assertThat(entry.getKey()).isEqualTo("alpha");
+    assertThat(entry.getValue()).isEqualTo("betical");
     assertFalse(iter.hasNext());
   }
 
@@ -379,7 +379,7 @@ public class MapsTest extends TestCase {
     hashmap.put("foo", "bar");
     hashmap.put(null, "baz");
 
-    assertEquals(hashmap.toString(), Maps.toStringImpl(hashmap));
+    assertThat(Maps.toStringImpl(hashmap)).isEqualTo(hashmap.toString());
   }
 
   public void testToStringImplWithNullValues() throws Exception {
@@ -387,7 +387,7 @@ public class MapsTest extends TestCase {
     hashmap.put("foo", "bar");
     hashmap.put("baz", null);
 
-    assertEquals(hashmap.toString(), Maps.toStringImpl(hashmap));
+    assertThat(Maps.toStringImpl(hashmap)).isEqualTo(hashmap.toString());
   }
 
   @J2ktIncompatible
@@ -406,7 +406,7 @@ public class MapsTest extends TestCase {
     assertEquals(EMPTY, diff.entriesOnlyOnRight());
     assertEquals(EMPTY, diff.entriesInCommon());
     assertEquals(EMPTY, diff.entriesDiffering());
-    assertEquals("equal", diff.toString());
+    assertThat(diff.toString()).isEqualTo("equal");
   }
 
   public void testMapDifferenceEmptySingleton() {
@@ -416,7 +416,7 @@ public class MapsTest extends TestCase {
     assertEquals(SINGLETON, diff.entriesOnlyOnRight());
     assertEquals(EMPTY, diff.entriesInCommon());
     assertEquals(EMPTY, diff.entriesDiffering());
-    assertEquals("not equal: only on right={1=2}", diff.toString());
+    assertThat(diff.toString()).isEqualTo("not equal: only on right={1=2}");
   }
 
   public void testMapDifferenceSingletonEmpty() {
@@ -426,7 +426,7 @@ public class MapsTest extends TestCase {
     assertEquals(EMPTY, diff.entriesOnlyOnRight());
     assertEquals(EMPTY, diff.entriesInCommon());
     assertEquals(EMPTY, diff.entriesDiffering());
-    assertEquals("not equal: only on left={1=2}", diff.toString());
+    assertThat(diff.toString()).isEqualTo("not equal: only on left={1=2}");
   }
 
   public void testMapDifferenceTypical() {
@@ -442,10 +442,10 @@ public class MapsTest extends TestCase {
         ImmutableMap.of(
             3, ValueDifferenceImpl.create("c", "f"), 5, ValueDifferenceImpl.create("e", "g")),
         diff1.entriesDiffering());
-    assertEquals(
-        "not equal: only on left={2=b, 4=d}: only on right={6=z}: "
-            + "value differences={3=(c, f), 5=(e, g)}",
-        diff1.toString());
+    assertThat(diff1.toString())
+        .isEqualTo(
+            "not equal: only on left={2=b, 4=d}: only on right={6=z}: "
+                + "value differences={3=(c, f), 5=(e, g)}");
 
     MapDifference<Integer, String> diff2 = Maps.difference(right, left);
     assertFalse(diff2.areEqual());
@@ -456,10 +456,10 @@ public class MapsTest extends TestCase {
         ImmutableMap.of(
             3, ValueDifferenceImpl.create("f", "c"), 5, ValueDifferenceImpl.create("g", "e")),
         diff2.entriesDiffering());
-    assertEquals(
-        "not equal: only on left={6=z}: only on right={2=b, 4=d}: "
-            + "value differences={3=(f, c), 5=(g, e)}",
-        diff2.toString());
+    assertThat(diff2.toString())
+        .isEqualTo(
+            "not equal: only on left={6=z}: only on right={2=b, 4=d}: "
+                + "value differences={3=(f, c), 5=(g, e)}");
   }
 
   public void testMapDifferenceEquals() {
@@ -503,10 +503,10 @@ public class MapsTest extends TestCase {
         ImmutableMap.of(
             3, ValueDifferenceImpl.create("c", "F"), 5, ValueDifferenceImpl.create("e", "G")),
         diff1.entriesDiffering());
-    assertEquals(
-        "not equal: only on left={2=b, 4=d}: only on right={6=Z}: "
-            + "value differences={3=(c, F), 5=(e, G)}",
-        diff1.toString());
+    assertThat(diff1.toString())
+        .isEqualTo(
+            "not equal: only on left={2=b, 4=d}: only on right={6=Z}: "
+                + "value differences={3=(c, F), 5=(e, G)}");
 
     MapDifference<Integer, String> diff2 = Maps.difference(right, left, caseInsensitiveEquivalence);
     assertFalse(diff2.areEqual());
@@ -517,10 +517,10 @@ public class MapsTest extends TestCase {
         ImmutableMap.of(
             3, ValueDifferenceImpl.create("F", "c"), 5, ValueDifferenceImpl.create("G", "e")),
         diff2.entriesDiffering());
-    assertEquals(
-        "not equal: only on left={6=Z}: only on right={2=b, 4=d}: "
-            + "value differences={3=(F, c), 5=(G, e)}",
-        diff2.toString());
+    assertThat(diff2.toString())
+        .isEqualTo(
+            "not equal: only on left={6=Z}: only on right={2=b, 4=d}: "
+                + "value differences={3=(F, c), 5=(G, e)}");
   }
 
   private static final SortedMap<Integer, Integer> SORTED_EMPTY = Maps.newTreeMap();
@@ -540,7 +540,7 @@ public class MapsTest extends TestCase {
     assertEquals(SORTED_EMPTY, diff.entriesOnlyOnRight());
     assertEquals(SORTED_EMPTY, diff.entriesInCommon());
     assertEquals(SORTED_EMPTY, diff.entriesDiffering());
-    assertEquals("equal", diff.toString());
+    assertThat(diff.toString()).isEqualTo("equal");
   }
 
   public void testSortedMapDifferenceEmptySingleton() {
@@ -550,7 +550,7 @@ public class MapsTest extends TestCase {
     assertEquals(SORTED_SINGLETON, diff.entriesOnlyOnRight());
     assertEquals(SORTED_EMPTY, diff.entriesInCommon());
     assertEquals(SORTED_EMPTY, diff.entriesDiffering());
-    assertEquals("not equal: only on right={1=2}", diff.toString());
+    assertThat(diff.toString()).isEqualTo("not equal: only on right={1=2}");
   }
 
   public void testSortedMapDifferenceSingletonEmpty() {
@@ -560,7 +560,7 @@ public class MapsTest extends TestCase {
     assertEquals(SORTED_EMPTY, diff.entriesOnlyOnRight());
     assertEquals(SORTED_EMPTY, diff.entriesInCommon());
     assertEquals(SORTED_EMPTY, diff.entriesDiffering());
-    assertEquals("not equal: only on left={1=2}", diff.toString());
+    assertThat(diff.toString()).isEqualTo("not equal: only on left={1=2}");
   }
 
   public void testSortedMapDifferenceTypical() {
@@ -587,10 +587,10 @@ public class MapsTest extends TestCase {
             immutableEntry(5, ValueDifferenceImpl.create("e", "g")),
             immutableEntry(3, ValueDifferenceImpl.create("c", "f")))
         .inOrder();
-    assertEquals(
-        "not equal: only on left={4=d, 2=b}: only on right={6=z}: "
-            + "value differences={5=(e, g), 3=(c, f)}",
-        diff1.toString());
+    assertThat(diff1.toString())
+        .isEqualTo(
+            "not equal: only on left={4=d, 2=b}: only on right={6=z}: "
+                + "value differences={5=(e, g), 3=(c, f)}");
 
     SortedMapDifference<Integer, String> diff2 = Maps.difference(right, left);
     assertFalse(diff2.areEqual());
@@ -604,10 +604,10 @@ public class MapsTest extends TestCase {
             3, ValueDifferenceImpl.create("f", "c"),
             5, ValueDifferenceImpl.create("g", "e")),
         diff2.entriesDiffering());
-    assertEquals(
-        "not equal: only on left={6=z}: only on right={2=b, 4=d}: "
-            + "value differences={3=(f, c), 5=(g, e)}",
-        diff2.toString());
+    assertThat(diff2.toString())
+        .isEqualTo(
+            "not equal: only on left={6=z}: only on right={2=b, 4=d}: "
+                + "value differences={3=(f, c), 5=(g, e)}");
   }
 
   public void testSortedMapDifferenceImmutable() {
@@ -792,16 +792,16 @@ public class MapsTest extends TestCase {
     assertEquals(ImmutableSortedMap.of("one", 3, "three", 5), map.headMap("two", false));
     assertEquals(ImmutableSortedMap.of("three", 5), map.subMap("one", false, "tr", true));
 
-    assertEquals("three", map.higherKey("one"));
-    assertEquals("three", map.higherKey("r"));
-    assertEquals("three", map.ceilingKey("r"));
-    assertEquals("one", map.ceilingKey("one"));
+    assertThat(map.higherKey("one")).isEqualTo("three");
+    assertThat(map.higherKey("r")).isEqualTo("three");
+    assertThat(map.ceilingKey("r")).isEqualTo("three");
+    assertThat(map.ceilingKey("one")).isEqualTo("one");
     assertEquals(mapEntry("three", 5), map.higherEntry("one"));
     assertEquals(mapEntry("one", 3), map.ceilingEntry("one"));
-    assertEquals("one", map.lowerKey("three"));
-    assertEquals("one", map.lowerKey("r"));
-    assertEquals("one", map.floorKey("r"));
-    assertEquals("three", map.floorKey("three"));
+    assertThat(map.lowerKey("three")).isEqualTo("one");
+    assertThat(map.lowerKey("r")).isEqualTo("one");
+    assertThat(map.floorKey("r")).isEqualTo("one");
+    assertThat(map.floorKey("three")).isEqualTo("three");
 
     assertThat(map.descendingMap().entrySet())
         .containsExactly(mapEntry("two", 3), mapEntry("three", 5), mapEntry("one", 3))
@@ -996,13 +996,13 @@ public class MapsTest extends TestCase {
     testProp.setProperty("first", "true");
 
     result = Maps.fromProperties(testProp);
-    assertEquals("true", result.get("first"));
+    assertThat(result.get("first")).isEqualTo("true");
     assertEquals(1, result.size());
     testProp.setProperty("second", "null");
 
     result = Maps.fromProperties(testProp);
-    assertEquals("true", result.get("first"));
-    assertEquals("null", result.get("second"));
+    assertThat(result.get("first")).isEqualTo("true");
+    assertThat(result.get("second")).isEqualTo("null");
     assertEquals(2, result.size());
 
     // Now test values loaded from a stream.
@@ -1012,10 +1012,10 @@ public class MapsTest extends TestCase {
 
     result = Maps.fromProperties(testProp);
     assertEquals(4, result.size());
-    assertEquals("true", result.get("first"));
-    assertEquals("", result.get("test"));
-    assertEquals("2", result.get("second"));
-    assertEquals("item :   a short  phrase   ", result.get("Third"));
+    assertThat(result.get("first")).isEqualTo("true");
+    assertThat(result.get("test")).isEqualTo("");
+    assertThat(result.get("second")).isEqualTo("2");
+    assertThat(result.get("Third")).isEqualTo("item :   a short  phrase   ");
     assertFalse(result.containsKey("not here"));
 
     // Test loading system properties
@@ -1030,8 +1030,8 @@ public class MapsTest extends TestCase {
 
     result = Maps.fromProperties(testProp);
     assertThat(result.size()).isGreaterThan(2);
-    assertEquals("", result.get("test"));
-    assertEquals("hidden", result.get("java.version"));
+    assertThat(result.get("test")).isEqualTo("");
+    assertThat(result.get("java.version")).isEqualTo("hidden");
     assertNotSame(System.getProperty("java.version"), result.get("java.version"));
   }
 
@@ -1140,7 +1140,7 @@ public class MapsTest extends TestCase {
             "one", 1,
             "two", 2);
     Converter<String, Integer> converter = Maps.asConverter(biMap);
-    assertEquals("Maps.asConverter({one=1, two=2})", converter.toString());
+    assertThat(converter.toString()).isEqualTo("Maps.asConverter({one=1, two=2})");
   }
 
   public void testAsConverter_serialization() {
@@ -1192,10 +1192,10 @@ public class MapsTest extends TestCase {
 
   public void testImmutableEntry() {
     Entry<String, Integer> e = immutableEntry("foo", 1);
-    assertEquals("foo", e.getKey());
+    assertThat(e.getKey()).isEqualTo("foo");
     assertEquals(1, (int) e.getValue());
     assertThrows(UnsupportedOperationException.class, () -> e.setValue(2));
-    assertEquals("foo=1", e.toString());
+    assertThat(e.toString()).isEqualTo("foo=1");
     assertEquals(101575, e.hashCode());
   }
 
@@ -1204,7 +1204,7 @@ public class MapsTest extends TestCase {
     assertThat(e.getKey()).isNull();
     assertThat(e.getValue()).isNull();
     assertThrows(UnsupportedOperationException.class, () -> e.setValue(null));
-    assertEquals("null=null", e.toString());
+    assertThat(e.toString()).isEqualTo("null=null");
     assertEquals(0, e.hashCode());
   }
 
@@ -1310,7 +1310,7 @@ public class MapsTest extends TestCase {
           }
         };
     Map<String, String> transformed = transformEntries(options, flagPrefixer);
-    assertEquals("{verbose=verbose, sort=nosort}", transformed.toString());
+    assertThat(transformed.toString()).isEqualTo("{verbose=verbose, sort=nosort}");
   }
 
   // Logically this would accept a NavigableMap, but that won't work under GWT.
@@ -1386,8 +1386,8 @@ public class MapsTest extends TestCase {
 
     /* unmod is a view. */
     mod.put(4, "four");
-    assertEquals("four", unmod.get(4));
-    assertEquals("four", unmod.descendingMap().get(4));
+    assertThat(unmod.get(4)).isEqualTo("four");
+    assertThat(unmod.descendingMap().get(4)).isEqualTo("four");
 
     ensureNotDirectlyModifiable(unmod);
     ensureNotDirectlyModifiable(unmod.descendingMap());

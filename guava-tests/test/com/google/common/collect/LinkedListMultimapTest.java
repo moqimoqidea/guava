@@ -162,8 +162,8 @@ public class LinkedListMultimapTest extends TestCase {
     foos.add(3);
     map.put("bar", 4);
     map.put("foo", 5);
-    assertEquals("{bar=[1, 4], foo=[2, 3, 5]}", map.toString());
-    assertEquals("[bar=1, foo=2, foo=3, bar=4, foo=5]", map.entries().toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1, 4], foo=[2, 3, 5]}");
+    assertThat(map.entries().toString()).isEqualTo("[bar=1, foo=2, foo=3, bar=4, foo=5]");
   }
 
   public void testLinkedGetInsert() {
@@ -174,8 +174,8 @@ public class LinkedListMultimapTest extends TestCase {
     foos.add(0, 3);
     map.put("bar", 4);
     map.put("foo", 5);
-    assertEquals("{bar=[1, 4], foo=[3, 2, 5]}", map.toString());
-    assertEquals("[bar=1, foo=3, foo=2, bar=4, foo=5]", map.entries().toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1, 4], foo=[3, 2, 5]}");
+    assertThat(map.entries().toString()).isEqualTo("[bar=1, foo=3, foo=2, bar=4, foo=5]");
   }
 
   public void testLinkedPutInOrder() {
@@ -183,8 +183,8 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("foo", 1);
     map.put("bar", 2);
     map.put("bar", 3);
-    assertEquals("{foo=[1], bar=[2, 3]}", map.toString());
-    assertEquals("[foo=1, bar=2, bar=3]", map.entries().toString());
+    assertThat(map.toString()).isEqualTo("{foo=[1], bar=[2, 3]}");
+    assertThat(map.entries().toString()).isEqualTo("[foo=1, bar=2, bar=3]");
   }
 
   public void testLinkedPutOutOfOrder() {
@@ -192,8 +192,8 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("bar", 1);
     map.put("foo", 2);
     map.put("bar", 3);
-    assertEquals("{bar=[1, 3], foo=[2]}", map.toString());
-    assertEquals("[bar=1, foo=2, bar=3]", map.entries().toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1, 3], foo=[2]}");
+    assertThat(map.entries().toString()).isEqualTo("[bar=1, foo=2, bar=3]");
   }
 
   public void testLinkedPutAllMultimap() {
@@ -203,8 +203,8 @@ public class LinkedListMultimapTest extends TestCase {
     src.put("bar", 3);
     Multimap<String, Integer> dst = create();
     dst.putAll(src);
-    assertEquals("{bar=[1, 3], foo=[2]}", dst.toString());
-    assertEquals("[bar=1, foo=2, bar=3]", src.entries().toString());
+    assertThat(dst.toString()).isEqualTo("{bar=[1, 3], foo=[2]}");
+    assertThat(src.entries().toString()).isEqualTo("[bar=1, foo=2, bar=3]");
   }
 
   public void testLinkedReplaceValues() {
@@ -213,10 +213,10 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("foo", 2);
     map.put("bar", 3);
     map.put("bar", 4);
-    assertEquals("{bar=[1, 3, 4], foo=[2]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1, 3, 4], foo=[2]}");
     map.replaceValues("bar", asList(1, 2));
-    assertEquals("[bar=1, foo=2, bar=2]", map.entries().toString());
-    assertEquals("{bar=[1, 2], foo=[2]}", map.toString());
+    assertThat(map.entries().toString()).isEqualTo("[bar=1, foo=2, bar=2]");
+    assertThat(map.toString()).isEqualTo("{bar=[1, 2], foo=[2]}");
   }
 
   public void testLinkedClear() {
@@ -231,8 +231,8 @@ public class LinkedListMultimapTest extends TestCase {
     map.clear();
     assertEquals(emptyList(), foos);
     assertThat(values).isEmpty();
-    assertEquals("[]", map.entries().toString());
-    assertEquals("{}", map.toString());
+    assertThat(map.entries().toString()).isEqualTo("[]");
+    assertThat(map.toString()).isEqualTo("{}");
   }
 
   public void testLinkedKeySet() {
@@ -241,9 +241,9 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("foo", 2);
     map.put("bar", 3);
     map.put("bar", 4);
-    assertEquals("[bar, foo]", map.keySet().toString());
+    assertThat(map.keySet().toString()).isEqualTo("[bar, foo]");
     map.keySet().remove("bar");
-    assertEquals("{foo=[2]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{foo=[2]}");
   }
 
   public void testLinkedKeys() {
@@ -252,10 +252,10 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("foo", 2);
     map.put("bar", 3);
     map.put("bar", 4);
-    assertEquals("[bar=1, foo=2, bar=3, bar=4]", map.entries().toString());
+    assertThat(map.entries().toString()).isEqualTo("[bar=1, foo=2, bar=3, bar=4]");
     assertThat(map.keys()).containsExactly("bar", "foo", "bar", "bar").inOrder();
     map.keys().remove("bar"); // bar is no longer the first key!
-    assertEquals("{foo=[2], bar=[3, 4]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{foo=[2], bar=[3, 4]}");
   }
 
   public void testLinkedValues() {
@@ -264,9 +264,9 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("foo", 2);
     map.put("bar", 3);
     map.put("bar", 4);
-    assertEquals("[1, 2, 3, 4]", map.values().toString());
+    assertThat(map.values().toString()).isEqualTo("[1, 2, 3, 4]");
     map.values().remove(2);
-    assertEquals("{bar=[1, 3, 4]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1, 3, 4]}");
   }
 
   public void testLinkedEntries() {
@@ -276,18 +276,18 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("bar", 3);
     Iterator<Entry<String, Integer>> entries = map.entries().iterator();
     Entry<String, Integer> entry = entries.next();
-    assertEquals("bar", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("bar");
     assertEquals(1, (int) entry.getValue());
     entry = entries.next();
-    assertEquals("foo", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("foo");
     assertEquals(2, (int) entry.getValue());
     entry.setValue(4);
     entry = entries.next();
-    assertEquals("bar", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("bar");
     assertEquals(3, (int) entry.getValue());
     assertFalse(entries.hasNext());
     entries.remove();
-    assertEquals("{bar=[1], foo=[4]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{bar=[1], foo=[4]}");
   }
 
   public void testLinkedAsMapEntries() {
@@ -297,16 +297,16 @@ public class LinkedListMultimapTest extends TestCase {
     map.put("bar", 3);
     Iterator<Entry<String, Collection<Integer>>> entries = map.asMap().entrySet().iterator();
     Entry<String, Collection<Integer>> barEntry = entries.next();
-    assertEquals("bar", barEntry.getKey());
+    assertThat(barEntry.getKey()).isEqualTo("bar");
     assertThat(barEntry.getValue()).containsExactly(1, 3).inOrder();
     assertThrows(
         UnsupportedOperationException.class, () -> barEntry.setValue(Arrays.<Integer>asList()));
     entries.remove(); // clear
     Entry<String, Collection<Integer>> fooEntry = entries.next();
-    assertEquals("foo", fooEntry.getKey());
+    assertThat(fooEntry.getKey()).isEqualTo("foo");
     assertThat(fooEntry.getValue()).contains(2);
     assertFalse(entries.hasNext());
-    assertEquals("{foo=[2]}", map.toString());
+    assertThat(map.toString()).isEqualTo("{foo=[2]}");
   }
 
   public void testEntriesAfterMultimapUpdate() {

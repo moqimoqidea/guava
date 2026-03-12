@@ -135,7 +135,7 @@ public class TypeTokenTest extends TestCase {
   }
 
   public <T> void testGenericVariableTypeArrays() {
-    assertEquals("T[]", new TypeToken<T[]>() {}.toString());
+    assertThat(new TypeToken<T[]>() {}.toString()).isEqualTo("T[]");
   }
 
   public void testResolveType() throws Exception {
@@ -1932,9 +1932,9 @@ public class TypeTokenTest extends TestCase {
 
   // T is used inside to test type variable
   public <T> void testToString() {
-    assertEquals(String.class.getName(), new TypeToken<String>() {}.toString());
-    assertEquals("T", TypeToken.of(new TypeCapture<T>() {}.capture()).toString());
-    assertEquals("java.lang.String", new Entry<String, Integer>() {}.keyType().toString());
+    assertThat(new TypeToken<String>() {}.toString()).isEqualTo(String.class.getName());
+    assertThat(TypeToken.of(new TypeCapture<T>() {}.capture()).toString()).isEqualTo("T");
+    assertThat(new Entry<String, Integer>() {}.keyType().toString()).isEqualTo("java.lang.String");
   }
 
   private static <K, V> TypeToken<Map<K, V>> mapOf(Class<K> keyType, Class<V> valueType) {

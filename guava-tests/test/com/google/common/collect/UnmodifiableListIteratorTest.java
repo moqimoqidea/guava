@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import java.util.Iterator;
@@ -38,7 +39,7 @@ public class UnmodifiableListIteratorTest extends TestCase {
     Iterator<String> iterator = create();
 
     assertTrue(iterator.hasNext());
-    assertEquals("a", iterator.next());
+    assertThat(iterator.next()).isEqualTo("a");
     assertThrows(UnsupportedOperationException.class, () -> iterator.remove());
   }
 
@@ -47,9 +48,9 @@ public class UnmodifiableListIteratorTest extends TestCase {
     ListIterator<String> iterator = create();
 
     assertTrue(iterator.hasNext());
-    assertEquals("a", iterator.next());
-    assertEquals("b", iterator.next());
-    assertEquals("b", iterator.previous());
+    assertThat(iterator.next()).isEqualTo("a");
+    assertThat(iterator.next()).isEqualTo("b");
+    assertThat(iterator.previous()).isEqualTo("b");
     assertThrows(UnsupportedOperationException.class, () -> iterator.add("c"));
   }
 
@@ -58,9 +59,9 @@ public class UnmodifiableListIteratorTest extends TestCase {
     ListIterator<String> iterator = create();
 
     assertTrue(iterator.hasNext());
-    assertEquals("a", iterator.next());
-    assertEquals("b", iterator.next());
-    assertEquals("b", iterator.previous());
+    assertThat(iterator.next()).isEqualTo("a");
+    assertThat(iterator.next()).isEqualTo("b");
+    assertThat(iterator.previous()).isEqualTo("b");
     assertThrows(UnsupportedOperationException.class, () -> iterator.set("c"));
   }
 

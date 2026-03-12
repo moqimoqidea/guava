@@ -16,6 +16,8 @@
 
 package com.google.common.eventbus.outside;
 
+import static com.google.common.truth.Truth.assertWithMessage;
+
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,6 +53,6 @@ public class OutsideEventBusTest extends TestCase {
     bus.post(EVENT);
 
     assertEquals("Only one event should be delivered.", 1, deliveries.get());
-    assertEquals("Correct string should be delivered.", EVENT, holder.get());
+    assertWithMessage("Correct string should be delivered.").that(holder.get()).isEqualTo(EVENT);
   }
 }

@@ -13,6 +13,7 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.Math.max;
 import static org.junit.Assert.assertThrows;
 
@@ -438,9 +439,9 @@ public class AtomicDoubleArrayTest extends JSR166TestCase {
   /** toString returns current value */
   public void testToString() {
     AtomicDoubleArray aa = new AtomicDoubleArray(VALUES);
-    assertEquals(Arrays.toString(VALUES), aa.toString());
-    assertEquals("[]", new AtomicDoubleArray(0).toString());
-    assertEquals("[]", new AtomicDoubleArray(new double[0]).toString());
+    assertThat(aa.toString()).isEqualTo(Arrays.toString(VALUES));
+    assertThat(new AtomicDoubleArray(0).toString()).isEqualTo("[]");
+    assertThat(new AtomicDoubleArray(new double[0]).toString()).isEqualTo("[]");
   }
 
   /** compareAndSet treats +0.0 and -0.0 as distinct values */

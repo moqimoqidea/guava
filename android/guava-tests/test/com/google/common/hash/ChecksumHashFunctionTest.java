@@ -16,6 +16,7 @@ package com.google.common.hash;
 
 import static com.google.common.hash.Hashing.ChecksumType.ADLER_32;
 import static com.google.common.hash.Hashing.ChecksumType.CRC_32;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.zip.Checksum;
 import junit.framework.TestCase;
@@ -72,7 +73,7 @@ public class ChecksumHashFunctionTest extends TestCase {
 
     String toString = "name";
     HashFunction func = new ChecksumHashFunction(supplier, 32, toString);
-    assertEquals(toString, func.toString());
+    assertThat(func.toString()).isEqualTo(toString);
     assertEquals(value, func.hashBytes(bytes).padToLong());
   }
 
@@ -82,6 +83,6 @@ public class ChecksumHashFunctionTest extends TestCase {
     String toString = "name";
     HashFunction func = new ChecksumHashFunction(supplier, 32, toString);
     assertEquals(expected, func.hashBytes(bytes).asInt());
-    assertEquals(toString, func.toString());
+    assertThat(func.toString()).isEqualTo(toString);
   }
 }

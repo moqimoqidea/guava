@@ -491,7 +491,7 @@ public class RateLimiterTest extends TestCase {
   }
 
   private void assertEvents(String... events) {
-    assertEquals(Arrays.toString(events), stopwatch.readEventsAndClear());
+    assertThat(stopwatch.readEventsAndClear()).isEqualTo(Arrays.toString(events));
   }
 
   /**

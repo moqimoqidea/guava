@@ -16,6 +16,8 @@
 
 package com.google.common.testing;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.io.Serializable;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
@@ -32,7 +34,7 @@ public class SerializableTesterTest extends TestCase {
   public void testStringAssertions() {
     String original = "hello world";
     String copy = SerializableTester.reserializeAndAssert(original);
-    assertEquals(original, copy);
+    assertThat(copy).isEqualTo(original);
     assertNotSame(original, copy);
   }
 

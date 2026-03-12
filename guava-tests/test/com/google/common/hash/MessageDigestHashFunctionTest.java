@@ -16,6 +16,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
@@ -64,26 +65,26 @@ public class MessageDigestHashFunctionTest extends TestCase {
   public void testPutAfterHash() {
     Hasher sha1 = Hashing.sha1().newHasher();
 
-    assertEquals(
-        "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",
-        sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString());
+    assertThat(
+            sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString())
+        .isEqualTo("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
     assertThrows(IllegalStateException.class, () -> sha1.putInt(42));
   }
 
   public void testHashTwice() {
     Hasher sha1 = Hashing.sha1().newHasher();
 
-    assertEquals(
-        "2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",
-        sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString());
+    assertThat(
+            sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString())
+        .isEqualTo("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
     assertThrows(IllegalStateException.class, () -> sha1.hash());
   }
 
   public void testToString() {
-    assertEquals("Hashing.md5()", Hashing.md5().toString());
-    assertEquals("Hashing.sha1()", Hashing.sha1().toString());
-    assertEquals("Hashing.sha256()", Hashing.sha256().toString());
-    assertEquals("Hashing.sha512()", Hashing.sha512().toString());
+    assertThat(Hashing.md5().toString()).isEqualTo("Hashing.md5()");
+    assertThat(Hashing.sha1().toString()).isEqualTo("Hashing.sha1()");
+    assertThat(Hashing.sha256().toString()).isEqualTo("Hashing.sha256()");
+    assertThat(Hashing.sha512().toString()).isEqualTo("Hashing.sha512()");
   }
 
   private static void assertMessageDigestHashing(byte[] input, String algorithmName) {

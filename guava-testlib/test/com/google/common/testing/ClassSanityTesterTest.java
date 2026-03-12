@@ -586,7 +586,7 @@ public class ClassSanityTesterTest extends TestCase {
   }
 
   public void testInstantiate_instantiableFactoryMethodChosen() throws Exception {
-    assertEquals("good", tester.instantiate(InstantiableFactoryMethodChosen.class).name);
+    assertThat(tester.instantiate(InstantiableFactoryMethodChosen.class).name).isEqualTo("good");
   }
 
   @AndroidIncompatible // TODO(cpovirk): ClassNotFoundException... ClassSanityTesterTest$AnInterface
@@ -652,7 +652,7 @@ public class ClassSanityTesterTest extends TestCase {
   }
 
   public void testInstantiate_instantiableConstructorChosen() throws Exception {
-    assertEquals("good", tester.instantiate(InstantiableConstructorChosen.class).name);
+    assertThat(tester.instantiate(InstantiableConstructorChosen.class).name).isEqualTo("good");
   }
 
   public void testEquals_setOfNonInstantiable() throws Exception {

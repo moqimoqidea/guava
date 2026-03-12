@@ -481,8 +481,8 @@ public class MinMaxPriorityQueueTest extends TestCase {
         rawtypeToWildcard(MinMaxPriorityQueue.expectedSize(5)).create();
     Collections.addAll(mmHeap, "foo", "bar", "foobar", "barfoo", "larry", "sergey", "eric");
     assertTrue("Heap is not intact initially", mmHeap.isIntact());
-    assertEquals("bar", mmHeap.peek());
-    assertEquals("sergey", mmHeap.peekLast());
+    assertThat(mmHeap.peek()).isEqualTo("bar");
+    assertThat(mmHeap.peekLast()).isEqualTo("sergey");
     assertEquals(7, mmHeap.size());
     assertTrue("Could not remove larry", mmHeap.remove("larry"));
     assertEquals(6, mmHeap.size());
@@ -498,8 +498,8 @@ public class MinMaxPriorityQueueTest extends TestCase {
         MinMaxPriorityQueue.orderedBy(Ordering.<String>natural().reverse()).create();
     Collections.addAll(mmHeap, "foo", "bar", "foobar", "barfoo", "larry", "sergey", "eric");
     assertTrue("Heap is not intact initially", mmHeap.isIntact());
-    assertEquals("sergey", mmHeap.peek());
-    assertEquals("bar", mmHeap.peekLast());
+    assertThat(mmHeap.peek()).isEqualTo("sergey");
+    assertThat(mmHeap.peekLast()).isEqualTo("bar");
   }
 
   public void testCreateWithCapacityAndOrdering() {

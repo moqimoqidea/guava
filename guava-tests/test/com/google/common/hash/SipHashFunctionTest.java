@@ -14,6 +14,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableSet;
@@ -161,9 +162,9 @@ public class SipHashFunctionTest extends TestCase {
   }
 
   public void testToString() {
-    assertEquals("Hashing.sipHash24(" + K0 + ", " + K1 + ")", SIP_WITH_KEY.toString());
-    assertEquals("Hashing.sipHash24(" + K0 + ", " + K1 + ")", SIP_WITHOUT_KEY.toString());
-    assertEquals("Hashing.sipHash24(20, 13)", Hashing.sipHash24(20, 13).toString());
+    assertThat(SIP_WITH_KEY.toString()).isEqualTo("Hashing.sipHash24(" + K0 + ", " + K1 + ")");
+    assertThat(SIP_WITHOUT_KEY.toString()).isEqualTo("Hashing.sipHash24(" + K0 + ", " + K1 + ")");
+    assertThat(Hashing.sipHash24(20, 13).toString()).isEqualTo("Hashing.sipHash24(20, 13)");
   }
 
   private static void assertSip(String input, long expected) {

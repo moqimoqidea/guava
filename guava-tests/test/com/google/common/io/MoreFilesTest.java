@@ -331,39 +331,40 @@ public class MoreFilesTest extends TestCase {
   }
 
   public void testGetFileExtension() {
-    assertEquals("txt", MoreFiles.getFileExtension(FS.getPath(".txt")));
-    assertEquals("txt", MoreFiles.getFileExtension(FS.getPath("blah.txt")));
-    assertEquals("txt", MoreFiles.getFileExtension(FS.getPath("blah..txt")));
-    assertEquals("txt", MoreFiles.getFileExtension(FS.getPath(".blah.txt")));
-    assertEquals("txt", MoreFiles.getFileExtension(root().resolve("tmp/blah.txt")));
-    assertEquals("gz", MoreFiles.getFileExtension(FS.getPath("blah.tar.gz")));
-    assertEquals("", MoreFiles.getFileExtension(root()));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath(".")));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath("..")));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath("...")));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath("blah")));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath("blah.")));
-    assertEquals("", MoreFiles.getFileExtension(FS.getPath(".blah.")));
-    assertEquals("", MoreFiles.getFileExtension(root().resolve("foo.bar/blah")));
-    assertEquals("", MoreFiles.getFileExtension(root().resolve("foo/.bar/blah")));
+    assertThat(MoreFiles.getFileExtension(FS.getPath(".txt"))).isEqualTo("txt");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("blah.txt"))).isEqualTo("txt");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("blah..txt"))).isEqualTo("txt");
+    assertThat(MoreFiles.getFileExtension(FS.getPath(".blah.txt"))).isEqualTo("txt");
+    assertThat(MoreFiles.getFileExtension(root().resolve("tmp/blah.txt"))).isEqualTo("txt");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("blah.tar.gz"))).isEqualTo("gz");
+    assertThat(MoreFiles.getFileExtension(root())).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("."))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath(".."))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("..."))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("blah"))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath("blah."))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(FS.getPath(".blah."))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(root().resolve("foo.bar/blah"))).isEqualTo("");
+    assertThat(MoreFiles.getFileExtension(root().resolve("foo/.bar/blah"))).isEqualTo("");
   }
 
   public void testGetNameWithoutExtension() {
-    assertEquals("", MoreFiles.getNameWithoutExtension(FS.getPath(".txt")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(FS.getPath("blah.txt")));
-    assertEquals("blah.", MoreFiles.getNameWithoutExtension(FS.getPath("blah..txt")));
-    assertEquals(".blah", MoreFiles.getNameWithoutExtension(FS.getPath(".blah.txt")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(root().resolve("tmp/blah.txt")));
-    assertEquals("blah.tar", MoreFiles.getNameWithoutExtension(FS.getPath("blah.tar.gz")));
-    assertEquals("", MoreFiles.getNameWithoutExtension(root()));
-    assertEquals("", MoreFiles.getNameWithoutExtension(FS.getPath(".")));
-    assertEquals(".", MoreFiles.getNameWithoutExtension(FS.getPath("..")));
-    assertEquals("..", MoreFiles.getNameWithoutExtension(FS.getPath("...")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(FS.getPath("blah")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(FS.getPath("blah.")));
-    assertEquals(".blah", MoreFiles.getNameWithoutExtension(FS.getPath(".blah.")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(root().resolve("foo.bar/blah")));
-    assertEquals("blah", MoreFiles.getNameWithoutExtension(root().resolve("foo/.bar/blah")));
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath(".txt"))).isEqualTo("");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("blah.txt"))).isEqualTo("blah");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("blah..txt"))).isEqualTo("blah.");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath(".blah.txt"))).isEqualTo(".blah");
+    assertThat(MoreFiles.getNameWithoutExtension(root().resolve("tmp/blah.txt"))).isEqualTo("blah");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("blah.tar.gz"))).isEqualTo("blah.tar");
+    assertThat(MoreFiles.getNameWithoutExtension(root())).isEqualTo("");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("."))).isEqualTo("");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath(".."))).isEqualTo(".");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("..."))).isEqualTo("..");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("blah"))).isEqualTo("blah");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath("blah."))).isEqualTo("blah");
+    assertThat(MoreFiles.getNameWithoutExtension(FS.getPath(".blah."))).isEqualTo(".blah");
+    assertThat(MoreFiles.getNameWithoutExtension(root().resolve("foo.bar/blah"))).isEqualTo("blah");
+    assertThat(MoreFiles.getNameWithoutExtension(root().resolve("foo/.bar/blah")))
+        .isEqualTo("blah");
   }
 
   public void testPredicates() throws IOException {

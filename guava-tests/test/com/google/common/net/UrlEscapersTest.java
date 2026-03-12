@@ -23,6 +23,7 @@ import static com.google.common.net.UrlEscaperTesting.assertPathEscaper;
 import static com.google.common.net.UrlEscapers.urlFormParameterEscaper;
 import static com.google.common.net.UrlEscapers.urlFragmentEscaper;
 import static com.google.common.net.UrlEscapers.urlPathSegmentEscaper;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.escape.UnicodeEscaper;
@@ -58,8 +59,8 @@ public class UrlEscapersTest extends TestCase {
     assertEscaping(e, "+", ' ');
     assertEscaping(e, "%2B", '+');
 
-    assertEquals("safe+with+spaces", e.escape("safe with spaces"));
-    assertEquals("foo%40bar.com", e.escape("foo@bar.com"));
+    assertThat(e.escape("safe with spaces")).isEqualTo("safe+with+spaces");
+    assertThat(e.escape("foo@bar.com")).isEqualTo("foo%40bar.com");
   }
 
   public void testUrlPathSegmentEscaper() {

@@ -60,10 +60,10 @@ public class PercentEscaperTest extends TestCase {
     assertUnicodeEscaping(e, "%F4%8F%BF%BF", '\uDBFF', '\uDFFF');
 
     // simple string tests
-    assertEquals("", e.escape(""));
-    assertEquals("safestring", e.escape("safestring"));
-    assertEquals("embedded%00null", e.escape("embedded\0null"));
-    assertEquals("max%EF%BF%BFchar", e.escape("max\uffffchar"));
+    assertThat(e.escape("")).isEqualTo("");
+    assertThat(e.escape("safestring")).isEqualTo("safestring");
+    assertThat(e.escape("embedded\0null")).isEqualTo("embedded%00null");
+    assertThat(e.escape("max\uffffchar")).isEqualTo("max%EF%BF%BFchar");
   }
 
   /** Tests the various ways that the space character can be handled */
@@ -72,9 +72,9 @@ public class PercentEscaperTest extends TestCase {
     UnicodeEscaper plusForSpaceEscaper = new PercentEscaper("", true);
     UnicodeEscaper spaceEscaper = new PercentEscaper(" ", false);
 
-    assertEquals("string%20with%20spaces", basicEscaper.escape("string with spaces"));
-    assertEquals("string+with+spaces", plusForSpaceEscaper.escape("string with spaces"));
-    assertEquals("string with spaces", spaceEscaper.escape("string with spaces"));
+    assertThat(basicEscaper.escape("string with spaces")).isEqualTo("string%20with%20spaces");
+    assertThat(plusForSpaceEscaper.escape("string with spaces")).isEqualTo("string+with+spaces");
+    assertThat(spaceEscaper.escape("string with spaces")).isEqualTo("string with spaces");
   }
 
   /** Tests that if we add extra 'safe' characters they remain unescaped */
@@ -95,8 +95,8 @@ public class PercentEscaperTest extends TestCase {
   /** Tests that if specify '%' as safe the result is an idempotent escaper. */
   public void testCustomEscaper_withpercent() {
     UnicodeEscaper e = new PercentEscaper("%", false);
-    assertEquals("foo%7Cbar", e.escape("foo|bar"));
-    assertEquals("foo%7Cbar", e.escape("foo%7Cbar")); // idempotent
+    assertThat(e.escape("foo|bar")).isEqualTo("foo%7Cbar");
+    assertThat(e.escape("foo%7Cbar")).isEqualTo("foo%7Cbar"); // idempotent
   }
 
   /** Test that giving a null 'safeChars' string causes a {@link NullPointerException}. */

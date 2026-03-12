@@ -14,6 +14,8 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.collect.ImmutableSet;
@@ -131,7 +133,7 @@ public class AggregateFutureStateFallbackAtomicHelperTest extends TestCase {
         classLoader.loadClass(AggregateFutureState.class.getName());
     Field helperField = aggregateFutureStateClass.getDeclaredField("ATOMIC_HELPER");
     helperField.setAccessible(true);
-    assertEquals(expectedHelperClassName, helperField.get(null).getClass().getSimpleName());
+    assertThat(helperField.get(null).getClass().getSimpleName()).isEqualTo(expectedHelperClassName);
   }
 
   private static ClassLoader getClassLoader(Set<String> blocklist) {

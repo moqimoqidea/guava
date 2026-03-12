@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.singletonMap;
 
 import com.google.common.annotations.GwtCompatible;
@@ -56,13 +57,13 @@ public class AbstractMapEntryTest extends TestCase {
   }
 
   public void testToString() {
-    assertEquals("foo=1", entry("foo", 1).toString());
+    assertThat(entry("foo", 1).toString()).isEqualTo("foo=1");
   }
 
   public void testToStringNull() {
-    assertEquals("null=1", entry(NK, 1).toString());
-    assertEquals("foo=null", entry("foo", NV).toString());
-    assertEquals("null=null", entry(NK, NV).toString());
+    assertThat(entry(NK, 1).toString()).isEqualTo("null=1");
+    assertThat(entry("foo", NV).toString()).isEqualTo("foo=null");
+    assertThat(entry(NK, NV).toString()).isEqualTo("null=null");
   }
 
   public void testEquals() {

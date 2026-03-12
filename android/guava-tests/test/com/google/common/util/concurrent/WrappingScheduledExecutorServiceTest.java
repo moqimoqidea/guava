@@ -123,13 +123,13 @@ public class WrappingScheduledExecutorServiceTest extends TestCase {
     TimeUnit lastUnit;
 
     void assertLastMethodCalled(String method, long delay, TimeUnit unit) {
-      assertEquals(method, lastMethodCalled);
+      assertThat(lastMethodCalled).isEqualTo(method);
       assertEquals(delay, lastDelay);
       assertEquals(unit, lastUnit);
     }
 
     void assertLastMethodCalled(String method, long initialDelay, long delay, TimeUnit unit) {
-      assertEquals(method, lastMethodCalled);
+      assertThat(lastMethodCalled).isEqualTo(method);
       assertEquals(initialDelay, lastInitialDelay);
       assertEquals(delay, lastDelay);
       assertEquals(unit, lastUnit);

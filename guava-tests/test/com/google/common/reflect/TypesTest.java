@@ -64,7 +64,7 @@ public class TypesTest extends TestCase {
         Types.newParameterizedType(HashMap.class, String.class, int[][].class);
 
     new EqualsTester().addEqualityGroup(jvmType, ourType).testEquals();
-    assertEquals(jvmType.toString(), ourType.toString());
+    assertThat(ourType.toString()).isEqualTo(jvmType.toString());
     assertEquals(jvmType.hashCode(), ourType.hashCode());
     assertEquals(HashMap.class, ourType.getRawType());
     assertThat(ourType.getActualTypeArguments())
@@ -106,7 +106,7 @@ public class TypesTest extends TestCase {
         .addEqualityGroup(new TypeCapture<Entry<String, String>>() {}.capture())
         .addEqualityGroup(new TypeCapture<Map<String, Integer>>() {}.capture())
         .testEquals();
-    assertEquals(jvmType.toString(), ourType.toString());
+    assertThat(ourType.toString()).isEqualTo(jvmType.toString());
     assertEquals(Map.class, ourType.getOwnerType());
     assertEquals(Entry.class, ourType.getRawType());
     assertThat(ourType.getActualTypeArguments())
@@ -156,21 +156,21 @@ public class TypesTest extends TestCase {
         .addEqualityGroup(jvmType2, ourType2)
         .testEquals();
     assertEquals(new TypeCapture<List<String>>() {}.capture(), ourType1.getGenericComponentType());
-    assertEquals(jvmType1.toString(), ourType1.toString());
-    assertEquals(jvmType2.toString(), ourType2.toString());
+    assertThat(ourType1.toString()).isEqualTo(jvmType1.toString());
+    assertThat(ourType2.toString()).isEqualTo(jvmType2.toString());
   }
 
   public void testNewArrayTypeOfArray() {
     Type jvmType = new TypeCapture<int[][]>() {}.capture();
     Type ourType = Types.newArrayType(int[].class);
-    assertEquals(jvmType.toString(), ourType.toString());
+    assertThat(ourType.toString()).isEqualTo(jvmType.toString());
     new EqualsTester().addEqualityGroup(jvmType, ourType).testEquals();
   }
 
   public void testNewArrayType_primitive() {
     Type jvmType = new TypeCapture<int[]>() {}.capture();
     Type ourType = Types.newArrayType(int.class);
-    assertEquals(jvmType.toString(), ourType.toString());
+    assertThat(ourType.toString()).isEqualTo(jvmType.toString());
     new EqualsTester().addEqualityGroup(jvmType, ourType).testEquals();
   }
 
@@ -243,7 +243,7 @@ public class TypesTest extends TestCase {
   }
 
   private static void assertEqualWildcardType(WildcardType expected, WildcardType actual) {
-    assertEquals(expected.toString(), actual.toString());
+    assertThat(actual.toString()).isEqualTo(expected.toString());
     assertEquals(actual.toString(), expected.hashCode(), actual.hashCode());
     assertThat(actual.getLowerBounds())
         .asList()
@@ -342,8 +342,8 @@ public class TypesTest extends TestCase {
   }
 
   private static void assertEqualTypeVariable(TypeVariable<?> expected, TypeVariable<?> actual) {
-    assertEquals(expected.toString(), actual.toString());
-    assertEquals(expected.getName(), actual.getName());
+    assertThat(actual.toString()).isEqualTo(expected.toString());
+    assertThat(actual.getName()).isEqualTo(expected.getName());
     assertEquals(expected.getGenericDeclaration(), actual.getGenericDeclaration());
     if (!Types.NativeTypeVariableEquals.NATIVE_TYPE_VARIABLE_ONLY) {
       assertEquals(actual.toString(), expected.hashCode(), actual.hashCode());
@@ -379,11 +379,11 @@ public class TypesTest extends TestCase {
   }
 
   public void testToString() {
-    assertEquals(int[].class.getName(), Types.toString(int[].class));
-    assertEquals(int[][].class.getName(), Types.toString(int[][].class));
-    assertEquals(String[].class.getName(), Types.toString(String[].class));
+    assertThat(Types.toString(int[].class)).isEqualTo(int[].class.getName());
+    assertThat(Types.toString(int[][].class)).isEqualTo(int[][].class.getName());
+    assertThat(Types.toString(String[].class)).isEqualTo(String[].class.getName());
     Type elementType = List.class.getTypeParameters()[0];
-    assertEquals(elementType.toString(), Types.toString(elementType));
+    assertThat(Types.toString(elementType)).isEqualTo(elementType.toString());
   }
 
   public void testNullPointers() {

@@ -16,6 +16,8 @@
 
 package com.google.common.eventbus;
 
+import static com.google.common.truth.Truth.assertWithMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -60,7 +62,7 @@ public class AsyncEventBusTest extends TestCase {
     tasks.get(0).run();
 
     assertEquals("One event should be delivered.", 1, events.size());
-    assertEquals("Correct string should be delivered.", EVENT, events.get(0));
+    assertWithMessage("Correct string should be delivered.").that(events.get(0)).isEqualTo(EVENT);
   }
 
   /**

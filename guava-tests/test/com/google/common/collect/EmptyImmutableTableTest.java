@@ -61,7 +61,7 @@ public class EmptyImmutableTableTest extends AbstractImmutableTableTest {
   }
 
   public void testToString() {
-    assertEquals("{}", INSTANCE.toString());
+    assertThat(INSTANCE.toString()).isEqualTo("{}");
   }
 
   public void testSize() {

@@ -16,6 +16,8 @@
 
 package com.google.common.testing;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -59,7 +61,7 @@ public class TestLogHandlerTest extends TestCase {
     ExampleClassUnderTest.foo();
     LogRecord record = handler.getStoredLogRecords().get(0);
     assertEquals(Level.INFO, record.getLevel());
-    assertEquals("message", record.getMessage());
+    assertThat(record.getMessage()).isEqualTo("message");
     assertSame(EXCEPTION, record.getThrown());
   }
 

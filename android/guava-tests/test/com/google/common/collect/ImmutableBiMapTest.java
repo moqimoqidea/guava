@@ -610,7 +610,7 @@ public class ImmutableBiMapTest extends TestCase {
         ImmutableBiMap.copyOf(ImmutableMap.of("one", 1, "two", 2));
     ImmutableBiMap<String, Integer> copy = SerializableTester.reserializeAndAssert(bimap);
     assertEquals(Integer.valueOf(1), copy.get("one"));
-    assertEquals("one", copy.inverse().get(1));
+    assertThat(copy.inverse().get(1)).isEqualTo("one");
     assertSame(copy, copy.inverse().inverse());
   }
 
@@ -621,7 +621,7 @@ public class ImmutableBiMapTest extends TestCase {
         ImmutableBiMap.copyOf(ImmutableMap.of(1, "one", 2, "two")).inverse();
     ImmutableBiMap<String, Integer> copy = SerializableTester.reserializeAndAssert(bimap);
     assertEquals(Integer.valueOf(1), copy.get("one"));
-    assertEquals("one", copy.inverse().get(1));
+    assertThat(copy.inverse().get(1)).isEqualTo("one");
     assertSame(copy, copy.inverse().inverse());
   }
 

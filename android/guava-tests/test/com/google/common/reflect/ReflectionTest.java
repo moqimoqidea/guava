@@ -16,6 +16,7 @@
 
 package com.google.common.reflect;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.testing.NullPointerTester;
@@ -30,16 +31,16 @@ import org.jspecify.annotations.NullUnmarked;
 public class ReflectionTest extends TestCase {
 
   public void testGetPackageName() throws Exception {
-    assertEquals("java.lang", Reflection.getPackageName(Iterable.class));
-    assertEquals("java", Reflection.getPackageName("java.MyType"));
-    assertEquals("java.lang", Reflection.getPackageName(Iterable.class.getName()));
-    assertEquals("", Reflection.getPackageName("NoPackage"));
-    assertEquals("java.util", Reflection.getPackageName(Map.Entry.class));
+    assertThat(Reflection.getPackageName(Iterable.class)).isEqualTo("java.lang");
+    assertThat(Reflection.getPackageName("java.MyType")).isEqualTo("java");
+    assertThat(Reflection.getPackageName(Iterable.class.getName())).isEqualTo("java.lang");
+    assertThat(Reflection.getPackageName("NoPackage")).isEqualTo("");
+    assertThat(Reflection.getPackageName(Map.Entry.class)).isEqualTo("java.util");
   }
 
   public void testNewProxy() throws Exception {
     Runnable runnable = Reflection.newProxy(Runnable.class, X_RETURNER);
-    assertEquals("x", runnable.toString());
+    assertThat(runnable.toString()).isEqualTo("x");
   }
 
   public void testNewProxyCantWorkOnAClass() throws Exception {

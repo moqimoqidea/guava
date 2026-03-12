@@ -84,9 +84,8 @@ public class ThreadFactoryBuilderTest extends TestCase {
     // pool ID but a thread ID of 2.
     Thread thread2 = threadFactory.newThread(monitoredRunnable);
     checkThreadPoolName(thread2, 2);
-    assertEquals(
-        thread.getName().substring(0, thread.getName().lastIndexOf('-')),
-        thread2.getName().substring(0, thread.getName().lastIndexOf('-')));
+    assertThat(thread2.getName().substring(0, thread.getName().lastIndexOf('-')))
+        .isEqualTo(thread.getName().substring(0, thread.getName().lastIndexOf('-')));
 
     // Building again should give us a different pool ID.
     ThreadFactory threadFactory2 = builder.build();
@@ -104,7 +103,8 @@ public class ThreadFactoryBuilderTest extends TestCase {
     String format = "super-duper-thread-%s";
     ThreadFactory factory = builder.setNameFormat(format).build();
     for (int i = 0; i < 11; i++) {
-      assertEquals(rootLocaleFormat(format, i), factory.newThread(monitoredRunnable).getName());
+      assertThat(factory.newThread(monitoredRunnable).getName())
+          .isEqualTo(rootLocaleFormat(format, i));
     }
   }
 
@@ -112,7 +112,8 @@ public class ThreadFactoryBuilderTest extends TestCase {
     String format = "super-duper-thread-%d";
     ThreadFactory factory = builder.setNameFormat(format).build();
     for (int i = 0; i < 11; i++) {
-      assertEquals(rootLocaleFormat(format, i), factory.newThread(monitoredRunnable).getName());
+      assertThat(factory.newThread(monitoredRunnable).getName())
+          .isEqualTo(rootLocaleFormat(format, i));
     }
   }
 
@@ -201,7 +202,7 @@ public class ThreadFactoryBuilderTest extends TestCase {
     Thread thread =
         builder.setThreadFactory(backingThreadFactory).build().newThread(monitoredRunnable);
 
-    assertEquals(THREAD_NAME, thread.getName());
+    assertThat(thread.getName()).isEqualTo(THREAD_NAME);
     assertEquals(THREAD_PRIORITY, thread.getPriority());
     assertEquals(THREAD_DAEMON, thread.isDaemon());
     assertSame(UNCAUGHT_EXCEPTION_HANDLER, thread.getUncaughtExceptionHandler());

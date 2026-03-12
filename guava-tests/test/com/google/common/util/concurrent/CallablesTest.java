@@ -100,12 +100,12 @@ public class CallablesTest extends TestCase {
         new Callable<@Nullable Void>() {
           @Override
           public @Nullable Void call() throws Exception {
-            assertEquals(Thread.currentThread().getName(), newName.get());
+            assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
             return null;
           }
         };
     Callables.threadRenaming(callable, newName).call();
-    assertEquals(oldName, Thread.currentThread().getName());
+    assertThat(Thread.currentThread().getName()).isEqualTo(oldName);
   }
 
   @J2ktIncompatible
@@ -117,12 +117,12 @@ public class CallablesTest extends TestCase {
         new Callable<@Nullable Void>() {
           @Override
           public @Nullable Void call() throws Exception {
-            assertEquals(Thread.currentThread().getName(), newName.get());
+            assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
             throw new SomeCheckedException();
           }
         };
     assertThrows(
         SomeCheckedException.class, () -> Callables.threadRenaming(callable, newName).call());
-    assertEquals(oldName, Thread.currentThread().getName());
+    assertThat(Thread.currentThread().getName()).isEqualTo(oldName);
   }
 }

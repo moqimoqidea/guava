@@ -168,7 +168,7 @@ public class IteratorsTest extends TestCase {
 
   public void testGetOnlyElement_noDefault_valid() {
     Iterator<String> iterator = singletonList("foo").iterator();
-    assertEquals("foo", getOnlyElement(iterator));
+    assertThat(getOnlyElement(iterator)).isEqualTo("foo");
   }
 
   public void testGetOnlyElement_noDefault_empty() {
@@ -203,12 +203,12 @@ public class IteratorsTest extends TestCase {
 
   public void testGetOnlyElement_withDefault_singleton() {
     Iterator<String> iterator = singletonList("foo").iterator();
-    assertEquals("foo", getOnlyElement(iterator, "bar"));
+    assertThat(getOnlyElement(iterator, "bar")).isEqualTo("foo");
   }
 
   public void testGetOnlyElement_withDefault_empty() {
     Iterator<String> iterator = emptyIterator();
-    assertEquals("bar", getOnlyElement(iterator, "bar"));
+    assertThat(getOnlyElement(iterator, "bar")).isEqualTo("bar");
   }
 
   public void testGetOnlyElement_withDefault_empty_null() {
@@ -330,14 +330,14 @@ public class IteratorsTest extends TestCase {
   public void testFind_firstElement() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("cool", find(iterator, equalTo("cool")));
-    assertEquals("pants", iterator.next());
+    assertThat(find(iterator, equalTo("cool"))).isEqualTo("cool");
+    assertThat(iterator.next()).isEqualTo("pants");
   }
 
   public void testFind_lastElement() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("pants", find(iterator, equalTo("pants")));
+    assertThat(find(iterator, equalTo("pants"))).isEqualTo("pants");
     assertFalse(iterator.hasNext());
   }
 
@@ -351,27 +351,27 @@ public class IteratorsTest extends TestCase {
   public void testFind_matchAlways() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("cool", find(iterator, Predicates.alwaysTrue()));
+    assertThat(find(iterator, Predicates.alwaysTrue())).isEqualTo("cool");
   }
 
   public void testFind_withDefault_first() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("cool", find(iterator, equalTo("cool"), "woot"));
-    assertEquals("pants", iterator.next());
+    assertThat(find(iterator, equalTo("cool"), "woot")).isEqualTo("cool");
+    assertThat(iterator.next()).isEqualTo("pants");
   }
 
   public void testFind_withDefault_last() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("pants", find(iterator, equalTo("pants"), "woot"));
+    assertThat(find(iterator, equalTo("pants"), "woot")).isEqualTo("pants");
     assertFalse(iterator.hasNext());
   }
 
   public void testFind_withDefault_notPresent() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("woot", find(iterator, Predicates.alwaysFalse(), "woot"));
+    assertThat(find(iterator, Predicates.alwaysFalse(), "woot")).isEqualTo("woot");
     assertFalse(iterator.hasNext());
   }
 
@@ -385,8 +385,8 @@ public class IteratorsTest extends TestCase {
   public void testFind_withDefault_matchAlways() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("cool", find(iterator, Predicates.alwaysTrue(), "woot"));
-    assertEquals("pants", iterator.next());
+    assertThat(find(iterator, Predicates.alwaysTrue(), "woot")).isEqualTo("cool");
+    assertThat(iterator.next()).isEqualTo("pants");
   }
 
   public void testTryFind_firstElement() {
@@ -410,7 +410,7 @@ public class IteratorsTest extends TestCase {
   public void testTryFind_alwaysFalse_orDefault() {
     Iterable<String> list = Lists.newArrayList("cool", "pants");
     Iterator<String> iterator = list.iterator();
-    assertEquals("woot", tryFind(iterator, Predicates.alwaysFalse()).or("woot"));
+    assertThat(tryFind(iterator, Predicates.alwaysFalse()).or("woot")).isEqualTo("woot");
     assertFalse(iterator.hasNext());
   }
 
@@ -500,7 +500,7 @@ public class IteratorsTest extends TestCase {
     Iterator<String> cycle = Iterators.cycle("a");
     for (int i = 0; i < 3; i++) {
       assertTrue(cycle.hasNext());
-      assertEquals("a", cycle.next());
+      assertThat(cycle.next()).isEqualTo("a");
     }
   }
 
@@ -508,7 +508,7 @@ public class IteratorsTest extends TestCase {
     Iterable<String> iterable = Lists.newArrayList("a");
     Iterator<String> cycle = Iterators.cycle(iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     cycle.remove();
     assertEquals(emptyList(), iterable);
     assertFalse(cycle.hasNext());
@@ -518,9 +518,9 @@ public class IteratorsTest extends TestCase {
     Iterator<String> cycle = Iterators.cycle("a", "b");
     for (int i = 0; i < 3; i++) {
       assertTrue(cycle.hasNext());
-      assertEquals("a", cycle.next());
+      assertThat(cycle.next()).isEqualTo("a");
       assertTrue(cycle.hasNext());
-      assertEquals("b", cycle.next());
+      assertThat(cycle.next()).isEqualTo("b");
     }
   }
 
@@ -528,17 +528,17 @@ public class IteratorsTest extends TestCase {
     Iterable<String> iterable = Lists.newArrayList("a", "b");
     Iterator<String> cycle = Iterators.cycle(iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     assertTrue(cycle.hasNext());
-    assertEquals("b", cycle.next());
+    assertThat(cycle.next()).isEqualTo("b");
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     cycle.remove();
     assertEquals(singletonList("b"), iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("b", cycle.next());
+    assertThat(cycle.next()).isEqualTo("b");
     assertTrue(cycle.hasNext());
-    assertEquals("b", cycle.next());
+    assertThat(cycle.next()).isEqualTo("b");
     cycle.remove();
     assertEquals(emptyList(), iterable);
     assertFalse(cycle.hasNext());
@@ -568,7 +568,7 @@ public class IteratorsTest extends TestCase {
     Iterable<String> iterable = Lists.newArrayList("a");
     Iterator<String> cycle = Iterators.cycle(iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     assertTrue(cycle.hasNext());
     cycle.remove();
     assertEquals(emptyList(), iterable);
@@ -631,7 +631,7 @@ public class IteratorsTest extends TestCase {
     PickyIterable<String> iterable = new PickyIterable<>("a");
     Iterator<String> cycle = Iterators.cycle(iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     assertTrue(cycle.hasNext());
     cycle.remove();
     assertTrue(iterable.elements.isEmpty());
@@ -642,7 +642,7 @@ public class IteratorsTest extends TestCase {
     Iterable<String> iterable = Lists.newArrayList("a");
     Iterator<String> cycle = Iterators.cycle(iterable);
     assertTrue(cycle.hasNext());
-    assertEquals("a", cycle.next());
+    assertThat(cycle.next()).isEqualTo("a");
     cycle.remove();
     assertFalse(cycle.hasNext());
     assertThrows(NoSuchElementException.class, () -> cycle.next());
@@ -746,20 +746,20 @@ public class IteratorsTest extends TestCase {
 
   public void testConcatPartiallyAdvancedSecond() {
     Iterator<String> itr1 = Iterators.concat(singletonIterator("a"), Iterators.forArray("b", "c"));
-    assertEquals("a", itr1.next());
-    assertEquals("b", itr1.next());
+    assertThat(itr1.next()).isEqualTo("a");
+    assertThat(itr1.next()).isEqualTo("b");
     Iterator<String> itr2 = Iterators.concat(singletonIterator("d"), itr1);
-    assertEquals("d", itr2.next());
-    assertEquals("c", itr2.next());
+    assertThat(itr2.next()).isEqualTo("d");
+    assertThat(itr2.next()).isEqualTo("c");
   }
 
   public void testConcatPartiallyAdvancedFirst() {
     Iterator<String> itr1 = Iterators.concat(singletonIterator("a"), Iterators.forArray("b", "c"));
-    assertEquals("a", itr1.next());
-    assertEquals("b", itr1.next());
+    assertThat(itr1.next()).isEqualTo("a");
+    assertThat(itr1.next()).isEqualTo("b");
     Iterator<String> itr2 = Iterators.concat(itr1, singletonIterator("d"));
-    assertEquals("c", itr2.next());
-    assertEquals("d", itr2.next());
+    assertThat(itr2.next()).isEqualTo("c");
+    assertThat(itr2.next()).isEqualTo("d");
   }
 
   /** Illustrates the somewhat bizarre behavior when a null is passed in. */
@@ -1055,10 +1055,10 @@ public class IteratorsTest extends TestCase {
     String[] array = {"foo", "bar"};
     Iterator<String> iterator = Iterators.forArray(array);
     assertTrue(iterator.hasNext());
-    assertEquals("foo", iterator.next());
+    assertThat(iterator.next()).isEqualTo("foo");
     assertTrue(iterator.hasNext());
     assertThrows(UnsupportedOperationException.class, () -> iterator.remove());
-    assertEquals("bar", iterator.next());
+    assertThat(iterator.next()).isEqualTo("bar");
     assertFalse(iterator.hasNext());
     assertThrows(NoSuchElementException.class, () -> iterator.next());
   }
@@ -1067,9 +1067,9 @@ public class IteratorsTest extends TestCase {
     String[] array = {"foo", "bar", "cat"};
     Iterator<String> iterator = Iterators.forArrayWithPosition(array, 1);
     assertTrue(iterator.hasNext());
-    assertEquals("bar", iterator.next());
+    assertThat(iterator.next()).isEqualTo("bar");
     assertTrue(iterator.hasNext());
-    assertEquals("cat", iterator.next());
+    assertThat(iterator.next()).isEqualTo("cat");
     assertFalse(iterator.hasNext());
   }
 
@@ -1171,18 +1171,18 @@ public class IteratorsTest extends TestCase {
 
   public void testToString() {
     Iterator<String> iterator = Lists.newArrayList("yam", "bam", "jam", "ham").iterator();
-    assertEquals("[yam, bam, jam, ham]", Iterators.toString(iterator));
+    assertThat(Iterators.toString(iterator)).isEqualTo("[yam, bam, jam, ham]");
   }
 
   public void testToStringWithNull() {
     Iterator<@Nullable String> iterator =
         Lists.<@Nullable String>newArrayList("hello", null, "world").iterator();
-    assertEquals("[hello, null, world]", Iterators.toString(iterator));
+    assertThat(Iterators.toString(iterator)).isEqualTo("[hello, null, world]");
   }
 
   public void testToStringEmptyIterator() {
     Iterator<String> iterator = Collections.<String>emptyList().iterator();
-    assertEquals("[]", Iterators.toString(iterator));
+    assertThat(Iterators.toString(iterator)).isEqualTo("[]");
   }
 
   @SuppressWarnings("JUnitIncompatibleType") // Fails with j2kt.
@@ -1214,7 +1214,7 @@ public class IteratorsTest extends TestCase {
     iterator.remove();
     assertFalse(iterator.hasNext());
     assertEquals(1, list.size());
-    assertEquals("pants", list.get(0));
+    assertThat(list.get(0)).isEqualTo("pants");
   }
 
   @GwtIncompatible // fairly slow (~30s)
@@ -1231,12 +1231,12 @@ public class IteratorsTest extends TestCase {
 
   public void testGetNext_withDefault_singleton() {
     Iterator<String> iterator = singletonList("foo").iterator();
-    assertEquals("foo", Iterators.getNext(iterator, "bar"));
+    assertThat(Iterators.getNext(iterator, "bar")).isEqualTo("foo");
   }
 
   public void testGetNext_withDefault_empty() {
     Iterator<String> iterator = emptyIterator();
-    assertEquals("bar", Iterators.getNext(iterator, "bar"));
+    assertThat(Iterators.getNext(iterator, "bar")).isEqualTo("bar");
   }
 
   public void testGetNext_withDefault_empty_null() {
@@ -1246,14 +1246,14 @@ public class IteratorsTest extends TestCase {
 
   public void testGetNext_withDefault_two() {
     Iterator<String> iterator = asList("foo", "bar").iterator();
-    assertEquals("foo", Iterators.getNext(iterator, "x"));
+    assertThat(Iterators.getNext(iterator, "x")).isEqualTo("foo");
   }
 
   public void testGetLast_basic() {
     List<String> list = new ArrayList<>();
     list.add("a");
     list.add("b");
-    assertEquals("b", getLast(list.iterator()));
+    assertThat(getLast(list.iterator())).isEqualTo("b");
   }
 
   public void testGetLast_exception() {
@@ -1263,12 +1263,12 @@ public class IteratorsTest extends TestCase {
 
   public void testGetLast_withDefault_singleton() {
     Iterator<String> iterator = singletonList("foo").iterator();
-    assertEquals("foo", Iterators.getLast(iterator, "bar"));
+    assertThat(Iterators.getLast(iterator, "bar")).isEqualTo("foo");
   }
 
   public void testGetLast_withDefault_empty() {
     Iterator<String> iterator = emptyIterator();
-    assertEquals("bar", Iterators.getLast(iterator, "bar"));
+    assertThat(Iterators.getLast(iterator, "bar")).isEqualTo("bar");
   }
 
   public void testGetLast_withDefault_empty_null() {
@@ -1278,7 +1278,7 @@ public class IteratorsTest extends TestCase {
 
   public void testGetLast_withDefault_two() {
     Iterator<String> iterator = asList("foo", "bar").iterator();
-    assertEquals("bar", Iterators.getLast(iterator, "x"));
+    assertThat(Iterators.getLast(iterator, "x")).isEqualTo("bar");
   }
 
   public void testGet_basic() {
@@ -1286,7 +1286,7 @@ public class IteratorsTest extends TestCase {
     list.add("a");
     list.add("b");
     Iterator<String> iterator = list.iterator();
-    assertEquals("b", get(iterator, 1));
+    assertThat(get(iterator, 1)).isEqualTo("b");
     assertFalse(iterator.hasNext());
   }
 
@@ -1326,7 +1326,7 @@ public class IteratorsTest extends TestCase {
     list.add("a");
     list.add("b");
     Iterator<String> iterator = list.iterator();
-    assertEquals("a", get(iterator, 0, "c"));
+    assertThat(get(iterator, 0, "c")).isEqualTo("a");
     assertTrue(iterator.hasNext());
   }
 
@@ -1335,7 +1335,7 @@ public class IteratorsTest extends TestCase {
     list.add("a");
     list.add("b");
     Iterator<String> iterator = list.iterator();
-    assertEquals("c", get(iterator, 2, "c"));
+    assertThat(get(iterator, 2, "c")).isEqualTo("c");
     assertFalse(iterator.hasNext());
   }
 
@@ -1344,7 +1344,7 @@ public class IteratorsTest extends TestCase {
     list.add("a");
     list.add("b");
     Iterator<String> iterator = list.iterator();
-    assertEquals("c", get(iterator, 3, "c"));
+    assertThat(get(iterator, 3, "c")).isEqualTo("c");
     assertFalse(iterator.hasNext());
   }
 
@@ -1363,7 +1363,7 @@ public class IteratorsTest extends TestCase {
     list.add("b");
     Iterator<String> iterator = list.iterator();
     advance(iterator, 1);
-    assertEquals("b", iterator.next());
+    assertThat(iterator.next()).isEqualTo("b");
   }
 
   public void testAdvance_pastEnd() {
@@ -1481,17 +1481,17 @@ public class IteratorsTest extends TestCase {
     // Test & Verify
     Iterator<String> consumingIterator = Iterators.consumingIterator(list.iterator());
 
-    assertEquals("Iterators.consumingIterator(...)", consumingIterator.toString());
+    assertThat(consumingIterator.toString()).isEqualTo("Iterators.consumingIterator(...)");
 
     assertThat(list).containsExactly("a", "b").inOrder();
 
     assertTrue(consumingIterator.hasNext());
     assertThat(list).containsExactly("a", "b").inOrder();
-    assertEquals("a", consumingIterator.next());
+    assertThat(consumingIterator.next()).isEqualTo("a");
     assertThat(list).contains("b");
 
     assertTrue(consumingIterator.hasNext());
-    assertEquals("b", consumingIterator.next());
+    assertThat(consumingIterator.next()).isEqualTo("b");
     assertThat(list).isEmpty();
 
     assertFalse(consumingIterator.hasNext());
@@ -1514,15 +1514,15 @@ public class IteratorsTest extends TestCase {
   public void testIndexOf_consumedData() {
     Iterator<String> iterator = Lists.newArrayList("manny", "mo", "jack").iterator();
     assertEquals(1, Iterators.indexOf(iterator, equalTo("mo")));
-    assertEquals("jack", iterator.next());
+    assertThat(iterator.next()).isEqualTo("jack");
     assertFalse(iterator.hasNext());
   }
 
   public void testIndexOf_consumedDataWithDuplicates() {
     Iterator<String> iterator = Lists.newArrayList("manny", "mo", "mo", "jack").iterator();
     assertEquals(1, Iterators.indexOf(iterator, equalTo("mo")));
-    assertEquals("mo", iterator.next());
-    assertEquals("jack", iterator.next());
+    assertThat(iterator.next()).isEqualTo("mo");
+    assertThat(iterator.next()).isEqualTo("jack");
     assertFalse(iterator.hasNext());
   }
 

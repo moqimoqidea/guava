@@ -181,7 +181,8 @@ public class ByteSourceTest extends IoTestCase {
     ByteSource byteSource = new TestByteSource("hamburger\n".getBytes(US_ASCII));
 
     // Pasted this expected string from `echo hamburger | md5sum`
-    assertEquals("cfa0c5002275c90508338a5cdb2a9781", byteSource.hash(Hashing.md5()).toString());
+    assertThat(byteSource.hash(Hashing.md5()).toString())
+        .isEqualTo("cfa0c5002275c90508338a5cdb2a9781");
   }
 
   public void testContentEquals() throws IOException {

@@ -262,7 +262,7 @@ public class InetAddressesTest extends TestCase {
         if (isNumeric) {
           assertEquals(Integer.parseInt(scopeId), parsed.getScopeId());
         } else {
-          assertEquals(scopeId, parsed.getScopedInterface().getName());
+          assertThat(parsed.getScopedInterface().getName()).isEqualTo(scopeId);
         }
         Inet6Address reparsed =
             (Inet6Address) InetAddresses.forString(InetAddresses.toAddrString(parsed));
@@ -329,41 +329,40 @@ public class InetAddressesTest extends TestCase {
 
   public void testToAddrStringIPv4() {
     // Don't need to test IPv4 much; it just calls getHostAddress().
-    assertEquals("1.2.3.4", InetAddresses.toAddrString(InetAddresses.forString("1.2.3.4")));
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("1.2.3.4"))).isEqualTo("1.2.3.4");
   }
 
   public void testToAddrStringIPv6() {
-    assertEquals(
-        "1:2:3:4:5:6:7:8", InetAddresses.toAddrString(InetAddresses.forString("1:2:3:4:5:6:7:8")));
-    assertEquals(
-        "2001:0:0:4::8", InetAddresses.toAddrString(InetAddresses.forString("2001:0:0:4:0:0:0:8")));
-    assertEquals(
-        "2001::4:5:6:7:8",
-        InetAddresses.toAddrString(InetAddresses.forString("2001:0:0:4:5:6:7:8")));
-    assertEquals(
-        "2001:0:3:4:5:6:7:8",
-        InetAddresses.toAddrString(InetAddresses.forString("2001:0:3:4:5:6:7:8")));
-    assertEquals(
-        "0:0:3::ffff", InetAddresses.toAddrString(InetAddresses.forString("0:0:3:0:0:0:0:ffff")));
-    assertEquals(
-        "::4:0:0:0:ffff",
-        InetAddresses.toAddrString(InetAddresses.forString("0:0:0:4:0:0:0:ffff")));
-    assertEquals(
-        "::5:0:0:ffff", InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:5:0:0:ffff")));
-    assertEquals(
-        "1::4:0:0:7:8", InetAddresses.toAddrString(InetAddresses.forString("1:0:0:4:0:0:7:8")));
-    assertEquals("::", InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:0:0:0:0")));
-    assertEquals("::1", InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:0:0:0:1")));
-    assertEquals(
-        "2001:658:22a:cafe::",
-        InetAddresses.toAddrString(InetAddresses.forString("2001:0658:022a:cafe::")));
-    assertEquals("::102:304", InetAddresses.toAddrString(InetAddresses.forString("::1.2.3.4")));
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("1:2:3:4:5:6:7:8")))
+        .isEqualTo("1:2:3:4:5:6:7:8");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("2001:0:0:4:0:0:0:8")))
+        .isEqualTo("2001:0:0:4::8");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("2001:0:0:4:5:6:7:8")))
+        .isEqualTo("2001::4:5:6:7:8");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("2001:0:3:4:5:6:7:8")))
+        .isEqualTo("2001:0:3:4:5:6:7:8");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("0:0:3:0:0:0:0:ffff")))
+        .isEqualTo("0:0:3::ffff");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("0:0:0:4:0:0:0:ffff")))
+        .isEqualTo("::4:0:0:0:ffff");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:5:0:0:ffff")))
+        .isEqualTo("::5:0:0:ffff");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("1:0:0:4:0:0:7:8")))
+        .isEqualTo("1::4:0:0:7:8");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:0:0:0:0")))
+        .isEqualTo("::");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("0:0:0:0:0:0:0:1")))
+        .isEqualTo("::1");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("2001:0658:022a:cafe::")))
+        .isEqualTo("2001:658:22a:cafe::");
+    assertThat(InetAddresses.toAddrString(InetAddresses.forString("::1.2.3.4")))
+        .isEqualTo("::102:304");
   }
 
   public void testToUriStringIPv4() {
     String ipStr = "1.2.3.4";
     InetAddress ip = InetAddresses.forString(ipStr);
-    assertEquals("1.2.3.4", InetAddresses.toUriString(ip));
+    assertThat(InetAddresses.toUriString(ip)).isEqualTo("1.2.3.4");
   }
 
   public void testToUriStringIPv6() {
@@ -371,7 +370,7 @@ public class InetAddressesTest extends TestCase {
     // does not collapse contiguous shorts of zeroes with the :: abbreviation.
     String ipStr = "3ffe::1";
     InetAddress ip = InetAddresses.forString(ipStr);
-    assertEquals("[3ffe::1]", InetAddresses.toUriString(ip));
+    assertThat(InetAddresses.toUriString(ip)).isEqualTo("[3ffe::1]");
   }
 
   public void testForUriStringIPv4() {

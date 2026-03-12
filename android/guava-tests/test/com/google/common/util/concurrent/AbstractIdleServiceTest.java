@@ -117,11 +117,11 @@ public class AbstractIdleServiceTest extends TestCase {
 
   public void testServiceToString() {
     AbstractIdleService service = new TestService();
-    assertEquals("TestService [NEW]", service.toString());
+    assertThat(service.toString()).isEqualTo("TestService [NEW]");
     service.startAsync().awaitRunning();
-    assertEquals("TestService [RUNNING]", service.toString());
+    assertThat(service.toString()).isEqualTo("TestService [RUNNING]");
     service.stopAsync().awaitTerminated();
-    assertEquals("TestService [TERMINATED]", service.toString());
+    assertThat(service.toString()).isEqualTo("TestService [TERMINATED]");
   }
 
   public void testTimeout() throws Exception {

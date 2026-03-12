@@ -114,7 +114,7 @@ public class TreeMultimapExplicitTest extends TestCase {
     multimap.putAll("foo", asList(-1, 2, 4));
     multimap.putAll("bar", asList(2, 3));
     multimap.put("foo", 1);
-    assertEquals("{bar=[3, 2, 1], foo=[4, 3, 2, 1, -1]}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{bar=[3, 2, 1], foo=[4, 3, 2, 1, -1]}");
   }
 
   public void testGetComparator() {
@@ -142,10 +142,10 @@ public class TreeMultimapExplicitTest extends TestCase {
     assertThat(entry.getKey()).isNull();
     assertThat(entry.getValue()).containsExactly(7, 3, 1);
     entry = iterator.next();
-    assertEquals("tree", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("tree");
     assertThat(entry.getValue()).containsExactly(null, 0);
     entry = iterator.next();
-    assertEquals("google", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("google");
     assertThat(entry.getValue()).containsExactly(6, 2);
   }
 
@@ -194,7 +194,7 @@ public class TreeMultimapExplicitTest extends TestCase {
     SortedSet<@Nullable String> keySet = multimap.keySet();
 
     assertThat(keySet.first()).isNull();
-    assertEquals("google", keySet.last());
+    assertThat(keySet.last()).isEqualTo("google");
     assertEquals(StringLength.COMPARATOR, keySet.comparator());
     assertEquals(Sets.<@Nullable String>newHashSet(null, "tree"), keySet.headSet("yahoo"));
     assertEquals(newHashSet("google"), keySet.tailSet("yahoo"));

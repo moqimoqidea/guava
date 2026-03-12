@@ -438,7 +438,7 @@ public class ListsTest extends TestCase {
 
     // The result of Arrays.asList() is mutable
     otherWay.set(0, "FOO");
-    assertEquals("FOO", otherWay.get(0));
+    assertThat(otherWay.get(0)).isEqualTo("FOO");
 
     // But it can't grow
     assertThrows(UnsupportedOperationException.class, () -> otherWay.add("nope"));
@@ -468,9 +468,9 @@ public class ListsTest extends TestCase {
     assertThat(list).containsExactly("foo", "bar", "baz").inOrder();
     assertEquals(3, list.size());
     assertIndexIsOutOfBounds(list, -1);
-    assertEquals("foo", list.get(0));
-    assertEquals("bar", list.get(1));
-    assertEquals("baz", list.get(2));
+    assertThat(list.get(0)).isEqualTo("foo");
+    assertThat(list.get(1)).isEqualTo("bar");
+    assertThat(list.get(2)).isEqualTo("baz");
     assertIndexIsOutOfBounds(list, 3);
   }
 
@@ -479,7 +479,7 @@ public class ListsTest extends TestCase {
     assertThat(list).contains("foo");
     assertEquals(1, list.size());
     assertIndexIsOutOfBounds(list, -1);
-    assertEquals("foo", list.get(0));
+    assertThat(list.get(0)).isEqualTo("foo");
     assertIndexIsOutOfBounds(list, 1);
     assertTrue(list instanceof RandomAccess);
 
@@ -513,8 +513,8 @@ public class ListsTest extends TestCase {
     assertThat(list).containsExactly("foo", "bar").inOrder();
     assertEquals(2, list.size());
     assertIndexIsOutOfBounds(list, -1);
-    assertEquals("foo", list.get(0));
-    assertEquals("bar", list.get(1));
+    assertThat(list.get(0)).isEqualTo("foo");
+    assertThat(list.get(1)).isEqualTo("bar");
     assertIndexIsOutOfBounds(list, 2);
     SerializableTester.reserializeAndAssert(list);
     assertTrue(list instanceof RandomAccess);
@@ -785,9 +785,9 @@ public class ListsTest extends TestCase {
   private static void assertTransformListIterator(List<String> list) {
     ListIterator<String> iterator = list.listIterator(1);
     assertEquals(1, iterator.nextIndex());
-    assertEquals("2", iterator.next());
-    assertEquals("3", iterator.next());
-    assertEquals("4", iterator.next());
+    assertThat(iterator.next()).isEqualTo("2");
+    assertThat(iterator.next()).isEqualTo("3");
+    assertThat(iterator.next()).isEqualTo("4");
     assertEquals(4, iterator.nextIndex());
     try {
       iterator.next();
@@ -795,11 +795,11 @@ public class ListsTest extends TestCase {
     } catch (NoSuchElementException expected) {
     }
     assertEquals(3, iterator.previousIndex());
-    assertEquals("4", iterator.previous());
-    assertEquals("3", iterator.previous());
-    assertEquals("2", iterator.previous());
+    assertThat(iterator.previous()).isEqualTo("4");
+    assertThat(iterator.previous()).isEqualTo("3");
+    assertThat(iterator.previous()).isEqualTo("2");
     assertTrue(iterator.hasPrevious());
-    assertEquals("1", iterator.previous());
+    assertThat(iterator.previous()).isEqualTo("1");
     assertFalse(iterator.hasPrevious());
     assertEquals(-1, iterator.previousIndex());
     try {
@@ -874,13 +874,13 @@ public class ListsTest extends TestCase {
   private static void assertTransformIterator(List<String> list) {
     Iterator<String> iterator = list.iterator();
     assertTrue(iterator.hasNext());
-    assertEquals("1", iterator.next());
+    assertThat(iterator.next()).isEqualTo("1");
     assertTrue(iterator.hasNext());
-    assertEquals("2", iterator.next());
+    assertThat(iterator.next()).isEqualTo("2");
     assertTrue(iterator.hasNext());
-    assertEquals("3", iterator.next());
+    assertThat(iterator.next()).isEqualTo("3");
     assertTrue(iterator.hasNext());
-    assertEquals("4", iterator.next());
+    assertThat(iterator.next()).isEqualTo("4");
     assertFalse(iterator.hasNext());
     try {
       iterator.next();

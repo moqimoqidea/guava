@@ -16,10 +16,11 @@
 
 package com.google.common.io;
 
-import static com.google.common.io.SourceSinkFactory.CharSinkFactory;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.io.SourceSinkFactory.CharSinkFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -117,8 +118,22 @@ public class CharSinkTester extends SourceSinkTester<CharSink, String, CharSinkF
     assertContainsExpectedLines(separator);
   }
 
+  public void testWriteLinesStream_systemDefaultSeparator() throws IOException {
+    String separator = System.getProperty("line.separator");
+    sink.writeLines(lines.stream());
+
+    assertContainsExpectedLines(separator);
+  }
+
+  public void testWriteLinesStream_specificSeparator() throws IOException {
+    String separator = "\r\n";
+    sink.writeLines(lines.stream(), separator);
+
+    assertContainsExpectedLines(separator);
+  }
+
   private void assertContainsExpectedString() throws IOException {
-    assertEquals(expected, factory.getSinkContents());
+    assertThat(factory.getSinkContents()).isEqualTo(expected);
   }
 
   private void assertContainsExpectedLines(String separator) throws IOException {
@@ -127,6 +142,6 @@ public class CharSinkTester extends SourceSinkTester<CharSink, String, CharSinkF
       // if we wrote any lines in writeLines(), there will be a trailing newline
       expected += separator;
     }
-    assertEquals(expected, factory.getSinkContents());
+    assertThat(factory.getSinkContents()).isEqualTo(expected);
   }
 }

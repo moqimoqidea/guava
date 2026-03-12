@@ -78,7 +78,7 @@ public class CompactHashMapTest extends TestCase {
     assertThat(map.values).hasLength(10);
     assertEquals(10, map.size());
     for (int i = 0; i < 10; i++) {
-      assertEquals(Integer.toString(i), map.get(i));
+      assertThat(map.get(i)).isEqualTo(Integer.toString(i));
     }
   }
 

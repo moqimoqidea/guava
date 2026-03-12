@@ -174,10 +174,10 @@ public class ByteStreamsTest extends IoTestCase {
     ByteArrayDataInput in =
         ByteStreams.newDataInput(
             "This is a line\r\nThis too\rand this\nand also this".getBytes(UTF_8));
-    assertEquals("This is a line", in.readLine());
-    assertEquals("This too", in.readLine());
-    assertEquals("and this", in.readLine());
-    assertEquals("and also this", in.readLine());
+    assertThat(in.readLine()).isEqualTo("This is a line");
+    assertThat(in.readLine()).isEqualTo("This too");
+    assertThat(in.readLine()).isEqualTo("and this");
+    assertThat(in.readLine()).isEqualTo("and also this");
   }
 
   public void testNewDataInput_readFloat() {
@@ -198,7 +198,7 @@ public class ByteStreamsTest extends IoTestCase {
     data[1] = 15;
     System.arraycopy("Kilroy was here".getBytes(UTF_8), 0, data, 2, 15);
     ByteArrayDataInput in = ByteStreams.newDataInput(data);
-    assertEquals("Kilroy was here", in.readUTF());
+    assertThat(in.readUTF()).isEqualTo("Kilroy was here");
   }
 
   public void testNewDataInput_readChar() {

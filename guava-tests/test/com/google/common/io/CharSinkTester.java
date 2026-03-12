@@ -16,6 +16,8 @@
 
 package com.google.common.io;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.SourceSinkFactory.CharSinkFactory;
@@ -131,7 +133,7 @@ public class CharSinkTester extends SourceSinkTester<CharSink, String, CharSinkF
   }
 
   private void assertContainsExpectedString() throws IOException {
-    assertEquals(expected, factory.getSinkContents());
+    assertThat(factory.getSinkContents()).isEqualTo(expected);
   }
 
   private void assertContainsExpectedLines(String separator) throws IOException {
@@ -140,6 +142,6 @@ public class CharSinkTester extends SourceSinkTester<CharSink, String, CharSinkF
       // if we wrote any lines in writeLines(), there will be a trailing newline
       expected += separator;
     }
-    assertEquals(expected, factory.getSinkContents());
+    assertThat(factory.getSinkContents()).isEqualTo(expected);
   }
 }

@@ -17,6 +17,7 @@
 package com.google.common.util.concurrent;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.google.common.util.concurrent.JdkFutureAdapters.listenInPoolThread;
@@ -98,7 +99,7 @@ public class JdkFutureAdaptersTest extends TestCase {
     // #addListener() will run the listener immediately because the Future is
     // already finished (we explicitly set the result of it above).
     listenableFuture.addListener(singleCallListener, directExecutor());
-    assertEquals(DATA1, listenableFuture.get());
+    assertThat(listenableFuture.get()).isEqualTo(DATA1);
 
     // 'spy' should have been ignored since 'abstractFuture' was done before
     // a listener was added.
@@ -123,7 +124,7 @@ public class JdkFutureAdaptersTest extends TestCase {
 
     listenableFuture.addListener(singleCallListener, executorService);
     abstractFuture.set(DATA1);
-    assertEquals(DATA1, listenableFuture.get());
+    assertThat(listenableFuture.get()).isEqualTo(DATA1);
     singleCallListener.waitForCall();
 
     assertTrue(spy.wasExecuted);
@@ -164,7 +165,7 @@ public class JdkFutureAdaptersTest extends TestCase {
     submitSuccessful.await();
     executorService.shutdownNow();
     abstractFuture.set(DATA1);
-    assertEquals(DATA1, listenableFuture.get());
+    assertThat(listenableFuture.get()).isEqualTo(DATA1);
     singleCallListener.waitForCall();
 
     assertTrue(singleCallListener.wasCalled());

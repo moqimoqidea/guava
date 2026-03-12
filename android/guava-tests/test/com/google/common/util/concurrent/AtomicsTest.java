@@ -64,7 +64,7 @@ public class AtomicsTest extends TestCase {
     String[] array = {"foo", "bar", "baz"};
     AtomicReferenceArray<String> refArray = Atomics.newReferenceArray(array);
     for (int i = 0; i < array.length; ++i) {
-      assertEquals(array[i], refArray.get(i));
+      assertThat(refArray.get(i)).isEqualTo(array[i]);
     }
     assertThrows(IndexOutOfBoundsException.class, () -> refArray.get(array.length));
   }

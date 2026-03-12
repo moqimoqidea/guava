@@ -88,7 +88,7 @@ public class WrappingExecutorServiceTest extends TestCase {
       TestExecutor testExecutor = new TestExecutor(mock);
       Future<String> f = testExecutor.submit(doNothing(), RESULT_VALUE);
       mock.assertLastMethodCalled("submit");
-      assertEquals(RESULT_VALUE, f.get());
+      assertThat(f.get()).isEqualTo(RESULT_VALUE);
     }
     {
       MockExecutor mock = new MockExecutor();
@@ -96,7 +96,7 @@ public class WrappingExecutorServiceTest extends TestCase {
       Callable<String> task = Callables.returning(RESULT_VALUE);
       Future<String> f = testExecutor.submit(task);
       mock.assertLastMethodCalled("submit");
-      assertEquals(RESULT_VALUE, f.get());
+      assertThat(f.get()).isEqualTo(RESULT_VALUE);
     }
   }
 
@@ -126,7 +126,7 @@ public class WrappingExecutorServiceTest extends TestCase {
       MockExecutor mock = new MockExecutor();
       TestExecutor testExecutor = new TestExecutor(mock);
       String s = testExecutor.invokeAny(tasks);
-      assertEquals("ran0", s);
+      assertThat(s).isEqualTo("ran0");
       mock.assertLastMethodCalled("invokeAny");
     }
     {
@@ -135,7 +135,7 @@ public class WrappingExecutorServiceTest extends TestCase {
       long timeout = 5;
       TestExecutor testExecutor = new TestExecutor(mock);
       String s = testExecutor.invokeAny(tasks, timeout, unit);
-      assertEquals(RESULT_VALUE + "0", s);
+      assertThat(s).isEqualTo(RESULT_VALUE + "0");
       mock.assertMethodWithTimeout("invokeAny", timeout, unit);
     }
   }
@@ -143,7 +143,7 @@ public class WrappingExecutorServiceTest extends TestCase {
   private static void checkResults(List<Future<String>> futures)
       throws InterruptedException, ExecutionException {
     for (int i = 0; i < futures.size(); i++) {
-      assertEquals(RESULT_VALUE + i, futures.get(i).get());
+      assertThat(futures.get(i).get()).isEqualTo(RESULT_VALUE + i);
     }
   }
 
@@ -204,7 +204,7 @@ public class WrappingExecutorServiceTest extends TestCase {
     private final ExecutorService inline = newDirectExecutorService();
 
     void assertLastMethodCalled(String method) {
-      assertEquals(method, lastMethodCalled);
+      assertThat(lastMethodCalled).isEqualTo(method);
     }
 
     void assertMethodWithTimeout(String method, long timeout, TimeUnit unit) {

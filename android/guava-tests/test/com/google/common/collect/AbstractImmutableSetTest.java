@@ -268,7 +268,7 @@ public abstract class AbstractImmutableSetTest extends TestCase {
 
   public void testToString() {
     Set<String> set = of("a", "b", "c", "d", "e", "f", "g");
-    assertEquals("[a, b, c, d, e, f, g]", set.toString());
+    assertThat(set.toString()).isEqualTo("[a, b, c, d, e, f, g]");
   }
 
   @GwtIncompatible // slow (~40s)

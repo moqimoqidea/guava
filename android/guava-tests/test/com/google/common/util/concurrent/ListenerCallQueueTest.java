@@ -16,6 +16,7 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
@@ -130,9 +131,8 @@ public class ListenerCallQueueTest extends TestCase {
     }
 
     assertEquals(1, logHandler.getStoredLogRecords().size());
-    assertEquals(
-        "Exception while executing callback: MyListener custom-label",
-        logHandler.getStoredLogRecords().get(0).getMessage());
+    assertThat(logHandler.getStoredLogRecords().get(0).getMessage())
+        .isEqualTo("Exception while executing callback: MyListener custom-label");
   }
 
   public void testEnqueueAndDispatch_multithreaded() throws InterruptedException {

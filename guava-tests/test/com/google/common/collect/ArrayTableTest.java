@@ -187,7 +187,7 @@ public class ArrayTableTest extends AbstractTableTest<@Nullable Character> {
   public void testToStringSize1() {
     table = ArrayTable.create(ImmutableList.of("foo"), ImmutableList.of(1));
     table.put("foo", 1, 'a');
-    assertEquals("{foo={1=a}}", table.toString());
+    assertThat(table.toString()).isEqualTo("{foo={1=a}}");
   }
 
   public void testCreateDuplicateRows() {
@@ -293,40 +293,41 @@ public class ArrayTableTest extends AbstractTableTest<@Nullable Character> {
 
   public void testToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals(
-        "{foo={1=a, 2=null, 3=c}, "
-            + "bar={1=b, 2=null, 3=null}, "
-            + "cat={1=null, 2=null, 3=null}}",
-        table.toString());
-    assertEquals(
-        "{foo={1=a, 2=null, 3=c}, "
-            + "bar={1=b, 2=null, 3=null}, "
-            + "cat={1=null, 2=null, 3=null}}",
-        table.rowMap().toString());
+    assertThat(table.toString())
+        .isEqualTo(
+            "{foo={1=a, 2=null, 3=c}, "
+                + "bar={1=b, 2=null, 3=null}, "
+                + "cat={1=null, 2=null, 3=null}}");
+    assertThat(table.rowMap().toString())
+        .isEqualTo(
+            "{foo={1=a, 2=null, 3=c}, "
+                + "bar={1=b, 2=null, 3=null}, "
+                + "cat={1=null, 2=null, 3=null}}");
   }
 
   public void testCellSetToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals(
-        "[(foo,1)=a, (foo,2)=null, (foo,3)=c, "
-            + "(bar,1)=b, (bar,2)=null, (bar,3)=null, "
-            + "(cat,1)=null, (cat,2)=null, (cat,3)=null]",
-        table.cellSet().toString());
+    assertThat(table.cellSet().toString())
+        .isEqualTo(
+            "[(foo,1)=a, (foo,2)=null, (foo,3)=c, "
+                + "(bar,1)=b, (bar,2)=null, (bar,3)=null, "
+                + "(cat,1)=null, (cat,2)=null, (cat,3)=null]");
   }
 
   public void testRowKeySetToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[foo, bar, cat]", table.rowKeySet().toString());
+    assertThat(table.rowKeySet().toString()).isEqualTo("[foo, bar, cat]");
   }
 
   public void testColumnKeySetToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[1, 2, 3]", table.columnKeySet().toString());
+    assertThat(table.columnKeySet().toString()).isEqualTo("[1, 2, 3]");
   }
 
   public void testValuesToString_ordered() {
     table = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertEquals("[a, null, c, b, null, null, null, null, null]", table.values().toString());
+    assertThat(table.values().toString())
+        .isEqualTo("[a, null, c, b, null, null, null, null, null]");
   }
 
   public void testRowKeyList() {

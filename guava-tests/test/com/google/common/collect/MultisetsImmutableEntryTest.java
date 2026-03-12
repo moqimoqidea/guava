@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.Collections.nCopies;
 
 import com.google.common.annotations.GwtCompatible;
@@ -44,13 +45,13 @@ public class MultisetsImmutableEntryTest extends TestCase {
   }
 
   public void testToString() {
-    assertEquals("foo", entry("foo", 1).toString());
-    assertEquals("bar x 2", entry("bar", 2).toString());
+    assertThat(entry("foo", 1).toString()).isEqualTo("foo");
+    assertThat(entry("bar", 2).toString()).isEqualTo("bar x 2");
   }
 
   public void testToStringNull() {
-    assertEquals("null", entry(NE, 1).toString());
-    assertEquals("null x 2", entry(NE, 2).toString());
+    assertThat(entry(NE, 1).toString()).isEqualTo("null");
+    assertThat(entry(NE, 2).toString()).isEqualTo("null x 2");
   }
 
   public void testEquals() {

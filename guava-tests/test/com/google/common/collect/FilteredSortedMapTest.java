@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.annotations.GwtCompatible;
 import java.util.SortedMap;
 import org.jspecify.annotations.NullMarked;
@@ -36,8 +38,8 @@ public class FilteredSortedMapTest extends AbstractFilteredMapTest {
     unfiltered.put("dog", 5);
 
     SortedMap<String, Integer> filtered = Maps.filterEntries(unfiltered, CORRECT_LENGTH);
-    assertEquals("banana", filtered.firstKey());
-    assertEquals("cat", filtered.lastKey());
+    assertThat(filtered.firstKey()).isEqualTo("banana");
+    assertThat(filtered.lastKey()).isEqualTo("cat");
   }
 
   public void testHeadSubTailMap_filteredMap() {

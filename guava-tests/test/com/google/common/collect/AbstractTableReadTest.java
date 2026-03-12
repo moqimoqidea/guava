@@ -148,7 +148,7 @@ public abstract class AbstractTableReadTest<C extends @Nullable Character> exten
 
   public void testToStringSize1() {
     table = create("foo", 1, 'a');
-    assertEquals("{foo={1=a}}", table.toString());
+    assertThat(table.toString()).isEqualTo("{foo={1=a}}");
   }
 
   public void testRow() {

@@ -231,9 +231,8 @@ public class ClassPathTest extends TestCase {
     assertEquals(
         new File("/home/build/x/y/z.jar").toURI(),
         ClassPath.getClassPathEntry(new File("/home/build/outer.jar"), "x/y/z.jar").toURI());
-    assertEquals(
-        "/home/build/x y.jar",
-        ClassPath.getClassPathEntry(new File("/home/build/outer.jar"), "x y.jar").getFile());
+    assertThat(ClassPath.getClassPathEntry(new File("/home/build/outer.jar"), "x y.jar").getFile())
+        .isEqualTo("/home/build/x y.jar");
   }
 
   public void testGetClassPathFromManifest_nullManifest() {
@@ -336,7 +335,7 @@ public class ClassPathTest extends TestCase {
   }
 
   public void testGetClassName() {
-    assertEquals("abc.d.Abc", ClassPath.getClassName("abc/d/Abc.class"));
+    assertThat(ClassPath.getClassName("abc/d/Abc.class")).isEqualTo("abc.d.Abc");
   }
 
   public void testResourceInfo_of() {
@@ -347,20 +346,23 @@ public class ClassPathTest extends TestCase {
 
   public void testGetSimpleName() {
     ClassLoader classLoader = getClass().getClassLoader();
-    assertEquals("Foo", new ClassInfo(FILE, "Foo.class", classLoader).getSimpleName());
-    assertEquals("Foo", new ClassInfo(FILE, "a/b/Foo.class", classLoader).getSimpleName());
-    assertEquals("Foo", new ClassInfo(FILE, "a/b/Bar$Foo.class", classLoader).getSimpleName());
-    assertEquals("", new ClassInfo(FILE, "a/b/Bar$1.class", classLoader).getSimpleName());
-    assertEquals("Foo", new ClassInfo(FILE, "a/b/Bar$Foo.class", classLoader).getSimpleName());
-    assertEquals("", new ClassInfo(FILE, "a/b/Bar$1.class", classLoader).getSimpleName());
-    assertEquals("Local", new ClassInfo(FILE, "a/b/Bar$1Local.class", classLoader).getSimpleName());
+    assertThat(new ClassInfo(FILE, "Foo.class", classLoader).getSimpleName()).isEqualTo("Foo");
+    assertThat(new ClassInfo(FILE, "a/b/Foo.class", classLoader).getSimpleName()).isEqualTo("Foo");
+    assertThat(new ClassInfo(FILE, "a/b/Bar$Foo.class", classLoader).getSimpleName())
+        .isEqualTo("Foo");
+    assertThat(new ClassInfo(FILE, "a/b/Bar$1.class", classLoader).getSimpleName()).isEqualTo("");
+    assertThat(new ClassInfo(FILE, "a/b/Bar$Foo.class", classLoader).getSimpleName())
+        .isEqualTo("Foo");
+    assertThat(new ClassInfo(FILE, "a/b/Bar$1.class", classLoader).getSimpleName()).isEqualTo("");
+    assertThat(new ClassInfo(FILE, "a/b/Bar$1Local.class", classLoader).getSimpleName())
+        .isEqualTo("Local");
   }
 
   public void testGetPackageName() {
-    assertEquals(
-        "", new ClassInfo(FILE, "Foo.class", getClass().getClassLoader()).getPackageName());
-    assertEquals(
-        "a.b", new ClassInfo(FILE, "a/b/Foo.class", getClass().getClassLoader()).getPackageName());
+    assertThat(new ClassInfo(FILE, "Foo.class", getClass().getClassLoader()).getPackageName())
+        .isEqualTo("");
+    assertThat(new ClassInfo(FILE, "a/b/Foo.class", getClass().getClassLoader()).getPackageName())
+        .isEqualTo("a.b");
   }
 
   // Test that ResourceInfo.urls() returns identical content to ClassLoader.getResources()

@@ -192,7 +192,7 @@ public class MapsTransformValuesUnmodifiableIteratorTest extends MapInterfaceTes
         transformValues(ImmutableMap.of("a", 1), Functions.toStringFunction());
     Map<String, String> expected = ImmutableMap.of("a", "1");
     assertMapsEqual(expected, map);
-    assertEquals(expected.get("a"), map.get("a"));
+    assertThat(map.get("a")).isEqualTo(expected.get("a"));
   }
 
   public void testTransformIdentityFunctionEquality() {
@@ -217,7 +217,7 @@ public class MapsTransformValuesUnmodifiableIteratorTest extends MapInterfaceTes
     Map<String, Integer> underlying = new HashMap<>();
     underlying.put("a", 1);
     Map<String, String> map = transformValues(underlying, Functions.toStringFunction());
-    assertEquals("1", map.remove("a"));
+    assertThat(map.remove("a")).isEqualTo("1");
     assertThat(map.remove("b")).isNull();
   }
 
@@ -255,7 +255,7 @@ public class MapsTransformValuesUnmodifiableIteratorTest extends MapInterfaceTes
 
     underlying.put("d", 4);
     assertEquals(underlying.size(), map.size());
-    assertEquals("4", map.get("d"));
+    assertThat(map.get("d")).isEqualTo("4");
 
     underlying.remove("c");
     assertEquals(underlying.size(), map.size());

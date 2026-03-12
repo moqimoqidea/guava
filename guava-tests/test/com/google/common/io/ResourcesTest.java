@@ -61,7 +61,7 @@ public class ResourcesTest extends IoTestCase {
 
   public void testToString() throws IOException {
     URL resource = getClass().getResource("testdata/i18n.txt");
-    assertEquals(I18N, Resources.toString(resource, UTF_8));
+    assertThat(Resources.toString(resource, UTF_8)).isEqualTo(I18N);
     assertThat(Resources.toString(resource, US_ASCII)).isNotEqualTo(I18N);
   }
 
@@ -95,15 +95,15 @@ public class ResourcesTest extends IoTestCase {
         };
     List<String> result = Resources.readLines(resource, US_ASCII, collectAndLowercaseAndTrim);
     assertEquals(3600, result.size());
-    assertEquals("ALICE'S ADVENTURES IN WONDERLAND", result.get(0));
-    assertEquals("THE END", result.get(result.size() - 1));
+    assertThat(result.get(0)).isEqualTo("ALICE'S ADVENTURES IN WONDERLAND");
+    assertThat(result.get(result.size() - 1)).isEqualTo("THE END");
   }
 
   public void testCopyToOutputStream() throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     URL resource = getClass().getResource("testdata/i18n.txt");
     Resources.copy(resource, out);
-    assertEquals(I18N, out.toString("UTF-8"));
+    assertThat(out.toString("UTF-8")).isEqualTo(I18N);
   }
 
   public void testGetResource_notFound() {
@@ -155,7 +155,7 @@ public class ResourcesTest extends IoTestCase {
       Thread.currentThread().setContextClassLoader(loader);
       URL url = Resources.getResource(tempFile.getName());
       String text = Resources.toString(url, UTF_8);
-      assertEquals("rud a chur ar an méar fhada" + System.lineSeparator(), text);
+      assertThat(text).isEqualTo("rud a chur ar an méar fhada" + System.lineSeparator());
     } finally {
       Thread.currentThread().setContextClassLoader(oldContextLoader);
     }

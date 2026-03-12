@@ -17,6 +17,7 @@
 package com.google.common.reflect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.EqualsTester;
@@ -47,7 +48,7 @@ public class AbstractInvocationHandlerTest extends TestCase {
 
   public void testToString() {
     List<String> proxy = newDelegatingList(LIST1);
-    assertEquals(Proxy.getInvocationHandler(proxy).toString(), proxy.toString());
+    assertThat(proxy.toString()).isEqualTo(Proxy.getInvocationHandler(proxy).toString());
   }
 
   interface A {}

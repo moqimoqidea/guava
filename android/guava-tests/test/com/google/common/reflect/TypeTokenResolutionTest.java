@@ -511,21 +511,21 @@ public class TypeTokenResolutionTest extends TestCase {
         genericReturnType(WithFalseRecursiveType.class, "keyShouldNotResolveToStringList");
     TypeToken<?> keyType =
         TypeToken.of(returnType).resolveType(WithFalseRecursiveType.class.getTypeParameters()[0]);
-    assertEquals("java.util.List<V>", keyType.getType().toString());
+    assertThat(keyType.getType().toString()).isEqualTo("java.util.List<V>");
   }
 
   public void testFalseRecursiveType_notRealRecursiveMapping() {
     Type returnType = genericReturnType(WithFalseRecursiveType.class, "shouldNotCauseInfiniteLoop");
     TypeToken<?> keyType =
         TypeToken.of(returnType).resolveType(WithFalseRecursiveType.class.getTypeParameters()[0]);
-    assertEquals("java.util.List<K>", keyType.getType().toString());
+    assertThat(keyType.getType().toString()).isEqualTo("java.util.List<K>");
   }
 
   public void testFalseRecursiveType_referenceOfSubtypeDoesNotConfuseMe() {
     Type returnType = genericReturnType(WithFalseRecursiveType.class, "evenSubtypeWorks");
     TypeToken<?> keyType =
         TypeToken.of(returnType).resolveType(WithFalseRecursiveType.class.getTypeParameters()[0]);
-    assertEquals("java.util.List<java.util.List<V>>", keyType.getType().toString());
+    assertThat(keyType.getType().toString()).isEqualTo("java.util.List<java.util.List<V>>");
   }
 
   public void testFalseRecursiveType_intermediaryTypeMappingDoesNotConfuseMe() {
@@ -533,7 +533,7 @@ public class TypeTokenResolutionTest extends TestCase {
         genericReturnType(SubtypeOfWithFalseRecursiveType.class, "revertKeyAndValueTypes");
     TypeToken<?> keyType =
         TypeToken.of(returnType).resolveType(WithFalseRecursiveType.class.getTypeParameters()[0]);
-    assertEquals("java.util.List<K1>", keyType.getType().toString());
+    assertThat(keyType.getType().toString()).isEqualTo("java.util.List<K1>");
   }
 
   private static Type genericReturnType(Class<?> cls, String methodName) {

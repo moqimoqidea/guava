@@ -202,7 +202,7 @@ public class InvokableTest extends TestCase {
     static Invokable<A, A> constructor() throws Exception {
       Constructor<A> constructor = A.class.getDeclaredConstructor(Object.class);
       Invokable<A, A> invokable = Invokable.from(constructor);
-      assertEquals(constructor.getName(), invokable.getName());
+      assertThat(invokable.getName()).isEqualTo(constructor.getName());
       assertEquals(A.class, invokable.getDeclaringClass());
       return invokable;
     }
@@ -210,7 +210,7 @@ public class InvokableTest extends TestCase {
     static Invokable<?, Object> method(String name, Class<?>... parameterTypes) throws Exception {
       Invokable<?, Object> invokable =
           Invokable.from(A.class.getDeclaredMethod(name, parameterTypes));
-      assertEquals(name, invokable.getName());
+      assertThat(invokable.getName()).isEqualTo(name);
       assertEquals(A.class, invokable.getDeclaringClass());
       return invokable;
     }
@@ -253,7 +253,7 @@ public class InvokableTest extends TestCase {
   public void testConstructor_typeParameters() throws Exception {
     TypeVariable<?>[] variables = Prepender.constructor().getTypeParameters();
     assertThat(variables).hasLength(1);
-    assertEquals("T", variables[0].getName());
+    assertThat(variables[0].getName()).isEqualTo("T");
   }
 
   public void testConstructor_parameters() throws Exception {
@@ -273,7 +273,7 @@ public class InvokableTest extends TestCase {
   public void testConstructor_call() throws Exception {
     Invokable<?, Prepender> delegate = Prepender.constructor(String.class, int.class);
     Prepender prepender = delegate.invoke(null, "a", 1);
-    assertEquals("a", prepender.prefix);
+    assertThat(prepender.prefix).isEqualTo("a");
     assertEquals(1, prepender.times);
   }
 
@@ -281,7 +281,7 @@ public class InvokableTest extends TestCase {
     Invokable<?, Prepender> delegate =
         Prepender.constructor(String.class, int.class).returning(Prepender.class);
     Prepender prepender = delegate.invoke(null, "a", 1);
-    assertEquals("a", prepender.prefix);
+    assertThat(prepender.prefix).isEqualTo("a");
     assertEquals(1, prepender.times);
   }
 
@@ -304,7 +304,7 @@ public class InvokableTest extends TestCase {
     Invokable<?, ?> delegate = Prepender.method("prepend", String.class, Iterable.class);
     TypeVariable<?>[] variables = delegate.getTypeParameters();
     assertThat(variables).hasLength(1);
-    assertEquals("T", variables[0].getName());
+    assertThat(variables[0].getName()).isEqualTo("T");
   }
 
   public void testStaticMethod_parameters() throws Exception {

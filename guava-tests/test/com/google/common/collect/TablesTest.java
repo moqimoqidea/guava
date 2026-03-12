@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.Tables.immutableCell;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -43,11 +44,11 @@ public class TablesTest extends TestCase {
 
   public void testImmutableEntryToString() {
     Cell<String, Integer, Character> entry = immutableCell("foo", 1, 'a');
-    assertEquals("(foo,1)=a", entry.toString());
+    assertThat(entry.toString()).isEqualTo("(foo,1)=a");
 
     Cell<@Nullable String, @Nullable Integer, @Nullable Character> nullEntry =
         immutableCell(null, null, null);
-    assertEquals("(null,null)=null", nullEntry.toString());
+    assertThat(nullEntry.toString()).isEqualTo("(null,null)=null");
   }
 
   public void testEntryEquals() {

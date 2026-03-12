@@ -146,7 +146,7 @@ public class AbstractFutureTest extends TestCase {
             set("foo");
           }
         };
-    assertEquals("foo", future.get(0, SECONDS));
+    assertThat(future.get(0, SECONDS)).isEqualTo("foo");
   }
 
   public void testEvilFuture_setFuture() throws Exception {

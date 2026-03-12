@@ -169,7 +169,7 @@ public class ArbitraryInstancesTest extends TestCase {
     assertEquals(UnsignedLong.ZERO, ArbitraryInstances.get(UnsignedLong.class));
     assertEquals(0, ArbitraryInstances.get(BigDecimal.class).intValue());
     assertEquals(0, ArbitraryInstances.get(BigInteger.class).intValue());
-    assertEquals("", ArbitraryInstances.get(String.class));
+    assertThat(ArbitraryInstances.get(String.class)).isEqualTo("");
     assertEquals("", ArbitraryInstances.get(CharSequence.class));
     assertEquals(SECONDS, ArbitraryInstances.get(TimeUnit.class));
     assertThat(ArbitraryInstances.get(Object.class)).isNotNull();
@@ -375,7 +375,8 @@ public class ArbitraryInstancesTest extends TestCase {
   }
 
   public void testGet_regex() {
-    assertEquals(Pattern.compile("").pattern(), ArbitraryInstances.get(Pattern.class).pattern());
+    assertThat(ArbitraryInstances.get(Pattern.class).pattern())
+        .isEqualTo(Pattern.compile("").pattern());
     assertEquals(0, ArbitraryInstances.get(MatchResult.class).groupCount());
   }
 

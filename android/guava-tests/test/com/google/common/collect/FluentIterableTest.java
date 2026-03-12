@@ -125,7 +125,7 @@ public class FluentIterableTest extends TestCase {
     input.add(1, list3);
 
     assertEquals(asList(1, 2, 3, 4), newArrayList(result));
-    assertEquals("[1, 2, 3, 4]", result.toString());
+    assertThat(result.toString()).isEqualTo("[1, 2, 3, 4]");
   }
 
   public void testConcatVarargs() {
@@ -136,7 +136,7 @@ public class FluentIterableTest extends TestCase {
     List<Integer> list5 = newArrayList(10);
     FluentIterable<Integer> result = FluentIterable.concat(list1, list2, list3, list4, list5);
     assertEquals(asList(1, 4, 7, 8, 9, 10), newArrayList(result));
-    assertEquals("[1, 4, 7, 8, 9, 10]", result.toString());
+    assertThat(result.toString()).isEqualTo("[1, 4, 7, 8, 9, 10]");
   }
 
   public void testConcatNullPointerException() {
@@ -266,15 +266,16 @@ public class FluentIterableTest extends TestCase {
   }
 
   public void testOfToString() {
-    assertEquals("[yam, bam, jam, ham]", FluentIterable.of("yam", "bam", "jam", "ham").toString());
+    assertThat(FluentIterable.of("yam", "bam", "jam", "ham").toString())
+        .isEqualTo("[yam, bam, jam, ham]");
   }
 
   public void testToString() {
-    assertEquals("[]", FluentIterable.from(emptyList()).toString());
-    assertEquals("[]", FluentIterable.<String>of().toString());
+    assertThat(FluentIterable.from(emptyList()).toString()).isEqualTo("[]");
+    assertThat(FluentIterable.<String>of().toString()).isEqualTo("[]");
 
-    assertEquals(
-        "[yam, bam, jam, ham]", FluentIterable.from(asList("yam", "bam", "jam", "ham")).toString());
+    assertThat(FluentIterable.from(asList("yam", "bam", "jam", "ham")).toString())
+        .isEqualTo("[yam, bam, jam, ham]");
   }
 
   public void testCycle() {
@@ -283,7 +284,7 @@ public class FluentIterableTest extends TestCase {
     int howManyChecked = 0;
     for (String string : cycle) {
       String expected = (howManyChecked % 2 == 0) ? "a" : "b";
-      assertEquals(expected, string);
+      assertThat(string).isEqualTo(expected);
       if (howManyChecked++ == 5) {
         break;
       }
@@ -291,7 +292,7 @@ public class FluentIterableTest extends TestCase {
 
     // We left the last iterator pointing to "b". But a new iterator should
     // always point to "a".
-    assertEquals("a", cycle.iterator().next());
+    assertThat(cycle.iterator().next()).isEqualTo("a");
   }
 
   public void testCycle_emptyIterable() {
@@ -314,11 +315,11 @@ public class FluentIterableTest extends TestCase {
     FluentIterable<Integer> result =
         FluentIterable.<Integer>from(asList(1, 2, 3)).append(Lists.newArrayList(4, 5, 6));
     assertEquals(asList(1, 2, 3, 4, 5, 6), Lists.newArrayList(result));
-    assertEquals("[1, 2, 3, 4, 5, 6]", result.toString());
+    assertThat(result.toString()).isEqualTo("[1, 2, 3, 4, 5, 6]");
 
     result = FluentIterable.<Integer>from(asList(1, 2, 3)).append(4, 5, 6);
     assertEquals(asList(1, 2, 3, 4, 5, 6), Lists.newArrayList(result));
-    assertEquals("[1, 2, 3, 4, 5, 6]", result.toString());
+    assertThat(result.toString()).isEqualTo("[1, 2, 3, 4, 5, 6]");
   }
 
   public void testAppend_toEmpty() {
@@ -358,7 +359,7 @@ public class FluentIterableTest extends TestCase {
     List<String> actual = Lists.newArrayList(filtered);
     assertEquals(expected, actual);
     assertCanIterateAgain(filtered);
-    assertEquals("[foo]", filtered.toString());
+    assertThat(filtered.toString()).isEqualTo("[foo]");
   }
 
   private static class TypeA {}
@@ -421,7 +422,7 @@ public class FluentIterableTest extends TestCase {
 
     assertEquals(asList(1, 2, 3), Lists.newArrayList(iterable));
     assertCanIterateAgain(iterable);
-    assertEquals("[1, 2, 3]", iterable.toString());
+    assertThat(iterable.toString()).isEqualTo("[1, 2, 3]");
   }
 
   public void testTransformWith_poorlyBehavedTransform() {
@@ -553,14 +554,14 @@ public class FluentIterableTest extends TestCase {
     Collection<String> set = ImmutableSet.of("a", "b", "c", "d", "e");
     assertEquals(
         Lists.newArrayList("c", "d", "e"), Lists.newArrayList(FluentIterable.from(set).skip(2)));
-    assertEquals("[c, d, e]", FluentIterable.from(set).skip(2).toString());
+    assertThat(FluentIterable.from(set).skip(2).toString()).isEqualTo("[c, d, e]");
   }
 
   public void testSkip_simpleList() {
     Collection<String> list = Lists.newArrayList("a", "b", "c", "d", "e");
     assertEquals(
         Lists.newArrayList("c", "d", "e"), Lists.newArrayList(FluentIterable.from(list).skip(2)));
-    assertEquals("[c, d, e]", FluentIterable.from(list).skip(2).toString());
+    assertThat(FluentIterable.from(list).skip(2).toString()).isEqualTo("[c, d, e]");
   }
 
   public void testSkip_pastEnd() {
@@ -618,8 +619,8 @@ public class FluentIterableTest extends TestCase {
     FluentIterable<String> tail = FluentIterable.from(list).skip(1);
     Iterator<String> tailIterator = tail.iterator();
     list.set(2, "c2");
-    assertEquals("b", tailIterator.next());
-    assertEquals("c2", tailIterator.next());
+    assertThat(tailIterator.next()).isEqualTo("b");
+    assertThat(tailIterator.next()).isEqualTo("c2");
     assertFalse(tailIterator.hasNext());
   }
 
@@ -667,7 +668,7 @@ public class FluentIterableTest extends TestCase {
 
     assertEquals(ImmutableList.of("foo", "bar"), Lists.newArrayList(limited));
     assertCanIterateAgain(limited);
-    assertEquals("[foo, bar]", limited.toString());
+    assertThat(limited.toString()).isEqualTo("[foo, bar]");
   }
 
   public void testLimit_illegalArgument() {
@@ -871,17 +872,17 @@ public class FluentIterableTest extends TestCase {
   }
 
   public void testJoin() {
-    assertEquals("2,1,3,4", fluent(2, 1, 3, 4).join(Joiner.on(",")));
+    assertThat(fluent(2, 1, 3, 4).join(Joiner.on(","))).isEqualTo("2,1,3,4");
   }
 
   public void testJoin_empty() {
-    assertEquals("", fluent().join(Joiner.on(",")));
+    assertThat(fluent().join(Joiner.on(","))).isEqualTo("");
   }
 
   public void testGet() {
-    assertEquals("a", FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(0));
-    assertEquals("b", FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(1));
-    assertEquals("c", FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(2));
+    assertThat(FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(0)).isEqualTo("a");
+    assertThat(FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(1)).isEqualTo("b");
+    assertThat(FluentIterable.from(Lists.newArrayList("a", "b", "c")).get(2)).isEqualTo("c");
   }
 
   public void testGet_outOfBounds() {

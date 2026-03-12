@@ -316,12 +316,12 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
 
   public void testSingle_first() {
     SortedSet<String> set = of("e");
-    assertEquals("e", set.first());
+    assertThat(set.first()).isEqualTo("e");
   }
 
   public void testSingle_last() {
     SortedSet<String> set = of("e");
-    assertEquals("e", set.last());
+    assertThat(set.last()).isEqualTo("e");
   }
 
   @J2ktIncompatible
@@ -429,12 +429,12 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
 
   public void testOf_first() {
     SortedSet<String> set = of("e", "f", "b", "d", "c");
-    assertEquals("b", set.first());
+    assertThat(set.first()).isEqualTo("b");
   }
 
   public void testOf_last() {
     SortedSet<String> set = of("e", "f", "b", "d", "c");
-    assertEquals("f", set.last());
+    assertThat(set.last()).isEqualTo("f");
   }
 
   @J2ktIncompatible
@@ -544,7 +544,7 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
         ImmutableSortedSet.orderedBy(STRING_LENGTH)
             .add("in", "the", "quick", "jumped", "over", "a")
             .build();
-    assertEquals("a", set.first());
+    assertThat(set.first()).isEqualTo("a");
   }
 
   public void testExplicit_last() {
@@ -552,7 +552,7 @@ public class ImmutableSortedSetTest extends AbstractImmutableSetTest {
         ImmutableSortedSet.orderedBy(STRING_LENGTH)
             .add("in", "the", "quick", "jumped", "over", "a")
             .build();
-    assertEquals("jumped", set.last());
+    assertThat(set.last()).isEqualTo("jumped");
   }
 
   @J2ktIncompatible

@@ -148,7 +148,7 @@ public class FuturesTransformAsyncTest extends AbstractChainedListenableFutureTe
     assertFalse(resultFuture.isCancelled());
     assertFalse(inputFuture.isCancelled());
     assertFalse(outputFuture.isCancelled());
-    assertEquals(RESULT_DATA, resultFuture.get());
+    assertThat(resultFuture.get()).isEqualTo(RESULT_DATA);
   }
 
   public void testFutureGetThrowsRuntimeException() throws Exception {

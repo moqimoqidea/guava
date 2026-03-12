@@ -128,7 +128,7 @@ public class LinkedHashMultimapTest extends TestCase {
     multimap.putAll("foo", asList(-1, 2, 4));
     multimap.putAll("bar", asList(2, 3));
     multimap.put("foo", 1);
-    assertEquals("{foo=[3, -1, 2, 4, 1], bar=[1, 2, 3]}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{foo=[3, -1, 2, 4, 1], bar=[1, 2, 3]}");
   }
 
   public void testOrderingReadOnly() {
@@ -190,13 +190,13 @@ public class LinkedHashMultimapTest extends TestCase {
     Iterator<Entry<String, Collection<Integer>>> collectionIterator =
         multimap.asMap().entrySet().iterator();
     Entry<String, Collection<Integer>> entry = collectionIterator.next();
-    assertEquals("foo", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("foo");
     assertThat(entry.getValue()).containsExactly(5, 3).inOrder();
     entry = collectionIterator.next();
-    assertEquals("bar", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("bar");
     assertThat(entry.getValue()).containsExactly(4, 1).inOrder();
     entry = collectionIterator.next();
-    assertEquals("cow", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("cow");
     assertThat(entry.getValue()).contains(2);
   }
 
@@ -233,9 +233,8 @@ public class LinkedHashMultimapTest extends TestCase {
     multimap.put("bar", 1);
     multimap.put("foo", 1);
 
-    assertEquals(
-        "{foo=[3, -1, 2, null, 4, 1], null=[null, 0, -1], bar=[1, 2, null, 3]}",
-        multimap.toString());
+    assertThat(multimap.toString())
+        .isEqualTo("{foo=[3, -1, 2, null, 4, 1], null=[null, 0, -1], bar=[1, 2, null, 3]}");
   }
 
   public void testPutMultimapOrdered() {
@@ -246,7 +245,7 @@ public class LinkedHashMultimapTest extends TestCase {
 
   public void testKeysToString_ordering() {
     SetMultimap<String, Integer> multimap = initializeMultimap5();
-    assertEquals("[foo x 2, bar x 2, cow]", multimap.keys().toString());
+    assertThat(multimap.keys().toString()).isEqualTo("[foo x 2, bar x 2, cow]");
   }
 
   public void testCreate() {

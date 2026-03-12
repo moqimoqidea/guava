@@ -617,10 +617,10 @@ public class MoreExecutorsTest extends JSR166TestCase {
         new Runnable() {
           @Override
           public void run() {
-            assertEquals("FooBar", Thread.currentThread().getName());
+            assertThat(Thread.currentThread().getName()).isEqualTo("FooBar");
           }
         });
-    assertEquals(oldName, Thread.currentThread().getName());
+    assertThat(Thread.currentThread().getName()).isEqualTo(oldName);
   }
 
   public void testExecutors_nullCheck() throws Exception {

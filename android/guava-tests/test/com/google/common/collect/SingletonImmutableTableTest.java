@@ -87,7 +87,7 @@ public class SingletonImmutableTableTest extends AbstractImmutableTableTest {
   }
 
   public void testToString() {
-    assertEquals("{a={1=blah}}", testTable.toString());
+    assertThat(testTable.toString()).isEqualTo("{a={1=blah}}");
   }
 
   public void testContains() {
@@ -113,7 +113,7 @@ public class SingletonImmutableTableTest extends AbstractImmutableTableTest {
   }
 
   public void testGet() {
-    assertEquals("blah", testTable.get('a', 1));
+    assertThat(testTable.get('a', 1)).isEqualTo("blah");
     assertThat(testTable.get('a', 2)).isNull();
     assertThat(testTable.get('A', 1)).isNull();
     assertThat(testTable.get('A', 2)).isNull();

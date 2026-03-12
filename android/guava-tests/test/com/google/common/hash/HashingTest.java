@@ -17,6 +17,7 @@
 package com.google.common.hash;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertThrows;
@@ -56,7 +57,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.md5());
     HashTestUtils.checkNoFunnels(Hashing.md5());
     HashTestUtils.assertInvariants(Hashing.md5());
-    assertEquals("Hashing.md5()", Hashing.md5().toString());
+    assertThat(Hashing.md5().toString()).isEqualTo("Hashing.md5()");
   }
 
   public void testSha1() {
@@ -64,7 +65,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.sha1());
     HashTestUtils.checkNoFunnels(Hashing.sha1());
     HashTestUtils.assertInvariants(Hashing.sha1());
-    assertEquals("Hashing.sha1()", Hashing.sha1().toString());
+    assertThat(Hashing.sha1().toString()).isEqualTo("Hashing.sha1()");
   }
 
   public void testSha256() {
@@ -72,7 +73,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.sha256());
     HashTestUtils.checkNoFunnels(Hashing.sha256());
     HashTestUtils.assertInvariants(Hashing.sha256());
-    assertEquals("Hashing.sha256()", Hashing.sha256().toString());
+    assertThat(Hashing.sha256().toString()).isEqualTo("Hashing.sha256()");
   }
 
   public void testSha384() {
@@ -80,7 +81,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.sha384());
     HashTestUtils.checkNoFunnels(Hashing.sha384());
     HashTestUtils.assertInvariants(Hashing.sha384());
-    assertEquals("Hashing.sha384()", Hashing.sha384().toString());
+    assertThat(Hashing.sha384().toString()).isEqualTo("Hashing.sha384()");
   }
 
   public void testSha512() {
@@ -88,17 +89,17 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.sha512());
     HashTestUtils.checkNoFunnels(Hashing.sha512());
     HashTestUtils.assertInvariants(Hashing.sha512());
-    assertEquals("Hashing.sha512()", Hashing.sha512().toString());
+    assertThat(Hashing.sha512().toString()).isEqualTo("Hashing.sha512()");
   }
 
   public void testCrc32() {
     HashTestUtils.assertInvariants(Hashing.crc32());
-    assertEquals("Hashing.crc32()", Hashing.crc32().toString());
+    assertThat(Hashing.crc32().toString()).isEqualTo("Hashing.crc32()");
   }
 
   public void testAdler32() {
     HashTestUtils.assertInvariants(Hashing.adler32());
-    assertEquals("Hashing.adler32()", Hashing.adler32().toString());
+    assertThat(Hashing.adler32().toString()).isEqualTo("Hashing.adler32()");
   }
 
   public void testMurmur3_128() {
@@ -107,7 +108,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.murmur3_128());
     HashTestUtils.checkNoFunnels(Hashing.murmur3_128());
     HashTestUtils.assertInvariants(Hashing.murmur3_128());
-    assertEquals("Hashing.murmur3_128(0)", Hashing.murmur3_128().toString());
+    assertThat(Hashing.murmur3_128().toString()).isEqualTo("Hashing.murmur3_128(0)");
   }
 
   public void testMurmur3_32() {
@@ -116,7 +117,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.murmur3_32());
     HashTestUtils.checkNoFunnels(Hashing.murmur3_32());
     HashTestUtils.assertInvariants(Hashing.murmur3_32());
-    assertEquals("Hashing.murmur3_32(0)", Hashing.murmur3_32().toString());
+    assertThat(Hashing.murmur3_32().toString()).isEqualTo("Hashing.murmur3_32(0)");
   }
 
   public void testSipHash24() {
@@ -125,9 +126,8 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.sipHash24());
     HashTestUtils.checkNoFunnels(Hashing.sipHash24());
     HashTestUtils.assertInvariants(Hashing.sipHash24());
-    assertEquals(
-        "Hashing.sipHash24(506097522914230528, 1084818905618843912)",
-        Hashing.sipHash24().toString());
+    assertThat(Hashing.sipHash24().toString())
+        .isEqualTo("Hashing.sipHash24(506097522914230528, 1084818905618843912)");
   }
 
   public void testFingerprint2011() {
@@ -136,7 +136,7 @@ public class HashingTest extends TestCase {
     HashTestUtils.checkNo2BitCharacteristics(Hashing.fingerprint2011());
     HashTestUtils.checkNoFunnels(Hashing.fingerprint2011());
     HashTestUtils.assertInvariants(Hashing.fingerprint2011());
-    assertEquals("Hashing.fingerprint2011()", Hashing.fingerprint2011().toString());
+    assertThat(Hashing.fingerprint2011().toString()).isEqualTo("Hashing.fingerprint2011()");
   }
 
   @AndroidIncompatible // slow TODO(cpovirk): Maybe just reduce iterations under Android.
@@ -520,10 +520,9 @@ public class HashingTest extends TestCase {
       HashFunction func = cell.getRowKey();
       String input = cell.getColumnKey();
       String expected = cell.getValue();
-      assertEquals(
-          String.format(Locale.ROOT, "Known hash for hash(%s, UTF_8) failed", input),
-          expected,
-          func.hashString(input, UTF_8).toString());
+      assertWithMessage(String.format(Locale.ROOT, "Known hash for hash(%s, UTF_8) failed", input))
+          .that(func.hashString(input, UTF_8).toString())
+          .isEqualTo(expected);
     }
   }
 
@@ -567,10 +566,10 @@ public class HashingTest extends TestCase {
         .addEqualityGroup(hashFunction4a, hashFunction4b)
         .testEquals();
 
-    assertEquals(hashFunction1a.toString(), hashFunction1b.toString());
-    assertEquals(hashFunction2a.toString(), hashFunction2b.toString());
-    assertEquals(hashFunction3a.toString(), hashFunction3b.toString());
-    assertEquals(hashFunction4a.toString(), hashFunction4b.toString());
+    assertThat(hashFunction1b.toString()).isEqualTo(hashFunction1a.toString());
+    assertThat(hashFunction2b.toString()).isEqualTo(hashFunction2a.toString());
+    assertThat(hashFunction3b.toString()).isEqualTo(hashFunction3a.toString());
+    assertThat(hashFunction4b.toString()).isEqualTo(hashFunction4a.toString());
   }
 
   static void assertSeedlessHashFunctionEquals(Class<?> clazz) throws Exception {
@@ -584,7 +583,7 @@ public class HashingTest extends TestCase {
         // Make sure we're returning not only equal instances, but constants.
         assertSame(hashFunction1a, hashFunction1b);
 
-        assertEquals(hashFunction1a.toString(), hashFunction1b.toString());
+        assertThat(hashFunction1b.toString()).isEqualTo(hashFunction1a.toString());
       }
     }
   }
@@ -630,7 +629,7 @@ public class HashingTest extends TestCase {
             .addEqualityGroup(hashFunction2)
             .testEquals();
 
-        assertEquals(hashFunction1a.toString(), hashFunction1b.toString());
+        assertThat(hashFunction1b.toString()).isEqualTo(hashFunction1a.toString());
       }
     }
   }

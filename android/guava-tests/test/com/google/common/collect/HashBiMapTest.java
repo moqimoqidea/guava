@@ -88,8 +88,8 @@ public class HashBiMapTest extends TestCase {
             "chile", "peso",
             "switzerland", "franc");
     HashBiMap<String, String> bimap = HashBiMap.create(map);
-    assertEquals("dollar", bimap.get("canada"));
-    assertEquals("canada", bimap.inverse().get("dollar"));
+    assertThat(bimap.get("canada")).isEqualTo("dollar");
+    assertThat(bimap.inverse().get("dollar")).isEqualTo("canada");
   }
 
   private static final int N = 1000;
@@ -133,7 +133,7 @@ public class HashBiMapTest extends TestCase {
     Iterator<Entry<Integer, String>> iterator = entries.iterator();
     Entry<Integer, String> entry = iterator.next();
     entry.setValue("two"); // changes the iterator's current entry value
-    assertEquals("two", map.get(1));
+    assertThat(map.get(1)).isEqualTo("two");
     assertEquals(Integer.valueOf(1), map.inverse().get("two"));
     iterator.remove(); // removes the updated entry
     assertTrue(map.isEmpty());

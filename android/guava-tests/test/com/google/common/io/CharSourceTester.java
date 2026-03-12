@@ -149,7 +149,7 @@ public class CharSourceTester extends SourceSinkTester<CharSource, String, CharS
     if (expectedLines.isEmpty()) {
       assertThat(source.readFirstLine()).isNull();
     } else {
-      assertEquals(expectedLines.get(0), source.readFirstLine());
+      assertThat(source.readFirstLine()).isEqualTo(expectedLines.get(0));
     }
   }
 
@@ -219,7 +219,7 @@ public class CharSourceTester extends SourceSinkTester<CharSource, String, CharS
   }
 
   private void assertExpectedString(String string) {
-    assertEquals(expected, string);
+    assertThat(string).isEqualTo(expected);
   }
 
   private void assertExpectedLines(List<String> list) {

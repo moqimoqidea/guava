@@ -43,7 +43,7 @@ import org.jspecify.annotations.NullUnmarked;
 @NullUnmarked
 public class FuturesGetUncheckedTest extends TestCase {
   public void testGetUnchecked_success() {
-    assertEquals("foo", getUnchecked(immediateFuture("foo")));
+    assertThat(getUnchecked(immediateFuture("foo"))).isEqualTo("foo");
   }
 
   @J2ktIncompatible
@@ -51,7 +51,7 @@ public class FuturesGetUncheckedTest extends TestCase {
   public void testGetUnchecked_interrupted() {
     Thread.currentThread().interrupt();
     try {
-      assertEquals("foo", getUnchecked(immediateFuture("foo")));
+      assertThat(getUnchecked(immediateFuture("foo"))).isEqualTo("foo");
       assertTrue(Thread.currentThread().isInterrupted());
     } finally {
       Thread.interrupted();

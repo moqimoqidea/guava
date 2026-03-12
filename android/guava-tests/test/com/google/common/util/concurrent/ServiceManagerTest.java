@@ -426,7 +426,7 @@ public class ServiceManagerTest extends TestCase {
     assertTrue(listener.failedServices.isEmpty());
     // check that our NoOpService is not directly observable via any of the inspection methods or
     // via logging.
-    assertEquals("ServiceManager{services=[]}", manager.toString());
+    assertThat(manager.toString()).isEqualTo("ServiceManager{services=[]}");
     assertTrue(manager.servicesByState().isEmpty());
     assertTrue(manager.startupTimes().isEmpty());
     Formatter logFormatter =

@@ -19,7 +19,7 @@ package com.google.common.net;
 import static com.google.common.escape.testing.EscaperAsserts.assertEscaping;
 import static com.google.common.escape.testing.EscaperAsserts.assertUnescaped;
 import static com.google.common.escape.testing.EscaperAsserts.assertUnicodeEscaping;
-import static junit.framework.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.fail;
 
 import com.google.common.annotations.GwtCompatible;
@@ -71,10 +71,10 @@ final class UrlEscaperTesting {
     assertUnicodeEscaping(e, "%F0%90%80%80", '\uD800', '\uDC00');
     assertUnicodeEscaping(e, "%F4%8F%BF%BF", '\uDBFF', '\uDFFF');
 
-    assertEquals("", e.escape(""));
-    assertEquals("safestring", e.escape("safestring"));
-    assertEquals("embedded%00null", e.escape("embedded\0null"));
-    assertEquals("max%EF%BF%BFchar", e.escape("max\uffffchar"));
+    assertThat(e.escape("")).isEqualTo("");
+    assertThat(e.escape("safestring")).isEqualTo("safestring");
+    assertThat(e.escape("embedded\0null")).isEqualTo("embedded%00null");
+    assertThat(e.escape("max\uffffchar")).isEqualTo("max%EF%BF%BFchar");
   }
 
   // Helper to assert common expected behaviour of uri escapers.
@@ -98,8 +98,8 @@ final class UrlEscaperTesting {
     // Don't use plus for spaces
     assertEscaping(e, "%20", ' ');
 
-    assertEquals("safe%20with%20spaces", e.escape("safe with spaces"));
-    assertEquals("foo@bar.com", e.escape("foo@bar.com"));
+    assertThat(e.escape("safe with spaces")).isEqualTo("safe%20with%20spaces");
+    assertThat(e.escape("foo@bar.com")).isEqualTo("foo@bar.com");
   }
 
   private UrlEscaperTesting() {}

@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.Iterators.emptyIterator;
+import static com.google.common.truth.Truth.assertThat;
 import static java.lang.reflect.Modifier.STATIC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
@@ -312,7 +313,7 @@ public class ForwardingMapTest extends TestCase {
     forwardingMap.put("foo", "bar");
     forwardingMap.put(null, "baz");
 
-    assertEquals(hashmap.toString(), forwardingMap.toString());
+    assertThat(forwardingMap.toString()).isEqualTo(hashmap.toString());
   }
 
   public void testToStringWithNullValues() throws Exception {
@@ -325,7 +326,7 @@ public class ForwardingMapTest extends TestCase {
     forwardingMap.put("foo", "bar");
     forwardingMap.put("baz", null);
 
-    assertEquals(hashmap.toString(), forwardingMap.toString());
+    assertThat(forwardingMap.toString()).isEqualTo(hashmap.toString());
   }
 
   private static <K, V> Map<K, V> wrap(Map<K, V> delegate) {

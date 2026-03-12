@@ -61,7 +61,8 @@ public class FuturesGetCheckedTest extends TestCase {
   // Boring untimed-get tests:
 
   public void testGetCheckedUntimed_success() throws TwoArgConstructorException {
-    assertEquals("foo", getChecked(immediateFuture("foo"), TwoArgConstructorException.class));
+    assertThat(getChecked(immediateFuture("foo"), TwoArgConstructorException.class))
+        .isEqualTo("foo");
   }
 
   public void testGetCheckedUntimed_interrupted() {
@@ -163,8 +164,8 @@ public class FuturesGetCheckedTest extends TestCase {
   // Boring timed-get tests:
 
   public void testGetCheckedTimed_success() throws TwoArgConstructorException {
-    assertEquals(
-        "foo", getChecked(immediateFuture("foo"), TwoArgConstructorException.class, 0, SECONDS));
+    assertThat(getChecked(immediateFuture("foo"), TwoArgConstructorException.class, 0, SECONDS))
+        .isEqualTo("foo");
   }
 
   public void testGetCheckedTimed_interrupted() {

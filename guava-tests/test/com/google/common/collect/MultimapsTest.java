@@ -363,7 +363,7 @@ public class MultimapsTest extends TestCase {
     assertUnmodifiableIterableInTandem(
         unmodifiable.asMap().entrySet(), multimap.asMap().entrySet());
 
-    assertEquals(multimap.toString(), unmodifiable.toString());
+    assertThat(unmodifiable.toString()).isEqualTo(multimap.toString());
     assertEquals(multimap.hashCode(), unmodifiable.hashCode());
     assertEquals(multimap, unmodifiable);
 
@@ -514,7 +514,7 @@ public class MultimapsTest extends TestCase {
     assertTrue(map.isEmpty());
     assertTrue(multimapView.isEmpty());
     multimap.clear();
-    assertEquals(multimap.toString(), multimapView.toString());
+    assertThat(multimapView.toString()).isEqualTo(multimap.toString());
     assertEquals(multimap.hashCode(), multimapView.hashCode());
     assertEquals(multimap.size(), multimapView.size());
     assertEquals(multimapView, ArrayListMultimap.create());
@@ -674,10 +674,10 @@ public class MultimapsTest extends TestCase {
     assertEquals(1, factory.count);
     multimap.putAll(Color.RED, asList(2, 7, 1, 8));
     assertEquals(2, factory.count);
-    assertEquals("[3, 1, 4]", multimap.get(Color.BLUE).toString());
+    assertThat(multimap.get(Color.BLUE).toString()).isEqualTo("[3, 1, 4]");
 
     Multimap<Color, Integer> ummodifiable = Multimaps.unmodifiableMultimap(multimap);
-    assertEquals("[3, 1, 4]", ummodifiable.get(Color.BLUE).toString());
+    assertThat(ummodifiable.get(Color.BLUE).toString()).isEqualTo("[3, 1, 4]");
 
     Collection<Integer> collection = multimap.get(Color.BLUE);
     // Explicitly call `equals`; `assertEquals` might return fast
@@ -730,7 +730,7 @@ public class MultimapsTest extends TestCase {
     assertEquals(1, factory.count);
     multimap.putAll(Color.RED, asList(2, 7, 1, 8));
     assertEquals(2, factory.count);
-    assertEquals("{BLUE=[3, 1, 4, 1], RED=[2, 7, 1, 8]}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{BLUE=[3, 1, 4, 1], RED=[2, 7, 1, 8]}");
     assertFalse(multimap.get(Color.BLUE) instanceof RandomAccess);
 
     assertTrue(multimap.keySet() instanceof SortedSet);
@@ -799,7 +799,7 @@ public class MultimapsTest extends TestCase {
     assertEquals(2, factory.count);
     multimap.putAll(Color.RED, asList(2, 7, 1, 8));
     assertEquals(3, factory.count);
-    assertEquals("[4, 3, 1]", multimap.get(Color.BLUE).toString());
+    assertThat(multimap.get(Color.BLUE).toString()).isEqualTo("[4, 3, 1]");
     assertEquals(INT_COMPARATOR, multimap.valueComparator());
   }
 
@@ -975,7 +975,7 @@ public class MultimapsTest extends TestCase {
         };
     ListMultimap<String, String> transformed = Multimaps.transformEntries(multimap, transformer);
     assertEquals(ImmutableListMultimap.of("a", "a1", "a", "a4", "a", "a4", "b", "b6"), transformed);
-    assertEquals("{a=[a1, a4, a4], b=[b6]}", transformed.toString());
+    assertThat(transformed.toString()).isEqualTo("{a=[a1, a4, a4], b=[b6]}");
   }
 
   @J2ktIncompatible // Synchronized

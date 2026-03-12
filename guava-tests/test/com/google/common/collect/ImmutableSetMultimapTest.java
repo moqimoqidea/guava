@@ -529,7 +529,7 @@ public class ImmutableSetMultimapTest extends TestCase {
     assertEquals(emptySet(), multimap.keySet());
     assertEquals(0, multimap.size());
     assertTrue(multimap.values().isEmpty());
-    assertEquals("{}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{}");
   }
 
   public void testEmptyMultimapWrites() {
@@ -549,7 +549,7 @@ public class ImmutableSetMultimapTest extends TestCase {
     assertFalse(multimap.entries().isEmpty());
     assertEquals(3, multimap.size());
     assertFalse(multimap.isEmpty());
-    assertEquals("{foo=[1, 3], bar=[2]}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{foo=[1, 3], bar=[2]}");
   }
 
   public void testMultimapWrites() {

@@ -16,6 +16,8 @@
 
 package com.google.common.eventbus;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.Assert.assertThrows;
 
@@ -55,7 +57,7 @@ public class EventBusTest extends TestCase {
 
     List<String> events = catcher.getEvents();
     assertEquals("Only one event should be delivered.", 1, events.size());
-    assertEquals("Correct string should be delivered.", EVENT, events.get(0));
+    assertWithMessage("Correct string should be delivered.").that(events.get(0)).isEqualTo(EVENT);
   }
 
   /**
@@ -103,7 +105,9 @@ public class EventBusTest extends TestCase {
     // Check the StringCatcher...
     List<String> stringEvents = stringCatcher.getEvents();
     assertEquals("Only one String should be delivered.", 1, stringEvents.size());
-    assertEquals("Correct string should be delivered.", EVENT, stringEvents.get(0));
+    assertWithMessage("Correct string should be delivered.")
+        .that(stringEvents.get(0))
+        .isEqualTo(EVENT);
 
     // Check the Catcher<Object>...
     assertEquals("Three Objects should be delivered.", 3, objectEvents.size());
@@ -252,7 +256,7 @@ public class EventBusTest extends TestCase {
 
   public void testToString() throws Exception {
     EventBus eventBus = new EventBus("a b ; - \" < > / \\ €");
-    assertEquals("EventBus{a b ; - \" < > / \\ €}", eventBus.toString());
+    assertThat(eventBus.toString()).isEqualTo("EventBus{a b ; - \" < > / \\ €}");
   }
 
   /**
@@ -337,6 +341,8 @@ public class EventBusTest extends TestCase {
   }
 
   private interface Callback<T> {
+    // See note about bridge methods on testRegistrationWithBridgeMethod.
+    @SuppressWarnings("UnusedMethod")
     void call(T t);
   }
 }

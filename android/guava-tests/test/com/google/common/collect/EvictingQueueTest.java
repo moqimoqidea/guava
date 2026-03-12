@@ -92,18 +92,18 @@ public class EvictingQueueTest extends TestCase {
     assertEquals(1, queue.remainingCapacity());
 
     assertTrue(queue.add("hi"));
-    assertEquals("hi", queue.element());
-    assertEquals("hi", queue.peek());
+    assertThat(queue.element()).isEqualTo("hi");
+    assertThat(queue.peek()).isEqualTo("hi");
     assertEquals(1, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
     assertTrue(queue.add("there"));
-    assertEquals("there", queue.element());
-    assertEquals("there", queue.peek());
+    assertThat(queue.element()).isEqualTo("there");
+    assertThat(queue.peek()).isEqualTo("there");
     assertEquals(1, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
-    assertEquals("there", queue.remove());
+    assertThat(queue.remove()).isEqualTo("there");
     assertEquals(0, queue.size());
     assertEquals(1, queue.remainingCapacity());
   }
@@ -116,18 +116,18 @@ public class EvictingQueueTest extends TestCase {
     assertTrue(queue.add("one"));
     assertTrue(queue.add("two"));
     assertTrue(queue.add("three"));
-    assertEquals("one", queue.element());
-    assertEquals("one", queue.peek());
+    assertThat(queue.element()).isEqualTo("one");
+    assertThat(queue.peek()).isEqualTo("one");
     assertEquals(3, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
     assertTrue(queue.add("four"));
-    assertEquals("two", queue.element());
-    assertEquals("two", queue.peek());
+    assertThat(queue.element()).isEqualTo("two");
+    assertThat(queue.peek()).isEqualTo("two");
     assertEquals(3, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
-    assertEquals("two", queue.remove());
+    assertThat(queue.remove()).isEqualTo("two");
     assertEquals(2, queue.size());
     assertEquals(1, queue.remainingCapacity());
   }
@@ -138,18 +138,18 @@ public class EvictingQueueTest extends TestCase {
     assertEquals(3, queue.remainingCapacity());
 
     assertTrue(queue.addAll(ImmutableList.of("one", "two", "three")));
-    assertEquals("one", queue.element());
-    assertEquals("one", queue.peek());
+    assertThat(queue.element()).isEqualTo("one");
+    assertThat(queue.peek()).isEqualTo("one");
     assertEquals(3, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
     assertTrue(queue.addAll(ImmutableList.of("four")));
-    assertEquals("two", queue.element());
-    assertEquals("two", queue.peek());
+    assertThat(queue.element()).isEqualTo("two");
+    assertThat(queue.peek()).isEqualTo("two");
     assertEquals(3, queue.size());
     assertEquals(0, queue.remainingCapacity());
 
-    assertEquals("two", queue.remove());
+    assertThat(queue.remove()).isEqualTo("two");
     assertEquals(2, queue.size());
     assertEquals(1, queue.remainingCapacity());
   }
@@ -175,9 +175,9 @@ public class EvictingQueueTest extends TestCase {
     EvictingQueue<String> queue = EvictingQueue.create(3);
     assertTrue(queue.addAll(misbehavingList));
 
-    assertEquals("three", queue.remove());
-    assertEquals("four", queue.remove());
-    assertEquals("five", queue.remove());
+    assertThat(queue.remove()).isEqualTo("three");
+    assertThat(queue.remove()).isEqualTo("four");
+    assertThat(queue.remove()).isEqualTo("five");
     assertTrue(queue.isEmpty());
   }
 
@@ -201,9 +201,9 @@ public class EvictingQueueTest extends TestCase {
 
     EvictingQueue<String> copy = SerializableTester.reserialize(original);
     assertEquals(copy.maxSize, original.maxSize);
-    assertEquals("one", copy.remove());
-    assertEquals("two", copy.remove());
-    assertEquals("three", copy.remove());
+    assertThat(copy.remove()).isEqualTo("one");
+    assertThat(copy.remove()).isEqualTo("two");
+    assertThat(copy.remove()).isEqualTo("three");
     assertTrue(copy.isEmpty());
   }
 }

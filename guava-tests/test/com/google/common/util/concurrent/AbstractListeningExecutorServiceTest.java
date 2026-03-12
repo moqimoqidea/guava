@@ -54,7 +54,7 @@ public class AbstractListeningExecutorServiceTest extends TestCase {
     ListenableFuture<String> callableFuture = e.submit(new TestCallable());
     assertThat(callableFuture).isInstanceOf(TrustedListenableFutureTask.class);
     assertTrue(callableFuture.isDone());
-    assertEquals("foo", callableFuture.get());
+    assertThat(callableFuture.get()).isEqualTo("foo");
 
     TestRunnable runnable2 = new TestRunnable();
     ListenableFuture<Integer> runnableFuture2 = e.submit(runnable2, 3);

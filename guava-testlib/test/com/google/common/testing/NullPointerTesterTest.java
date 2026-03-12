@@ -1402,7 +1402,7 @@ public class NullPointerTesterTest extends TestCase {
       Converter<String, Integer> defaultConverter =
           (Converter<String, Integer>) getDefaultParameterValue(0);
       assertEquals(Integer.valueOf(0), defaultConverter.convert("anything"));
-      assertEquals("", defaultConverter.reverse().convert(123));
+      assertThat(defaultConverter.reverse().convert(123)).isEqualTo("");
       assertThat(defaultConverter.convert(null)).isNull();
       assertThat(defaultConverter.reverse().convert(null)).isNull();
     }

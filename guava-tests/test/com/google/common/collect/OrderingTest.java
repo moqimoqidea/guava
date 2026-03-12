@@ -74,7 +74,7 @@ public class OrderingTest extends TestCase {
     assertEquals(0, comparator.compare(new Object(), new Object()));
     assertEquals(0, comparator.compare("apples", "oranges"));
     assertSame(comparator, reserialize(comparator));
-    assertEquals("Ordering.allEqual()", comparator.toString());
+    assertThat(comparator.toString()).isEqualTo("Ordering.allEqual()");
 
     List<String> strings = ImmutableList.of("b", "a", "d", "c");
     assertEquals(strings, comparator.sortedCopy(strings));
@@ -125,7 +125,7 @@ public class OrderingTest extends TestCase {
     assertThrows(NullPointerException.class, () -> comparator.compare(null, 2));
     assertThrows(NullPointerException.class, () -> comparator.compare(null, null));
     assertSame(comparator, reserialize(comparator));
-    assertEquals("Ordering.natural()", comparator.toString());
+    assertThat(comparator.toString()).isEqualTo("Ordering.natural()");
   }
 
   public void testFrom() {
@@ -157,7 +157,7 @@ public class OrderingTest extends TestCase {
         assertThrows(IncomparableValueException.class, () -> c.compare(0, 1));
     assertEquals(1, expected.value);
     reserializeAndAssert(c);
-    assertEquals("Ordering.explicit([0])", c.toString());
+    assertThat(c.toString()).isEqualTo("Ordering.explicit([0])");
   }
 
   public void testExplicitMax_b297601553() {
@@ -215,7 +215,7 @@ public class OrderingTest extends TestCase {
     // comparing any pair of elements gives the answer we expect.
     testComparator(arbitrary, list);
 
-    assertEquals("Ordering.arbitrary()", arbitrary.toString());
+    assertThat(arbitrary.toString()).isEqualTo("Ordering.arbitrary()");
   }
 
   @J2ktIncompatible // ArbitraryOrdering
@@ -246,7 +246,7 @@ public class OrderingTest extends TestCase {
   public void testUsingToString() {
     Ordering<Object> ordering = Ordering.usingToString();
     testComparator(ordering, 1, 12, 124, 2);
-    assertEquals("Ordering.usingToString()", ordering.toString());
+    assertThat(ordering.toString()).isEqualTo("Ordering.usingToString()");
     assertSame(ordering, reserialize(ordering));
   }
 
@@ -382,7 +382,7 @@ public class OrderingTest extends TestCase {
         .addEqualityGroup(DECREASING_INTEGER)
         .testEquals();
     reserializeAndAssert(comparator);
-    assertEquals("Ordering.natural().onResultOf(STRING_LENGTH)", comparator.toString());
+    assertThat(comparator.toString()).isEqualTo("Ordering.natural().onResultOf(STRING_LENGTH)");
   }
 
   public void testOnResultOf_chained() {
@@ -399,7 +399,8 @@ public class OrderingTest extends TestCase {
         .addEqualityGroup(Ordering.natural())
         .testEquals();
     reserializeAndAssert(comparator);
-    assertEquals("Ordering.natural().reverse().onResultOf(STRING_LENGTH)", comparator.toString());
+    assertThat(comparator.toString())
+        .isEqualTo("Ordering.natural().reverse().onResultOf(STRING_LENGTH)");
   }
 
   public void testLexicographical() {

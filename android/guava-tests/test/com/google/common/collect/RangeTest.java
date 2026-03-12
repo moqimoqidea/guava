@@ -54,7 +54,7 @@ public class RangeTest extends TestCase {
     assertEquals(8, (int) range.upperEndpoint());
     assertEquals(OPEN, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("(4..8)", range.toString());
+    assertThat(range.toString()).isEqualTo("(4..8)");
     reserializeAndAssert(range);
   }
 
@@ -73,7 +73,7 @@ public class RangeTest extends TestCase {
     assertEquals(7, (int) range.upperEndpoint());
     assertEquals(CLOSED, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("[5..7]", range.toString());
+    assertThat(range.toString()).isEqualTo("[5..7]");
     reserializeAndAssert(range);
   }
 
@@ -91,7 +91,7 @@ public class RangeTest extends TestCase {
     assertEquals(7, (int) range.upperEndpoint());
     assertEquals(CLOSED, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("(4..7]", range.toString());
+    assertThat(range.toString()).isEqualTo("(4..7]");
     reserializeAndAssert(range);
   }
 
@@ -105,7 +105,7 @@ public class RangeTest extends TestCase {
     assertEquals(8, (int) range.upperEndpoint());
     assertEquals(OPEN, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("[5..8)", range.toString());
+    assertThat(range.toString()).isEqualTo("[5..8)");
     reserializeAndAssert(range);
   }
 
@@ -140,7 +140,7 @@ public class RangeTest extends TestCase {
     assertEquals(4, (int) range.upperEndpoint());
     assertEquals(CLOSED, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("[4..4]", range.toString());
+    assertThat(range.toString()).isEqualTo("[4..4]");
     reserializeAndAssert(range);
   }
 
@@ -156,7 +156,7 @@ public class RangeTest extends TestCase {
     assertEquals(4, (int) range.upperEndpoint());
     assertEquals(OPEN, range.upperBoundType());
     assertTrue(range.isEmpty());
-    assertEquals("[4..4)", range.toString());
+    assertThat(range.toString()).isEqualTo("[4..4)");
     reserializeAndAssert(range);
   }
 
@@ -172,7 +172,7 @@ public class RangeTest extends TestCase {
     assertEquals(4, (int) range.upperEndpoint());
     assertEquals(CLOSED, range.upperBoundType());
     assertTrue(range.isEmpty());
-    assertEquals("(4..4]", range.toString());
+    assertThat(range.toString()).isEqualTo("(4..4]");
     reserializeAndAssert(range);
   }
 
@@ -186,7 +186,7 @@ public class RangeTest extends TestCase {
     assertEquals(5, (int) range.upperEndpoint());
     assertEquals(OPEN, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("(-\u221e..5)", range.toString());
+    assertThat(range.toString()).isEqualTo("(-\u221e..5)");
     reserializeAndAssert(range);
   }
 
@@ -200,7 +200,7 @@ public class RangeTest extends TestCase {
     assertEquals(OPEN, range.lowerBoundType());
     assertUnboundedAbove(range);
     assertFalse(range.isEmpty());
-    assertEquals("(5..+\u221e)", range.toString());
+    assertThat(range.toString()).isEqualTo("(5..+\u221e)");
     reserializeAndAssert(range);
   }
 
@@ -214,7 +214,7 @@ public class RangeTest extends TestCase {
     assertEquals(CLOSED, range.lowerBoundType());
     assertUnboundedAbove(range);
     assertFalse(range.isEmpty());
-    assertEquals("[6..+\u221e)", range.toString());
+    assertThat(range.toString()).isEqualTo("[6..+\u221e)");
     reserializeAndAssert(range);
   }
 
@@ -228,7 +228,7 @@ public class RangeTest extends TestCase {
     assertEquals(4, (int) range.upperEndpoint());
     assertEquals(CLOSED, range.upperBoundType());
     assertFalse(range.isEmpty());
-    assertEquals("(-\u221e..4]", range.toString());
+    assertThat(range.toString()).isEqualTo("(-\u221e..4]");
     reserializeAndAssert(range);
   }
 
@@ -239,7 +239,7 @@ public class RangeTest extends TestCase {
     assertUnboundedBelow(range);
     assertUnboundedAbove(range);
     assertFalse(range.isEmpty());
-    assertEquals("(-\u221e..+\u221e)", range.toString());
+    assertThat(range.toString()).isEqualTo("(-\u221e..+\u221e)");
     assertSame(range, reserializeAndAssert(range));
     assertSame(range, Range.all());
   }

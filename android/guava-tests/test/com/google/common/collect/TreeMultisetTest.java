@@ -136,7 +136,7 @@ public class TreeMultisetTest extends TestCase {
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
     assertEquals(Ordering.natural(), multiset.comparator());
-    assertEquals("[bar, foo x 2]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[bar, foo x 2]");
   }
 
   public void testCreateWithComparator() {
@@ -145,14 +145,14 @@ public class TreeMultisetTest extends TestCase {
     multiset.add("bar");
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
-    assertEquals("[foo x 2, bar]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[foo x 2, bar]");
   }
 
   public void testCreateFromIterable() {
     Multiset<String> multiset = TreeMultiset.create(asList("foo", "bar", "foo"));
     assertEquals(3, multiset.size());
     assertEquals(2, multiset.count("foo"));
-    assertEquals("[bar, foo x 2]", multiset.toString());
+    assertThat(multiset.toString()).isEqualTo("[bar, foo x 2]");
   }
 
   public void testToString() {
@@ -161,7 +161,7 @@ public class TreeMultisetTest extends TestCase {
     ms.add("c", 1);
     ms.add("b", 2);
 
-    assertEquals("[a x 3, b x 2, c]", ms.toString());
+    assertThat(ms.toString()).isEqualTo("[a x 3, b x 2, c]");
   }
 
   public void testElementSetSortedSetMethods() {
@@ -171,8 +171,8 @@ public class TreeMultisetTest extends TestCase {
     ms.add("b", 2);
     SortedSet<String> elementSet = ms.elementSet();
 
-    assertEquals("a", elementSet.first());
-    assertEquals("c", elementSet.last());
+    assertThat(elementSet.first()).isEqualTo("a");
+    assertThat(elementSet.last()).isEqualTo("c");
     assertEquals(Ordering.natural(), elementSet.comparator());
 
     assertThat(elementSet.headSet("b")).containsExactly("a");
@@ -284,8 +284,8 @@ public class TreeMultisetTest extends TestCase {
     assertThat(ms).containsExactly("d", "c", "b", "b", "a").inOrder();
 
     SortedSet<String> elementSet = ms.elementSet();
-    assertEquals("d", elementSet.first());
-    assertEquals("a", elementSet.last());
+    assertThat(elementSet.first()).isEqualTo("d");
+    assertThat(elementSet.last()).isEqualTo("a");
     assertEquals(comparator, elementSet.comparator());
   }
 
@@ -304,7 +304,7 @@ public class TreeMultisetTest extends TestCase {
 
     SortedSet<@Nullable String> elementSet = ms.elementSet();
     assertThat(elementSet.first()).isNull();
-    assertEquals("b", elementSet.last());
+    assertThat(elementSet.last()).isEqualTo("b");
     assertEquals(comparator, elementSet.comparator());
   }
 
@@ -338,8 +338,8 @@ public class TreeMultisetTest extends TestCase {
     assertEquals(ms2, ms);
 
     SortedSet<String> elementSet = ms.elementSet();
-    assertEquals("a", elementSet.first());
-    assertEquals("foo", elementSet.last());
+    assertThat(elementSet.first()).isEqualTo("a");
+    assertThat(elementSet.last()).isEqualTo("foo");
     assertEquals(DEGENERATE_COMPARATOR, elementSet.comparator());
   }
 

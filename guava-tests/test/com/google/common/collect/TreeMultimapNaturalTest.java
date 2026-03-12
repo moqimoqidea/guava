@@ -291,7 +291,7 @@ public class TreeMultimapNaturalTest extends TestCase {
     SetMultimap<String, Integer> multimap = create();
     multimap.putAll("bar", asList(3, 1, 2));
     multimap.putAll("foo", asList(2, 3, 1, -1, 4));
-    assertEquals("{bar=[1, 2, 3], foo=[-1, 1, 2, 3, 4]}", multimap.toString());
+    assertThat(multimap.toString()).isEqualTo("{bar=[1, 2, 3], foo=[-1, 1, 2, 3, 4]}");
   }
 
   public void testOrderedGet() {
@@ -310,13 +310,13 @@ public class TreeMultimapNaturalTest extends TestCase {
     TreeMultimap<String, Integer> multimap = createPopulate();
     Iterator<Entry<String, Collection<Integer>>> iterator = multimap.asMap().entrySet().iterator();
     Entry<String, Collection<Integer>> entry = iterator.next();
-    assertEquals("foo", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("foo");
     assertThat(entry.getValue()).containsExactly(1, 3, 7);
     entry = iterator.next();
-    assertEquals("google", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("google");
     assertThat(entry.getValue()).containsExactly(2, 6);
     entry = iterator.next();
-    assertEquals("tree", entry.getKey());
+    assertThat(entry.getKey()).isEqualTo("tree");
     assertThat(entry.getValue()).containsExactly(0, 4);
   }
 
@@ -475,8 +475,8 @@ public class TreeMultimapNaturalTest extends TestCase {
     TreeMultimap<String, Integer> multimap = createPopulate();
     SortedMap<String, Collection<Integer>> asMap = multimap.asMap();
     assertEquals(Ordering.natural(), asMap.comparator());
-    assertEquals("foo", asMap.firstKey());
-    assertEquals("tree", asMap.lastKey());
+    assertThat(asMap.firstKey()).isEqualTo("foo");
+    assertThat(asMap.lastKey()).isEqualTo("tree");
     Set<Integer> fooValues = ImmutableSet.of(1, 3, 7);
     Set<Integer> googleValues = ImmutableSet.of(2, 6);
     Set<Integer> treeValues = ImmutableSet.of(4, 0);

@@ -43,7 +43,7 @@ public class CharStreamsTest extends IoTestCase {
   private static final String TEXT = "The quick brown fox jumped over the lazy dog.";
 
   public void testToString() throws IOException {
-    assertEquals(TEXT, CharStreams.toString(new StringReader(TEXT)));
+    assertThat(CharStreams.toString(new StringReader(TEXT))).isEqualTo(TEXT);
   }
 
   public void testReadLines() throws IOException {
@@ -118,7 +118,7 @@ public class CharStreamsTest extends IoTestCase {
           }
         };
     assertEquals(2, CharStreams.readLines(r, conditional).intValue());
-    assertEquals("ab", sb.toString());
+    assertThat(sb.toString()).isEqualTo("ab");
   }
 
   public void testSkipFully_eof() throws IOException {
@@ -159,62 +159,62 @@ public class CharStreamsTest extends IoTestCase {
     long copied =
         CharStreams.copy(
             wrapAsGenericReadable(new StringReader(ASCII)), wrapAsGenericAppendable(builder));
-    assertEquals(ASCII, builder.toString());
+    assertThat(builder.toString()).isEqualTo(ASCII);
     assertEquals(ASCII.length(), copied);
 
     StringBuilder builder2 = new StringBuilder();
     copied =
         CharStreams.copy(
             wrapAsGenericReadable(new StringReader(I18N)), wrapAsGenericAppendable(builder2));
-    assertEquals(I18N, builder2.toString());
+    assertThat(builder2.toString()).isEqualTo(I18N);
     assertEquals(I18N.length(), copied);
   }
 
   public void testCopy_toStringBuilder_fromReader() throws IOException {
     StringBuilder builder = new StringBuilder();
     long copied = CharStreams.copy(new StringReader(ASCII), builder);
-    assertEquals(ASCII, builder.toString());
+    assertThat(builder.toString()).isEqualTo(ASCII);
     assertEquals(ASCII.length(), copied);
 
     StringBuilder builder2 = new StringBuilder();
     copied = CharStreams.copy(new StringReader(I18N), builder2);
-    assertEquals(I18N, builder2.toString());
+    assertThat(builder2.toString()).isEqualTo(I18N);
     assertEquals(I18N.length(), copied);
   }
 
   public void testCopy_toStringBuilder_fromReadable() throws IOException {
     StringBuilder builder = new StringBuilder();
     long copied = CharStreams.copy(wrapAsGenericReadable(new StringReader(ASCII)), builder);
-    assertEquals(ASCII, builder.toString());
+    assertThat(builder.toString()).isEqualTo(ASCII);
     assertEquals(ASCII.length(), copied);
 
     StringBuilder builder2 = new StringBuilder();
     copied = CharStreams.copy(wrapAsGenericReadable(new StringReader(I18N)), builder2);
-    assertEquals(I18N, builder2.toString());
+    assertThat(builder2.toString()).isEqualTo(I18N);
     assertEquals(I18N.length(), copied);
   }
 
   public void testCopy_toWriter_fromReader() throws IOException {
     StringWriter writer = new StringWriter();
     long copied = CharStreams.copy(new StringReader(ASCII), writer);
-    assertEquals(ASCII, writer.toString());
+    assertThat(writer.toString()).isEqualTo(ASCII);
     assertEquals(ASCII.length(), copied);
 
     StringWriter writer2 = new StringWriter();
     copied = CharStreams.copy(new StringReader(I18N), writer2);
-    assertEquals(I18N, writer2.toString());
+    assertThat(writer2.toString()).isEqualTo(I18N);
     assertEquals(I18N.length(), copied);
   }
 
   public void testCopy_toWriter_fromReadable() throws IOException {
     StringWriter writer = new StringWriter();
     long copied = CharStreams.copy(wrapAsGenericReadable(new StringReader(ASCII)), writer);
-    assertEquals(ASCII, writer.toString());
+    assertThat(writer.toString()).isEqualTo(ASCII);
     assertEquals(ASCII.length(), copied);
 
     StringWriter writer2 = new StringWriter();
     copied = CharStreams.copy(wrapAsGenericReadable(new StringReader(I18N)), writer2);
-    assertEquals(I18N, writer2.toString());
+    assertThat(writer2.toString()).isEqualTo(I18N);
     assertEquals(I18N.length(), copied);
   }
 
@@ -235,7 +235,7 @@ public class CharStreamsTest extends IoTestCase {
     // the main assertion of this test is here... the copy will fail if the buffer size goes down
     // each time it is not filled completely
     long copied = CharStreams.copy(newNonBufferFillingReader(new StringReader(string)), b);
-    assertEquals(string, b.toString());
+    assertThat(b.toString()).isEqualTo(string);
     assertEquals(string.length(), copied);
   }
 
