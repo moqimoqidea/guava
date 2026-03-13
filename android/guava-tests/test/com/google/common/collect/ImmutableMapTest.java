@@ -211,8 +211,8 @@ public class ImmutableMapTest extends TestCase {
     RegularImmutableMap<Integer, Integer> map =
         (RegularImmutableMap<Integer, Integer>) builder.buildOrThrow();
     Object[] mapInternalArray = map.alternatingKeysAndValues;
-    assertSame(builderArray, builderArrayAfterPuts);
-    assertSame(builderArray, mapInternalArray);
+    assertThat(builderArrayAfterPuts).isSameInstanceAs(builderArray);
+    assertThat(mapInternalArray).isSameInstanceAs(builderArray);
   }
 
   public void testBuilder_orderEntriesByValue() {
@@ -740,13 +740,13 @@ public class ImmutableMapTest extends TestCase {
     ImmutableMap<String, Integer> copy =
         ImmutableMap.copyOf(Collections.<String, Integer>emptyMap());
     assertEquals(Collections.<String, Integer>emptyMap(), copy);
-    assertSame(copy, ImmutableMap.copyOf(copy));
+    assertThat(ImmutableMap.copyOf(copy)).isSameInstanceAs(copy);
   }
 
   public void testCopyOfSingletonMap() {
     ImmutableMap<String, Integer> copy = ImmutableMap.copyOf(singletonMap("one", 1));
     assertMapEquals(copy, "one", 1);
-    assertSame(copy, ImmutableMap.copyOf(copy));
+    assertThat(ImmutableMap.copyOf(copy)).isSameInstanceAs(copy);
   }
 
   public void testCopyOf() {
@@ -757,7 +757,7 @@ public class ImmutableMapTest extends TestCase {
 
     ImmutableMap<String, Integer> copy = ImmutableMap.copyOf(original);
     assertMapEquals(copy, "one", 1, "two", 2, "three", 3);
-    assertSame(copy, ImmutableMap.copyOf(copy));
+    assertThat(ImmutableMap.copyOf(copy)).isSameInstanceAs(copy);
   }
 
   // TODO(b/172823566): Use mainline testToImmutableMap once CollectorTester is usable to java7.
@@ -835,7 +835,7 @@ public class ImmutableMapTest extends TestCase {
     ImmutableSetMultimap<String, Integer> multimap1 = map.asMultimap();
     ImmutableSetMultimap<String, Integer> multimap2 = map.asMultimap();
     assertEquals(1, multimap1.asMap().size());
-    assertSame(multimap1, multimap2);
+    assertThat(multimap1).isSameInstanceAs(multimap2);
   }
 
   @J2ktIncompatible

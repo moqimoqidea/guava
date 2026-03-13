@@ -71,14 +71,14 @@ public class CharMatcherTest extends TestCase {
     // we're lucky enough that these do pass, it saves us from having to write
     // more excruciating tests! Hooray!
 
-    assertSame(CharMatcher.any(), CharMatcher.none().negate());
-    assertSame(CharMatcher.none(), CharMatcher.any().negate());
+    assertThat(CharMatcher.none().negate()).isSameInstanceAs(CharMatcher.any());
+    assertThat(CharMatcher.any().negate()).isSameInstanceAs(CharMatcher.none());
 
-    assertSame(WHATEVER, CharMatcher.any().and(WHATEVER));
-    assertSame(CharMatcher.any(), CharMatcher.any().or(WHATEVER));
+    assertThat(CharMatcher.any().and(WHATEVER)).isSameInstanceAs(WHATEVER);
+    assertThat(CharMatcher.any().or(WHATEVER)).isSameInstanceAs(CharMatcher.any());
 
-    assertSame(CharMatcher.none(), CharMatcher.none().and(WHATEVER));
-    assertSame(WHATEVER, CharMatcher.none().or(WHATEVER));
+    assertThat(CharMatcher.none().and(WHATEVER)).isSameInstanceAs(CharMatcher.none());
+    assertThat(CharMatcher.none().or(WHATEVER)).isSameInstanceAs(WHATEVER);
   }
 
   // The rest of the behavior of ANY and DEFAULT will be covered in the tests for
@@ -401,10 +401,10 @@ public class CharMatcherTest extends TestCase {
     assertFalse(matcher.matchesAllOf(s));
     assertTrue(matcher.matchesNoneOf(s));
 
-    assertSame(s, matcher.removeFrom(s));
-    assertSame(s, matcher.replaceFrom(s, 'z'));
-    assertSame(s, matcher.replaceFrom(s, "ZZ"));
-    assertSame(s, matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isSameInstanceAs(s);
+    assertThat(matcher.replaceFrom(s, 'z')).isSameInstanceAs(s);
+    assertThat(matcher.replaceFrom(s, "ZZ")).isSameInstanceAs(s);
+    assertThat(matcher.trimFrom(s)).isSameInstanceAs(s);
     assertEquals(0, matcher.countIn(s));
   }
 
@@ -446,7 +446,7 @@ public class CharMatcherTest extends TestCase {
    */
   private void assertEqualsSame(String expected, String in, String out) {
     if (expected.equals(in)) {
-      assertSame(in, out);
+      assertThat(out).isSameInstanceAs(in);
     } else {
       assertThat(out).isEqualTo(expected);
     }
@@ -497,14 +497,14 @@ public class CharMatcherTest extends TestCase {
   }
 
   private void doTestCollapseWithNoChange(String inout) {
-    assertSame(inout, is('-').collapseFrom(inout, '_'));
-    assertSame(inout, is('-').or(is('#')).collapseFrom(inout, '_'));
-    assertSame(inout, isNot('x').collapseFrom(inout, '_'));
-    assertSame(inout, is('x').negate().collapseFrom(inout, '_'));
-    assertSame(inout, anyOf("-").collapseFrom(inout, '_'));
-    assertSame(inout, anyOf("-#").collapseFrom(inout, '_'));
-    assertSame(inout, anyOf("-#123").collapseFrom(inout, '_'));
-    assertSame(inout, CharMatcher.none().collapseFrom(inout, '_'));
+    assertThat(is('-').collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(is('-').or(is('#')).collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(isNot('x').collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(is('x').negate().collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(anyOf("-").collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(anyOf("-#").collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(anyOf("-#123").collapseFrom(inout, '_')).isSameInstanceAs(inout);
+    assertThat(CharMatcher.none().collapseFrom(inout, '_')).isSameInstanceAs(inout);
   }
 
   public void testCollapse_any() {
@@ -676,19 +676,19 @@ public class CharMatcherTest extends TestCase {
     // Some matchers are so efficient that it is a waste of effort to
     // build a precomputed version.
     CharMatcher m1 = is('x');
-    assertSame(m1, m1.precomputed());
+    assertThat(m1.precomputed()).isSameInstanceAs(m1);
     assertThat(m1.precomputed().toString()).isEqualTo(m1.toString());
 
     CharMatcher m2 = anyOf("Az");
-    assertSame(m2, m2.precomputed());
+    assertThat(m2.precomputed()).isSameInstanceAs(m2);
     assertThat(m2.precomputed().toString()).isEqualTo(m2.toString());
 
     CharMatcher m3 = inRange('A', 'Z');
-    assertSame(m3, m3.precomputed());
+    assertThat(m3.precomputed()).isSameInstanceAs(m3);
     assertThat(m3.precomputed().toString()).isEqualTo(m3.toString());
 
-    assertSame(CharMatcher.none(), CharMatcher.none().precomputed());
-    assertSame(CharMatcher.any(), CharMatcher.any().precomputed());
+    assertThat(CharMatcher.none().precomputed()).isSameInstanceAs(CharMatcher.none());
+    assertThat(CharMatcher.any().precomputed()).isSameInstanceAs(CharMatcher.any());
   }
 
   @GwtIncompatible // java.util.BitSet

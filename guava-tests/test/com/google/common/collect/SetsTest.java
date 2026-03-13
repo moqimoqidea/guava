@@ -1069,7 +1069,7 @@ public class SetsTest extends TestCase {
    */
   private static <E> void verifySortedSetContents(
       SortedSet<E> set, Iterable<E> iterable, @Nullable Comparator<E> comparator) {
-    assertSame(comparator, set.comparator());
+    assertThat(set.comparator()).isEqualTo(comparator);
     verifySetContents(set, iterable);
   }
 

@@ -83,8 +83,8 @@ public class CloserTest extends TestCase {
       } finally {
         closer.close();
       }
-    } catch (Throwable expected) {
-      assertSame(exception, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(exception);
     }
 
     assertTrue(c1.isClosed());
@@ -109,8 +109,8 @@ public class CloserTest extends TestCase {
       } finally {
         closer.close();
       }
-    } catch (Throwable expected) {
-      assertThat(expected).isInstanceOf(IOException.class);
+    } catch (Throwable caught) {
+      assertThat(caught).isInstanceOf(IOException.class);
     }
 
     assertTrue(c1.isClosed());
@@ -131,8 +131,8 @@ public class CloserTest extends TestCase {
 
     try {
       closer.close();
-    } catch (Throwable expected) {
-      assertSame(exception, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(exception);
     }
 
     assertTrue(c1.isClosed());
@@ -152,8 +152,8 @@ public class CloserTest extends TestCase {
 
     try {
       closer.close();
-    } catch (Throwable expected) {
-      assertSame(exception, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(exception);
     }
 
     assertTrue(c1.isClosed());
@@ -180,8 +180,8 @@ public class CloserTest extends TestCase {
       } finally {
         closer.close();
       }
-    } catch (Throwable expected) {
-      assertSame(tryException, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(tryException);
     }
 
     assertTrue(c1.isClosed());
@@ -206,8 +206,8 @@ public class CloserTest extends TestCase {
 
     try {
       closer.close();
-    } catch (Throwable expected) {
-      assertSame(c3Exception, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(c3Exception);
     }
 
     assertTrue(c1.isClosed());
@@ -237,8 +237,8 @@ public class CloserTest extends TestCase {
       } finally {
         closer.close();
       }
-    } catch (Throwable expected) {
-      assertSame(tryException, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(tryException);
     }
 
     assertTrue(c1.isClosed());
@@ -262,8 +262,8 @@ public class CloserTest extends TestCase {
 
     try {
       closer.close();
-    } catch (Throwable expected) {
-      assertSame(c3Exception, expected);
+    } catch (Throwable caught) {
+      assertThat(caught).isEqualTo(c3Exception);
     }
 
     assertTrue(c1.isClosed());
@@ -293,8 +293,8 @@ public class CloserTest extends TestCase {
         assertThat(thrownException.getSuppressed()).isEmpty();
         closer.close();
       }
-    } catch (IOException expected) {
-      assertSame(thrownException, expected);
+    } catch (IOException caught) {
+      assertThat(caught).isEqualTo(thrownException);
     }
 
     assertTrue(c1.isClosed());

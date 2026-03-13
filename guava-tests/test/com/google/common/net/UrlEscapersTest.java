@@ -41,7 +41,7 @@ public class UrlEscapersTest extends TestCase {
   public void testUrlFormParameterEscaper() {
     UnicodeEscaper e = (UnicodeEscaper) urlFormParameterEscaper();
     // Verify that these are the same escaper (as documented)
-    assertSame(e, urlFormParameterEscaper());
+    assertThat(urlFormParameterEscaper()).isSameInstanceAs(e);
     assertBasicUrlEscaper(e);
 
     /*

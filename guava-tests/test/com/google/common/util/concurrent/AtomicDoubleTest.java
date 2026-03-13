@@ -282,10 +282,10 @@ public class AtomicDoubleTest extends JSR166TestCase {
   public void testSerialization() throws Exception {
     AtomicDouble a = new AtomicDouble();
     AtomicDouble b = serialClone(a);
-    assertNotSame(a, b);
+    assertThat(b).isNotSameInstanceAs(a);
     a.set(-22.0);
     AtomicDouble c = serialClone(a);
-    assertNotSame(b, c);
+    assertThat(c).isNotSameInstanceAs(b);
     assertBitEquals(-22.0, a.get());
     assertBitEquals(0.0, b.get());
     assertBitEquals(-22.0, c.get());

@@ -1536,18 +1536,18 @@ public class IteratorsTest extends TestCase {
   public void testUnmodifiableIteratorShortCircuit() {
     Iterator<String> mod = Lists.newArrayList("a", "b", "c").iterator();
     UnmodifiableIterator<String> unmod = Iterators.unmodifiableIterator(mod);
-    assertNotSame(mod, unmod);
-    assertSame(unmod, Iterators.unmodifiableIterator(unmod));
-    assertSame(unmod, Iterators.unmodifiableIterator((Iterator<String>) unmod));
+    assertThat(unmod).isNotSameInstanceAs(mod);
+    assertThat(Iterators.unmodifiableIterator(unmod)).isSameInstanceAs(unmod);
+    assertThat(Iterators.unmodifiableIterator((Iterator<String>) unmod)).isSameInstanceAs(unmod);
   }
 
   @SuppressWarnings({"deprecation", "InlineMeInliner"}) // test of a deprecated method
   public void testPeekingIteratorShortCircuit() {
     Iterator<String> nonpeek = Lists.newArrayList("a", "b", "c").iterator();
     PeekingIterator<String> peek = peekingIterator(nonpeek);
-    assertNotSame(peek, nonpeek);
-    assertSame(peek, peekingIterator(peek));
-    assertSame(peek, peekingIterator((Iterator<String>) peek));
+    assertThat(nonpeek).isNotSameInstanceAs(peek);
+    assertThat(peekingIterator(peek)).isSameInstanceAs(peek);
+    assertThat(peekingIterator((Iterator<String>) peek)).isSameInstanceAs(peek);
   }
 
   public void testMergeSorted_stable_issue5773Example() {

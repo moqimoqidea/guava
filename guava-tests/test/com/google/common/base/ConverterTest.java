@@ -90,7 +90,7 @@ public class ConverterTest extends TestCase {
     Iterable<String> convertedValues = reverseConverter.convertAll(LONGS);
     assertEquals(STRINGS, ImmutableList.copyOf(convertedValues));
 
-    assertSame(STR_TO_LONG, reverseConverter.reverse());
+    assertThat(reverseConverter.reverse()).isSameInstanceAs(STR_TO_LONG);
 
     assertThat(reverseConverter.toString()).isEqualTo("string2long.reverse()");
 
@@ -155,15 +155,15 @@ public class ConverterTest extends TestCase {
   public void testIdentityConverter() {
     Converter<String, String> stringIdentityConverter = Converter.identity();
 
-    assertSame(stringIdentityConverter, stringIdentityConverter.reverse());
-    assertSame(STR_TO_LONG, stringIdentityConverter.andThen(STR_TO_LONG));
+    assertThat(stringIdentityConverter.reverse()).isSameInstanceAs(stringIdentityConverter);
+    assertThat(stringIdentityConverter.andThen(STR_TO_LONG)).isSameInstanceAs(STR_TO_LONG);
 
-    assertSame(STR_VAL, stringIdentityConverter.convert(STR_VAL));
-    assertSame(STR_VAL, stringIdentityConverter.reverse().convert(STR_VAL));
+    assertThat(stringIdentityConverter.convert(STR_VAL)).isSameInstanceAs(STR_VAL);
+    assertThat(stringIdentityConverter.reverse().convert(STR_VAL)).isSameInstanceAs(STR_VAL);
 
     assertThat(stringIdentityConverter.toString()).isEqualTo("Converter.identity()");
 
-    assertSame(Converter.identity(), Converter.identity());
+    assertThat(Converter.identity()).isSameInstanceAs(Converter.identity());
   }
 
   public void testFrom() {

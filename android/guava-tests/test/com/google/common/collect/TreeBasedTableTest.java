@@ -158,46 +158,46 @@ public class TreeBasedTableTest extends AbstractTableTest<Character> {
   @SuppressWarnings({"deprecation", "InlineMeInliner"}) // test of a deprecated method
   public void testRowComparator() {
     sortedTable = TreeBasedTable.create();
-    assertSame(Ordering.natural(), sortedTable.rowComparator());
+    assertThat(sortedTable.rowComparator()).isEqualTo(Ordering.natural());
 
     sortedTable = TreeBasedTable.create(Collections.reverseOrder(), Ordering.usingToString());
-    assertSame(Collections.reverseOrder(), sortedTable.rowComparator());
+    assertThat(sortedTable.rowComparator()).isEqualTo(Collections.reverseOrder());
   }
 
   public void testColumnComparator() {
     sortedTable = TreeBasedTable.create();
     sortedTable.put("", 42, 'x');
-    assertSame(Ordering.natural(), sortedTable.columnComparator());
-    assertSame(
-        Ordering.natural(),
-        ((SortedMap<Integer, Character>) sortedTable.rowMap().values().iterator().next())
-            .comparator());
+    assertThat(sortedTable.columnComparator()).isEqualTo(Ordering.natural());
+    assertThat(
+            ((SortedMap<Integer, Character>) sortedTable.rowMap().values().iterator().next())
+                .comparator())
+        .isEqualTo(Ordering.natural());
 
     sortedTable = TreeBasedTable.create(Collections.reverseOrder(), Ordering.usingToString());
     sortedTable.put("", 42, 'x');
-    assertSame(Ordering.usingToString(), sortedTable.columnComparator());
-    assertSame(
-        Ordering.usingToString(),
-        ((SortedMap<Integer, Character>) sortedTable.rowMap().values().iterator().next())
-            .comparator());
+    assertThat(sortedTable.columnComparator()).isEqualTo(Ordering.usingToString());
+    assertThat(
+            ((SortedMap<Integer, Character>) sortedTable.rowMap().values().iterator().next())
+                .comparator())
+        .isEqualTo(Ordering.usingToString());
   }
 
   public void testRowKeySetComparator() {
     sortedTable = TreeBasedTable.create();
-    assertSame(Ordering.natural(), sortedTable.rowKeySet().comparator());
+    assertThat(sortedTable.rowKeySet().comparator()).isEqualTo(Ordering.natural());
 
     sortedTable = TreeBasedTable.create(Collections.reverseOrder(), Ordering.usingToString());
-    assertSame(Collections.reverseOrder(), sortedTable.rowKeySet().comparator());
+    assertThat(sortedTable.rowKeySet().comparator()).isEqualTo(Collections.reverseOrder());
   }
 
   public void testRowKeySetFirst() {
     sortedTable = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertSame("bar", sortedTable.rowKeySet().first());
+    assertThat(sortedTable.rowKeySet().first()).isEqualTo("bar");
   }
 
   public void testRowKeySetLast() {
     sortedTable = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertSame("foo", sortedTable.rowKeySet().last());
+    assertThat(sortedTable.rowKeySet().last()).isEqualTo("foo");
   }
 
   public void testRowKeySetHeadSet() {
@@ -229,20 +229,20 @@ public class TreeBasedTableTest extends AbstractTableTest<Character> {
 
   public void testRowMapComparator() {
     sortedTable = TreeBasedTable.create();
-    assertSame(Ordering.natural(), sortedTable.rowMap().comparator());
+    assertThat(sortedTable.rowMap().comparator()).isEqualTo(Ordering.natural());
 
     sortedTable = TreeBasedTable.create(Collections.reverseOrder(), Ordering.usingToString());
-    assertSame(Collections.reverseOrder(), sortedTable.rowMap().comparator());
+    assertThat(sortedTable.rowMap().comparator()).isEqualTo(Collections.reverseOrder());
   }
 
   public void testRowMapFirstKey() {
     sortedTable = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertSame("bar", sortedTable.rowMap().firstKey());
+    assertThat(sortedTable.rowMap().firstKey()).isEqualTo("bar");
   }
 
   public void testRowMapLastKey() {
     sortedTable = create("foo", 1, 'a', "bar", 1, 'b', "foo", 3, 'c');
-    assertSame("foo", sortedTable.rowMap().lastKey());
+    assertThat(sortedTable.rowMap().lastKey()).isEqualTo("foo");
   }
 
   public void testRowKeyMapHeadMap() {

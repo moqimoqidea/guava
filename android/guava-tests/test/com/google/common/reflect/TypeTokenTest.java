@@ -2004,7 +2004,7 @@ public class TypeTokenTest extends TestCase {
 
   private static void assertNotPrimitive(TypeToken<?> type) {
     assertFalse(type.isPrimitive());
-    assertSame(type, type.wrap());
+    assertThat(type.wrap()).isEqualTo(type);
   }
 
   private static void assertIsWrapper(TypeToken<?> type) {
@@ -2013,7 +2013,7 @@ public class TypeTokenTest extends TestCase {
   }
 
   private static void assertNotWrapper(TypeToken<?> type) {
-    assertSame(type, type.unwrap());
+    assertThat(type.unwrap()).isEqualTo(type);
   }
 
   private static void assertNotPrimitiveNorWrapper(TypeToken<?> type) {

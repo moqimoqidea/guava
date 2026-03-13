@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.base.Function;
@@ -40,8 +41,8 @@ public class InternersTest extends TestCase {
     String not = new String("a");
 
     Interner<String> pool = Interners.newStrongInterner();
-    assertSame(canonical, pool.intern(canonical));
-    assertSame(canonical, pool.intern(not));
+    assertThat(pool.intern(canonical)).isSameInstanceAs(canonical);
+    assertThat(pool.intern(not)).isSameInstanceAs(canonical);
   }
 
   public void testStrong_null() {
@@ -62,8 +63,8 @@ public class InternersTest extends TestCase {
     String not = new String("a");
 
     Interner<String> pool = Interners.newWeakInterner();
-    assertSame(canonical, pool.intern(canonical));
-    assertSame(canonical, pool.intern(not));
+    assertThat(pool.intern(canonical)).isSameInstanceAs(canonical);
+    assertThat(pool.intern(not)).isSameInstanceAs(canonical);
   }
 
   public void testWeak_null() {
@@ -86,13 +87,13 @@ public class InternersTest extends TestCase {
     MyInt not = new MyInt(5);
 
     Interner<MyInt> pool = Interners.newWeakInterner();
-    assertSame(canonical, pool.intern(canonical));
+    assertThat(pool.intern(canonical)).isSameInstanceAs(canonical);
 
     WeakReference<MyInt> signal = new WeakReference<>(canonical);
     canonical = null; // Hint to the JIT that canonical is unreachable
 
     GcFinalization.awaitClear(signal);
-    assertSame(not, pool.intern(not));
+    assertThat(pool.intern(not)).isSameInstanceAs(not);
   }
 
   private static final class MyInt {
@@ -120,8 +121,8 @@ public class InternersTest extends TestCase {
     Function<String, String> internerFunction =
         Interners.asFunction(Interners.<String>newStrongInterner());
 
-    assertSame(canonical, internerFunction.apply(canonical));
-    assertSame(canonical, internerFunction.apply(not));
+    assertThat(internerFunction.apply(canonical)).isSameInstanceAs(canonical);
+    assertThat(internerFunction.apply(not)).isSameInstanceAs(canonical);
   }
 
   public void testNullPointerExceptions() {

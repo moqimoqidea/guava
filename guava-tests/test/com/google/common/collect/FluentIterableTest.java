@@ -91,7 +91,7 @@ public class FluentIterableTest extends TestCase {
   })
   public void testFrom_alreadyFluentIterable() {
     FluentIterable<Integer> iterable = FluentIterable.from(asList(1));
-    assertSame(iterable, FluentIterable.from(iterable));
+    assertThat(FluentIterable.from(iterable)).isSameInstanceAs(iterable);
   }
 
   public void testOf() {

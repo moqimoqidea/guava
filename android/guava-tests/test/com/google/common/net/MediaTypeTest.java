@@ -66,7 +66,7 @@ public class MediaTypeTest extends TestCase {
   @GwtIncompatible // reflection
   public void testParse_useConstants() throws Exception {
     for (MediaType constant : getConstants()) {
-      assertSame(constant, MediaType.parse(constant.toString()));
+      assertThat(MediaType.parse(constant.toString())).isSameInstanceAs(constant);
     }
   }
 
@@ -74,10 +74,10 @@ public class MediaTypeTest extends TestCase {
   @GwtIncompatible // reflection
   public void testCreate_useConstants() throws Exception {
     for (MediaType constant : getConstants()) {
-      assertSame(
-          constant,
-          MediaType.create(constant.type(), constant.subtype())
-              .withParameters(constant.parameters()));
+      assertThat(
+              MediaType.create(constant.type(), constant.subtype())
+                  .withParameters(constant.parameters()))
+          .isSameInstanceAs(constant);
     }
   }
 
@@ -222,7 +222,8 @@ public class MediaTypeTest extends TestCase {
   }
 
   public void testWithoutParameters() {
-    assertSame(MediaType.parse("image/gif"), MediaType.parse("image/gif").withoutParameters());
+    assertThat(MediaType.parse("image/gif").withoutParameters())
+        .isSameInstanceAs(MediaType.parse("image/gif"));
     assertEquals(
         MediaType.parse("image/gif"), MediaType.parse("image/gif; foo=bar").withoutParameters());
   }

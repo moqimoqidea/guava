@@ -83,17 +83,16 @@ public class ImmutableClassToInstanceMapTest extends TestCase {
   }
 
   public void testSerialization_empty() {
-    assertSame(
-        ImmutableClassToInstanceMap.of(),
-        SerializableTester.reserialize(ImmutableClassToInstanceMap.of()));
+    assertThat(SerializableTester.reserialize(ImmutableClassToInstanceMap.of()))
+        .isSameInstanceAs(ImmutableClassToInstanceMap.of());
   }
 
   public void testCopyOf_map_empty() {
     Map<Class<?>, Object> in = emptyMap();
     ClassToInstanceMap<Object> map = ImmutableClassToInstanceMap.copyOf(in);
     assertTrue(map.isEmpty());
-    assertSame(map, ImmutableClassToInstanceMap.of());
-    assertSame(map, ImmutableClassToInstanceMap.copyOf(map));
+    assertThat(map).isSameInstanceAs(ImmutableClassToInstanceMap.of());
+    assertThat(ImmutableClassToInstanceMap.copyOf(map)).isSameInstanceAs(map);
   }
 
   public void testOf_zero() {
@@ -118,7 +117,7 @@ public class ImmutableClassToInstanceMapTest extends TestCase {
     Double pi = map.getInstance(Double.class);
     assertThat(pi).isEqualTo(Math.PI);
 
-    assertSame(map, ImmutableClassToInstanceMap.copyOf(map));
+    assertThat(ImmutableClassToInstanceMap.copyOf(map)).isSameInstanceAs(map);
   }
 
   public void testCopyOf_map_nulls() {

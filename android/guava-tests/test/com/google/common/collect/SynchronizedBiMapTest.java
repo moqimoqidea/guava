@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.Synchronized.SynchronizedBiMap;
 import com.google.common.collect.Synchronized.SynchronizedSet;
@@ -143,9 +144,9 @@ public class SynchronizedBiMapTest extends SynchronizedMapTest {
   public void testInverse() {
     BiMap<String, Integer> bimap = create();
     BiMap<Integer, String> inverse = bimap.inverse();
-    assertSame(bimap, inverse.inverse());
+    assertThat(inverse.inverse()).isSameInstanceAs(bimap);
     assertTrue(inverse instanceof SynchronizedBiMap);
-    assertSame(mutex, ((SynchronizedBiMap<?, ?>) inverse).mutex);
+    assertThat(((SynchronizedBiMap<?, ?>) inverse).mutex).isSameInstanceAs(mutex);
   }
 
   @Override
@@ -153,6 +154,6 @@ public class SynchronizedBiMapTest extends SynchronizedMapTest {
     BiMap<String, Integer> map = create();
     Set<Integer> values = map.values();
     assertTrue(values instanceof SynchronizedSet);
-    assertSame(mutex, ((SynchronizedSet<?>) values).mutex);
+    assertThat(((SynchronizedSet<?>) values).mutex).isSameInstanceAs(mutex);
   }
 }

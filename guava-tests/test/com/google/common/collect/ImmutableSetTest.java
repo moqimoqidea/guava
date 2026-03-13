@@ -300,7 +300,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
   public void testCopyOf_copiesImmutableSortedSet() {
     ImmutableSortedSet<String> sortedSet = ImmutableSortedSet.of("a");
     ImmutableSet<String> copy = ImmutableSet.copyOf(sortedSet);
-    assertNotSame(sortedSet, copy);
+    assertThat(copy).isNotSameInstanceAs(sortedSet);
   }
 
   public void testToImmutableSet() {

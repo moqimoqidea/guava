@@ -16,6 +16,8 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.annotations.GwtCompatible;
 import junit.framework.TestCase;
 import org.jspecify.annotations.NullUnmarked;
@@ -29,6 +31,6 @@ import org.jspecify.annotations.NullUnmarked;
 @NullUnmarked
 public class RunnablesTest extends TestCase {
   public void testDoNothingRunnableIsSingleton() {
-    assertSame(Runnables.doNothing(), Runnables.doNothing());
+    assertThat(Runnables.doNothing()).isSameInstanceAs(Runnables.doNothing());
   }
 }

@@ -336,17 +336,17 @@ public class ImmutableListTest extends TestCase {
 
   public void testCopyOf_shortcut_empty() {
     Collection<String> c = ImmutableList.of();
-    assertSame(c, ImmutableList.copyOf(c));
+    assertThat(ImmutableList.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_singleton() {
     Collection<String> c = ImmutableList.of("a");
-    assertSame(c, ImmutableList.copyOf(c));
+    assertThat(ImmutableList.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_immutableList() {
     Collection<String> c = ImmutableList.of("a", "b", "c");
-    assertSame(c, ImmutableList.copyOf(c));
+    assertThat(ImmutableList.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testBuilderAddArrayHandlesNulls() {
@@ -443,7 +443,7 @@ public class ImmutableListTest extends TestCase {
   @GwtIncompatible // SerializableTester
   public void testSerialization_empty() {
     Collection<String> c = ImmutableList.of();
-    assertSame(c, SerializableTester.reserialize(c));
+    assertThat(SerializableTester.reserialize(c)).isSameInstanceAs(c);
   }
 
   @J2ktIncompatible
@@ -480,7 +480,7 @@ public class ImmutableListTest extends TestCase {
     Object[] prevArray = null;
     for (int i = 0; i < 10; i++) {
       builder.add(i);
-      assertNotSame(builder.contents, prevArray);
+      assertThat(builder.contents).isNotSameInstanceAs(prevArray);
       prevArray = builder.contents;
       ImmutableList<Integer> unused = builder.build();
     }
@@ -496,8 +496,8 @@ public class ImmutableListTest extends TestCase {
     Object[] builderArrayAfterAdds = builder.contents;
     RegularImmutableList<Integer> list = (RegularImmutableList<Integer>) builder.build();
     Object[] listInternalArray = list.array;
-    assertSame(builderArray, builderArrayAfterAdds);
-    assertSame(builderArray, listInternalArray);
+    assertThat(builderArrayAfterAdds).isSameInstanceAs(builderArray);
+    assertThat(listInternalArray).isSameInstanceAs(builderArray);
   }
 
   public void testBuilderAdd_varargs() {
@@ -601,7 +601,7 @@ public class ImmutableListTest extends TestCase {
   @SuppressWarnings("InlineMeInliner")
   public void testAsList() {
     ImmutableList<String> list = ImmutableList.of("a", "b");
-    assertSame(list, list.asList());
+    assertThat(list.asList()).isSameInstanceAs(list);
   }
 
   @SuppressWarnings("ModifiedButNotUsed")

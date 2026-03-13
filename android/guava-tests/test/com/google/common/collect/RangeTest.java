@@ -240,8 +240,8 @@ public class RangeTest extends TestCase {
     assertUnboundedAbove(range);
     assertFalse(range.isEmpty());
     assertThat(range.toString()).isEqualTo("(-\u221e..+\u221e)");
-    assertSame(range, reserializeAndAssert(range));
-    assertSame(range, Range.all());
+    assertThat(reserializeAndAssert(range)).isSameInstanceAs(range);
+    assertThat(Range.all()).isSameInstanceAs(range);
   }
 
   private static void assertUnboundedBelow(Range<Integer> range) {

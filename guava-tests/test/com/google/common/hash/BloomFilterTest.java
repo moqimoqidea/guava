@@ -326,7 +326,7 @@ public class BloomFilterTest extends TestCase {
   public void testCopy() {
     BloomFilter<String> original = BloomFilter.create(Funnels.unencodedCharsFunnel(), 100);
     BloomFilter<String> copy = original.copy();
-    assertNotSame(original, copy);
+    assertThat(copy).isNotSameInstanceAs(original);
     assertEquals(original, copy);
   }
 

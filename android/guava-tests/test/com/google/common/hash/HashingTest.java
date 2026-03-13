@@ -581,9 +581,9 @@ public class HashingTest extends TestCase {
         new EqualsTester().addEqualityGroup(hashFunction1a, hashFunction1b).testEquals();
 
         // Make sure we're returning not only equal instances, but constants.
-        assertSame(hashFunction1a, hashFunction1b);
+        assertThat(hashFunction1a).isSameInstanceAs(hashFunction1b);
 
-        assertThat(hashFunction1b.toString()).isEqualTo(hashFunction1a.toString());
+        assertThat(hashFunction1a.toString()).isEqualTo(hashFunction1b.toString());
       }
     }
   }

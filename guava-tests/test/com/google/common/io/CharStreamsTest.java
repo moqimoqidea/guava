@@ -143,13 +143,13 @@ public class CharStreamsTest extends IoTestCase {
     // Should wrap Appendable in a new object
     Appendable plainAppendable = new StringBuilder();
     Writer result = CharStreams.asWriter(plainAppendable);
-    assertNotSame(plainAppendable, result);
+    assertThat(result).isNotSameInstanceAs(plainAppendable);
     assertThat(result).isNotNull();
 
     // A Writer should not be wrapped
     Appendable secretlyAWriter = new StringWriter();
     result = CharStreams.asWriter(secretlyAWriter);
-    assertSame(secretlyAWriter, result);
+    assertThat(result).isSameInstanceAs(secretlyAWriter);
   }
 
   // CharStreams.copy has type specific optimizations for Readers,StringBuilders and Writers
@@ -277,7 +277,7 @@ public class CharStreamsTest extends IoTestCase {
     assertThrows(IndexOutOfBoundsException.class, () -> nullWriter.append(null, 0, 5));
 
     // nothing really to assert?
-    assertSame(CharStreams.nullWriter(), CharStreams.nullWriter());
+    assertThat(CharStreams.nullWriter()).isSameInstanceAs(CharStreams.nullWriter());
   }
 
   /**

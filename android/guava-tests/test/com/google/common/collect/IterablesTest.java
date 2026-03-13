@@ -888,10 +888,11 @@ public class IterablesTest extends TestCase {
     List<String> list = newArrayList("a", "b", "c");
     Iterable<String> iterable = Iterables.unmodifiableIterable(list);
     Iterable<String> iterable2 = Iterables.unmodifiableIterable(iterable);
-    assertSame(iterable, iterable2);
+    assertThat(iterable2).isSameInstanceAs(iterable);
     ImmutableList<String> immutableList = ImmutableList.of("a", "b", "c");
-    assertSame(immutableList, Iterables.unmodifiableIterable(immutableList));
-    assertSame(immutableList, Iterables.unmodifiableIterable((List<String>) immutableList));
+    assertThat(Iterables.unmodifiableIterable(immutableList)).isSameInstanceAs(immutableList);
+    assertThat(Iterables.unmodifiableIterable((List<String>) immutableList))
+        .isSameInstanceAs(immutableList);
   }
 
   public void testFrequency_multiset() {

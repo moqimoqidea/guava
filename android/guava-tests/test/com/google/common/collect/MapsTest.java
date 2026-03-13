@@ -318,7 +318,7 @@ public class MapsTest extends TestCase {
   public void testTreeMapWithComparator() {
     TreeMap<Integer, Integer> map = Maps.newTreeMap(SOME_COMPARATOR);
     assertEquals(emptyMap(), map);
-    assertSame(SOME_COMPARATOR, map.comparator());
+    assertThat(map.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   public void testTreeMapWithInitialMap() {
@@ -328,7 +328,7 @@ public class MapsTest extends TestCase {
     map.put(1, 30);
     TreeMap<Integer, Integer> copy = Maps.newTreeMap(map);
     assertEquals(copy, map);
-    assertSame(copy.comparator(), map.comparator());
+    assertThat(map.comparator()).isEqualTo(copy.comparator());
   }
 
   public enum SomeEnum {
@@ -359,7 +359,7 @@ public class MapsTest extends TestCase {
     EnumMap<SomeEnum, Integer> original = Maps.newEnumMap(SomeEnum.class);
     EnumMap<SomeEnum, Integer> copy = Maps.newEnumMap(original);
     assertEquals(original, copy);
-    assertNotSame(original, copy);
+    assertThat(copy).isNotSameInstanceAs(original);
   }
 
   public void testEnumMapWithInitialMap() {
@@ -1032,7 +1032,7 @@ public class MapsTest extends TestCase {
     assertThat(result.size()).isGreaterThan(2);
     assertThat(result.get("test")).isEqualTo("");
     assertThat(result.get("java.version")).isEqualTo("hidden");
-    assertNotSame(System.getProperty("java.version"), result.get("java.version"));
+    assertThat(result.get("java.version")).isNotEqualTo(System.getProperty("java.version"));
   }
 
   @J2ktIncompatible
@@ -1073,7 +1073,7 @@ public class MapsTest extends TestCase {
             "two", 2);
     Converter<String, Integer> converter = Maps.asConverter(biMap);
     for (Entry<String, Integer> entry : biMap.entrySet()) {
-      assertSame(entry.getValue(), converter.convert(entry.getKey()));
+      assertThat(converter.convert(entry.getKey())).isEqualTo(entry.getValue());
     }
   }
 
@@ -1084,7 +1084,7 @@ public class MapsTest extends TestCase {
             "two", 2);
     Converter<String, Integer> converter = Maps.asConverter(biMap);
     for (Entry<String, Integer> entry : biMap.entrySet()) {
-      assertSame(entry.getKey(), converter.reverse().convert(entry.getValue()));
+      assertThat(converter.reverse().convert(entry.getValue())).isEqualTo(entry.getKey());
     }
   }
 
@@ -1161,8 +1161,8 @@ public class MapsTest extends TestCase {
     BiMap<Number, String> unmod = Maps.<Number, String>unmodifiableBiMap(mod);
 
     /* No aliasing on inverse operations. */
-    assertSame(unmod.inverse(), unmod.inverse());
-    assertSame(unmod, unmod.inverse().inverse());
+    assertThat(unmod.inverse()).isSameInstanceAs(unmod.inverse());
+    assertThat(unmod.inverse().inverse()).isSameInstanceAs(unmod);
 
     /* Unmodifiable is a view. */
     mod.put(4, "four");

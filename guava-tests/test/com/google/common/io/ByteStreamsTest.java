@@ -524,7 +524,7 @@ public class ByteStreamsTest extends IoTestCase {
     nos.write(bytes, 2, 10);
     nos.write(bytes, bytes.length - 5, 5);
     // nothing really to assert?
-    assertSame(ByteStreams.nullOutputStream(), ByteStreams.nullOutputStream());
+    assertThat(ByteStreams.nullOutputStream()).isSameInstanceAs(ByteStreams.nullOutputStream());
   }
 
   public void testNullOutputStream_exceptions() throws Exception {

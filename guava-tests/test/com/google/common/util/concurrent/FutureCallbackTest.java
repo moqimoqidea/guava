@@ -149,7 +149,7 @@ public class FutureCallbackTest extends TestCase {
         };
     addCallback(future, callback, directExecutor());
     SomeError e = assertThrows(SomeError.class, () -> future.set(result));
-    assertSame(error, e);
+    assertThat(e).isEqualTo(error);
     assertThat(future.get()).isEqualTo(result);
     assertThat(successCalls[0]).isEqualTo(1);
     assertThat(failureCalls[0]).isEqualTo(0);

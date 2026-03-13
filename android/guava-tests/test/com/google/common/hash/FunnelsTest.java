@@ -16,6 +16,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.mockito.Mockito.inOrder;
@@ -143,13 +144,14 @@ public class FunnelsTest extends TestCase {
   }
 
   public void testSerialization() {
-    assertSame(
-        Funnels.byteArrayFunnel(), SerializableTester.reserialize(Funnels.byteArrayFunnel()));
-    assertSame(Funnels.integerFunnel(), SerializableTester.reserialize(Funnels.integerFunnel()));
-    assertSame(Funnels.longFunnel(), SerializableTester.reserialize(Funnels.longFunnel()));
-    assertSame(
-        Funnels.unencodedCharsFunnel(),
-        SerializableTester.reserialize(Funnels.unencodedCharsFunnel()));
+    assertThat(SerializableTester.reserialize(Funnels.byteArrayFunnel()))
+        .isSameInstanceAs(Funnels.byteArrayFunnel());
+    assertThat(SerializableTester.reserialize(Funnels.integerFunnel()))
+        .isSameInstanceAs(Funnels.integerFunnel());
+    assertThat(SerializableTester.reserialize(Funnels.longFunnel()))
+        .isSameInstanceAs(Funnels.longFunnel());
+    assertThat(SerializableTester.reserialize(Funnels.unencodedCharsFunnel()))
+        .isSameInstanceAs(Funnels.unencodedCharsFunnel());
     assertEquals(
         Funnels.sequentialFunnel(Funnels.integerFunnel()),
         SerializableTester.reserialize(Funnels.sequentialFunnel(Funnels.integerFunnel())));

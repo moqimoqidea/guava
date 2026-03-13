@@ -82,7 +82,7 @@ public abstract class AbstractImmutableSetTest extends TestCase {
   public void testCreation_noArgs() {
     Set<String> set = of();
     assertEquals(Collections.<String>emptySet(), set);
-    assertSame(this.<String>of(), set);
+    assertThat(set).isSameInstanceAs(this.<String>of());
   }
 
   public void testCreation_oneElement() {
@@ -129,7 +129,7 @@ public abstract class AbstractImmutableSetTest extends TestCase {
     String[] array = new String[0];
     Set<String> set = copyOf(array);
     assertEquals(Collections.<String>emptySet(), set);
-    assertSame(this.<String>of(), set);
+    assertThat(set).isSameInstanceAs(this.<String>of());
   }
 
   public void testCopyOf_arrayOfOneElement() {
@@ -151,7 +151,7 @@ public abstract class AbstractImmutableSetTest extends TestCase {
     Collection<String> c = MinimalCollection.of();
     Set<String> set = copyOf(c);
     assertEquals(Collections.<String>emptySet(), set);
-    assertSame(this.<String>of(), set);
+    assertThat(set).isSameInstanceAs(this.<String>of());
   }
 
   public void testCopyOf_collection_oneElement() {
@@ -197,7 +197,7 @@ public abstract class AbstractImmutableSetTest extends TestCase {
     Iterator<String> iterator = emptyIterator();
     Set<String> set = copyOf(iterator);
     assertEquals(Collections.<String>emptySet(), set);
-    assertSame(this.<String>of(), set);
+    assertThat(set).isSameInstanceAs(this.<String>of());
   }
 
   public void testCopyOf_iterator_oneElement() {
@@ -252,18 +252,18 @@ public abstract class AbstractImmutableSetTest extends TestCase {
   public void testCopyOf_shortcut_empty() {
     Collection<String> c = of();
     assertEquals(Collections.<String>emptySet(), copyOf(c));
-    assertSame(c, copyOf(c));
+    assertThat(copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_singleton() {
     Collection<String> c = of("a");
     assertEquals(singleton("a"), copyOf(c));
-    assertSame(c, copyOf(c));
+    assertThat(copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_sameType() {
     Collection<String> c = of("a", "b", "c");
-    assertSame(c, copyOf(c));
+    assertThat(copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testToString() {

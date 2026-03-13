@@ -257,11 +257,11 @@ public class MultisetsTest extends TestCase {
   public void testUnmodifiableMultisetShortCircuit() {
     Multiset<String> mod = HashMultiset.create();
     Multiset<String> unmod = unmodifiableMultiset(mod);
-    assertNotSame(mod, unmod);
-    assertSame(unmod, unmodifiableMultiset(unmod));
+    assertThat(unmod).isNotSameInstanceAs(mod);
+    assertThat(unmodifiableMultiset(unmod)).isSameInstanceAs(unmod);
     ImmutableMultiset<String> immutable = ImmutableMultiset.of("a", "a", "b", "a");
-    assertSame(immutable, unmodifiableMultiset(immutable));
-    assertSame(immutable, unmodifiableMultiset((Multiset<String>) immutable));
+    assertThat(unmodifiableMultiset(immutable)).isSameInstanceAs(immutable);
+    assertThat(unmodifiableMultiset((Multiset<String>) immutable)).isSameInstanceAs(immutable);
   }
 
   public void testHighestCountFirst() {

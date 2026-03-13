@@ -16,6 +16,8 @@
 
 package com.google.common.base;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
@@ -83,7 +85,7 @@ public class EquivalenceTest extends TestCase {
   public void testWrap_get() {
     String test = "test";
     Wrapper<String> wrapper = LENGTH_EQUIVALENCE.wrap(test);
-    assertSame(test, wrapper.get());
+    assertThat(wrapper.get()).isSameInstanceAs(test);
   }
 
   @J2ktIncompatible

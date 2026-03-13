@@ -82,7 +82,7 @@ public final class OptionalTest extends TestCase {
 
   public void testFromNullable_null() {
     // not promised by spec, but easier to test
-    assertSame(Optional.absent(), Optional.fromNullable(null));
+    assertThat(Optional.fromNullable(null)).isSameInstanceAs(Optional.absent());
   }
 
   public void testIsPresent_no() {

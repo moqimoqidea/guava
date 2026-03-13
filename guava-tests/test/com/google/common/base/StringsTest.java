@@ -54,11 +54,11 @@ public class StringsTest extends TestCase {
   }
 
   public void testPadStart_noPadding() {
-    assertSame("", Strings.padStart("", 0, '-'));
-    assertSame("x", Strings.padStart("x", 0, '-'));
-    assertSame("x", Strings.padStart("x", 1, '-'));
-    assertSame("xx", Strings.padStart("xx", 0, '-'));
-    assertSame("xx", Strings.padStart("xx", 2, '-'));
+    assertThat(Strings.padStart("", 0, '-')).isSameInstanceAs("");
+    assertThat(Strings.padStart("x", 0, '-')).isSameInstanceAs("x");
+    assertThat(Strings.padStart("x", 1, '-')).isSameInstanceAs("x");
+    assertThat(Strings.padStart("xx", 0, '-')).isSameInstanceAs("xx");
+    assertThat(Strings.padStart("xx", 2, '-')).isSameInstanceAs("xx");
   }
 
   public void testPadStart_somePadding() {
@@ -70,7 +70,7 @@ public class StringsTest extends TestCase {
   }
 
   public void testPadStart_negativeMinLength() {
-    assertSame("x", Strings.padStart("x", -1, '-'));
+    assertThat(Strings.padStart("x", -1, '-')).isSameInstanceAs("x");
   }
 
   // TODO: could remove if we got NPT working in GWT somehow
@@ -79,11 +79,11 @@ public class StringsTest extends TestCase {
   }
 
   public void testPadEnd_noPadding() {
-    assertSame("", Strings.padEnd("", 0, '-'));
-    assertSame("x", Strings.padEnd("x", 0, '-'));
-    assertSame("x", Strings.padEnd("x", 1, '-'));
-    assertSame("xx", Strings.padEnd("xx", 0, '-'));
-    assertSame("xx", Strings.padEnd("xx", 2, '-'));
+    assertThat(Strings.padEnd("", 0, '-')).isSameInstanceAs("");
+    assertThat(Strings.padEnd("x", 0, '-')).isSameInstanceAs("x");
+    assertThat(Strings.padEnd("x", 1, '-')).isSameInstanceAs("x");
+    assertThat(Strings.padEnd("xx", 0, '-')).isSameInstanceAs("xx");
+    assertThat(Strings.padEnd("xx", 2, '-')).isSameInstanceAs("xx");
   }
 
   public void testPadEnd_somePadding() {
@@ -95,7 +95,7 @@ public class StringsTest extends TestCase {
   }
 
   public void testPadEnd_negativeMinLength() {
-    assertSame("x", Strings.padEnd("x", -1, '-'));
+    assertThat(Strings.padEnd("x", -1, '-')).isSameInstanceAs("x");
   }
 
   public void testPadEnd_null() {

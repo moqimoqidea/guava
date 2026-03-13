@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 
 import com.google.common.annotations.GwtCompatible;
@@ -103,7 +104,7 @@ public class HashMultisetTest extends TestCase {
     multiset.add(multiset, 2);
     Multiset<Multiset<?>> copy = SerializableTester.reserialize(multiset);
     assertEquals(2, copy.size());
-    assertSame(copy, copy.iterator().next());
+    assertThat(copy.iterator().next()).isSameInstanceAs(copy);
   }
 
   @J2ktIncompatible
@@ -126,7 +127,7 @@ public class HashMultisetTest extends TestCase {
     multiset.add(holder, 2);
     Multiset<MultisetHolder> copy = SerializableTester.reserialize(multiset);
     assertEquals(2, copy.size());
-    assertSame(copy, copy.iterator().next().member);
+    assertThat(copy.iterator().next().member).isSameInstanceAs(copy);
   }
 
   /*

@@ -267,19 +267,19 @@ public class ThrowablesTest extends TestCase {
 
   public void testGetRootCause_noCause() {
     SomeCheckedException exception = new SomeCheckedException();
-    assertSame(exception, getRootCause(exception));
+    assertThat(getRootCause(exception)).isSameInstanceAs(exception);
   }
 
   public void testGetRootCause_singleWrapped() {
     SomeCheckedException cause = new SomeCheckedException();
     SomeChainingException exception = new SomeChainingException(cause);
-    assertSame(cause, getRootCause(exception));
+    assertThat(getRootCause(exception)).isSameInstanceAs(cause);
   }
 
   public void testGetRootCause_doubleWrapped() {
     SomeCheckedException cause = new SomeCheckedException();
     SomeChainingException exception = new SomeChainingException(new SomeChainingException(cause));
-    assertSame(cause, getRootCause(exception));
+    assertThat(getRootCause(exception)).isSameInstanceAs(cause);
   }
 
   public void testGetRootCause_loop() {
@@ -317,7 +317,7 @@ public class ThrowablesTest extends TestCase {
     IllegalStateException ex = new IllegalStateException(re);
 
     assertThat(getCausalChain(ex)).containsExactly(ex, re, iae, sue).inOrder();
-    assertSame(sue, Iterables.getOnlyElement(getCausalChain(sue)));
+    assertThat(Iterables.getOnlyElement(getCausalChain(sue))).isSameInstanceAs(sue);
 
     List<Throwable> causes = getCausalChain(ex);
     assertThrows(UnsupportedOperationException.class, () -> causes.add(new RuntimeException()));

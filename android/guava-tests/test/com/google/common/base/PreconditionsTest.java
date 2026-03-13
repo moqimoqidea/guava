@@ -167,7 +167,7 @@ public class PreconditionsTest extends TestCase {
 
   public void testCheckNotNull_simple_success() {
     String result = checkNotNull(NON_NULL_STRING);
-    assertSame(NON_NULL_STRING, result);
+    assertThat(result).isSameInstanceAs(NON_NULL_STRING);
   }
 
   public void testCheckNotNull_simple_failure() {
@@ -176,7 +176,7 @@ public class PreconditionsTest extends TestCase {
 
   public void testCheckNotNull_simpleMessage_success() {
     String result = checkNotNull(NON_NULL_STRING, IGNORE_ME);
-    assertSame(NON_NULL_STRING, result);
+    assertThat(result).isSameInstanceAs(NON_NULL_STRING);
   }
 
   public void testCheckNotNull_simpleMessage_failure() {
@@ -187,7 +187,7 @@ public class PreconditionsTest extends TestCase {
 
   public void testCheckNotNull_complexMessage_success() {
     String result = checkNotNull(NON_NULL_STRING, "%s", IGNORE_ME);
-    assertSame(NON_NULL_STRING, result);
+    assertThat(result).isSameInstanceAs(NON_NULL_STRING);
   }
 
   public void testCheckNotNull_complexMessage_failure() {

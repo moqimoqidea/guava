@@ -149,7 +149,7 @@ public class SettableFutureTest extends TestCase {
     nested.set(value);
     assertTrue(future.isDone());
     assertFalse(future.isCancelled());
-    assertSame(value, future.get());
+    assertThat(future.get()).isEqualTo(value);
   }
 
   public void testCancel_innerCancelsAsync() throws Exception {

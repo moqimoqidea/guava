@@ -47,9 +47,9 @@ public class CallablesTest extends TestCase {
 
     Object value = new Object();
     Callable<Object> callable = Callables.returning(value);
-    assertSame(value, callable.call());
+    assertThat(callable.call()).isEqualTo(value);
     // Expect the same value on subsequent calls
-    assertSame(value, callable.call());
+    assertThat(callable.call()).isEqualTo(value);
   }
 
   @J2ktIncompatible
@@ -68,7 +68,7 @@ public class CallablesTest extends TestCase {
         Callables.asAsyncCallable(callable, newDirectExecutorService());
 
     ListenableFuture<String> future = asyncCallable.call();
-    assertSame(expected, future.get());
+    assertThat(future.get()).isEqualTo(expected);
   }
 
   @J2ktIncompatible
@@ -88,7 +88,7 @@ public class CallablesTest extends TestCase {
 
     ListenableFuture<String> future = asyncCallable.call();
     ExecutionException e = assertThrows(ExecutionException.class, () -> future.get());
-    assertThat(e).hasCauseThat().isSameInstanceAs(expected);
+    assertThat(e).hasCauseThat().isEqualTo(expected);
   }
 
   @J2ktIncompatible

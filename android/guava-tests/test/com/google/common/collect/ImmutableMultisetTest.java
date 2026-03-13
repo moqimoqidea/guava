@@ -324,17 +324,17 @@ public class ImmutableMultisetTest extends TestCase {
 
   public void testCopyOf_shortcut_empty() {
     Collection<String> c = ImmutableMultiset.of();
-    assertSame(c, ImmutableMultiset.copyOf(c));
+    assertThat(ImmutableMultiset.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_singleton() {
     Collection<String> c = ImmutableMultiset.of("a");
-    assertSame(c, ImmutableMultiset.copyOf(c));
+    assertThat(ImmutableMultiset.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testCopyOf_shortcut_immutableMultiset() {
     Collection<String> c = ImmutableMultiset.of("a", "b", "c");
-    assertSame(c, ImmutableMultiset.copyOf(c));
+    assertThat(ImmutableMultiset.copyOf(c)).isSameInstanceAs(c);
   }
 
   public void testBuilderAdd() {
@@ -455,7 +455,7 @@ public class ImmutableMultisetTest extends TestCase {
   @GwtIncompatible // SerializableTester
   public void testSerialization_empty() {
     Collection<String> c = ImmutableMultiset.of();
-    assertSame(c, SerializableTester.reserialize(c));
+    assertThat(SerializableTester.reserialize(c)).isSameInstanceAs(c);
   }
 
   @J2ktIncompatible

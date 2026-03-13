@@ -282,7 +282,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
 
   public void testListeningDecorator() throws Exception {
     ListeningExecutorService service = listeningDecorator(newDirectExecutorService());
-    assertSame(service, listeningDecorator(service));
+    assertThat(listeningDecorator(service)).isSameInstanceAs(service);
     List<Callable<String>> callables = ImmutableList.of(Callables.returning("x"));
     List<Future<String>> results;
 
@@ -501,7 +501,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
       l.add(() -> TEST_STRING);
       l.add(() -> TEST_STRING);
       String result = invokeAnyImpl(e, l, false, 0, NANOSECONDS);
-      assertSame(TEST_STRING, result);
+      assertThat(result).isEqualTo(TEST_STRING);
     } finally {
       joinPool(e);
     }

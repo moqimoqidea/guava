@@ -113,7 +113,7 @@ public class SuppliersTest extends TestCase {
 
   private void memoizeRedudantlyTest(CountingSupplier countingSupplier) {
     Supplier<Integer> memoizedSupplier = Suppliers.memoize(countingSupplier);
-    assertSame(memoizedSupplier, Suppliers.memoize(memoizedSupplier));
+    assertThat(Suppliers.memoize(memoizedSupplier)).isSameInstanceAs(memoizedSupplier);
   }
 
   public void testMemoizeExceptionThrown() {
@@ -315,8 +315,8 @@ public class SuppliersTest extends TestCase {
   public void testOfInstanceSuppliesSameInstance() {
     Object toBeSupplied = new Object();
     Supplier<Object> objectSupplier = Suppliers.ofInstance(toBeSupplied);
-    assertSame(toBeSupplied, objectSupplier.get());
-    assertSame(toBeSupplied, objectSupplier.get()); // idempotent
+    assertThat(objectSupplier.get()).isSameInstanceAs(toBeSupplied);
+    assertThat(objectSupplier.get()).isSameInstanceAs(toBeSupplied); // idempotent
   }
 
   public void testOfInstanceSuppliesNull() {
@@ -412,7 +412,7 @@ public class SuppliersTest extends TestCase {
           new Thread() {
             @Override
             public void run() {
-              assertSame(Boolean.TRUE, memoizedSupplier.get());
+              assertThat(memoizedSupplier.get()).isSameInstanceAs(Boolean.TRUE);
             }
           };
     }

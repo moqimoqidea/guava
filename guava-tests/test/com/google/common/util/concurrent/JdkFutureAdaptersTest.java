@@ -53,7 +53,7 @@ public class JdkFutureAdaptersTest extends TestCase {
 
   public void testListenInPoolThreadReturnsSameFuture() throws Exception {
     ListenableFuture<String> listenableFuture = immediateFuture(DATA1);
-    assertSame(listenableFuture, listenInPoolThread(listenableFuture));
+    assertThat(listenInPoolThread(listenableFuture)).isSameInstanceAs(listenableFuture);
   }
 
   private static class SingleCallListener implements Runnable {

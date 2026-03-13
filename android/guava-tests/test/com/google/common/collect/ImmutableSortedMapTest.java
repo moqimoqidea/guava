@@ -445,15 +445,15 @@ public class ImmutableSortedMapTest extends TestCase {
     ImmutableSortedMap<String, Integer> copy =
         ImmutableSortedMap.copyOf(Collections.<String, Integer>emptyMap());
     assertEquals(Collections.<String, Integer>emptyMap(), copy);
-    assertSame(copy, ImmutableSortedMap.copyOf(copy));
-    assertSame(Ordering.natural(), copy.comparator());
+    assertThat(ImmutableSortedMap.copyOf(copy)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(Ordering.natural());
   }
 
   public void testCopyOfSingletonMap() {
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOf(singletonMap("one", 1));
     assertMapEquals(copy, "one", 1);
-    assertSame(copy, ImmutableSortedMap.copyOf(copy));
-    assertSame(Ordering.natural(), copy.comparator());
+    assertThat(ImmutableSortedMap.copyOf(copy)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(Ordering.natural());
   }
 
   public void testCopyOf() {
@@ -464,8 +464,8 @@ public class ImmutableSortedMapTest extends TestCase {
 
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOf(original);
     assertMapEquals(copy, "one", 1, "three", 3, "two", 2);
-    assertSame(copy, ImmutableSortedMap.copyOf(copy));
-    assertSame(Ordering.natural(), copy.comparator());
+    assertThat(ImmutableSortedMap.copyOf(copy)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(Ordering.natural());
   }
 
   public void testCopyOfExplicitComparator() {
@@ -477,8 +477,8 @@ public class ImmutableSortedMapTest extends TestCase {
 
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOf(original, comparator);
     assertMapEquals(copy, "two", 2, "three", 3, "one", 1);
-    assertSame(copy, ImmutableSortedMap.copyOf(copy, comparator));
-    assertSame(comparator, copy.comparator());
+    assertThat(ImmutableSortedMap.copyOf(copy, comparator)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(comparator);
   }
 
   public void testCopyOfImmutableSortedSetDifferentComparator() {
@@ -486,8 +486,8 @@ public class ImmutableSortedMapTest extends TestCase {
     Map<String, Integer> original = ImmutableSortedMap.of("one", 1, "two", 2, "three", 3);
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOf(original, comparator);
     assertMapEquals(copy, "two", 2, "three", 3, "one", 1);
-    assertSame(copy, ImmutableSortedMap.copyOf(copy, comparator));
-    assertSame(comparator, copy.comparator());
+    assertThat(ImmutableSortedMap.copyOf(copy, comparator)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(comparator);
   }
 
   public void testCopyOfSortedNatural() {
@@ -498,8 +498,8 @@ public class ImmutableSortedMapTest extends TestCase {
 
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOfSorted(original);
     assertMapEquals(copy, "one", 1, "three", 3, "two", 2);
-    assertSame(copy, ImmutableSortedMap.copyOfSorted(copy));
-    assertSame(Ordering.natural(), copy.comparator());
+    assertThat(ImmutableSortedMap.copyOfSorted(copy)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(Ordering.natural());
   }
 
   public void testCopyOfSortedExplicit() {
@@ -511,8 +511,8 @@ public class ImmutableSortedMapTest extends TestCase {
 
     ImmutableSortedMap<String, Integer> copy = ImmutableSortedMap.copyOfSorted(original);
     assertMapEquals(copy, "two", 2, "three", 3, "one", 1);
-    assertSame(copy, ImmutableSortedMap.copyOfSorted(copy));
-    assertSame(comparator, copy.comparator());
+    assertThat(ImmutableSortedMap.copyOfSorted(copy)).isSameInstanceAs(copy);
+    assertThat(copy.comparator()).isEqualTo(comparator);
   }
 
   private static class IntegerDiv10 implements Comparable<IntegerDiv10> {
@@ -581,7 +581,7 @@ public class ImmutableSortedMapTest extends TestCase {
             .put("five", 5)
             .build();
     assertMapEquals(map, "two", 2, "three", 3, "one", 1, "four", 4, "five", 5);
-    assertSame(comparator, map.comparator());
+    assertThat(map.comparator()).isEqualTo(comparator);
   }
 
   // TODO(b/172823566): Use mainline testToImmutableSortedMap once CollectorTester is usable.

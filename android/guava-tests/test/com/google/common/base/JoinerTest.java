@@ -173,15 +173,15 @@ public class JoinerTest extends TestCase {
     assertThat(joiner.join(array)).isEqualTo("");
 
     StringBuilder sb1FromIterable = new StringBuilder();
-    assertSame(sb1FromIterable, joiner.appendTo(sb1FromIterable, set));
+    assertThat(joiner.appendTo(sb1FromIterable, set)).isSameInstanceAs(sb1FromIterable);
     assertEquals(0, sb1FromIterable.length());
 
     StringBuilder sb1FromIterator = new StringBuilder();
-    assertSame(sb1FromIterator, joiner.appendTo(sb1FromIterator, set));
+    assertThat(joiner.appendTo(sb1FromIterator, set)).isSameInstanceAs(sb1FromIterator);
     assertEquals(0, sb1FromIterator.length());
 
     StringBuilder sb2 = new StringBuilder();
-    assertSame(sb2, joiner.appendTo(sb2, array));
+    assertThat(joiner.appendTo(sb2, array)).isSameInstanceAs(sb2);
     assertEquals(0, sb2.length());
 
     try {

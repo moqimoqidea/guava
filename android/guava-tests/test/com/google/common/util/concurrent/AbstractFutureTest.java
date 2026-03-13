@@ -74,13 +74,13 @@ import org.jspecify.annotations.Nullable;
 public class AbstractFutureTest extends TestCase {
   public void testSuccess() throws ExecutionException, InterruptedException {
     Object value = new Object();
-    assertSame(
-        value,
-        new AbstractFuture<Object>() {
-          {
-            set(value);
-          }
-        }.get());
+    assertThat(
+            new AbstractFuture<Object>() {
+              {
+                set(value);
+              }
+            }.get())
+        .isEqualTo(value);
   }
 
   public void testException() throws InterruptedException {
@@ -96,10 +96,10 @@ public class AbstractFutureTest extends TestCase {
     ExecutionException ee2 = getExpectingExecutionException(future);
 
     // Ensure we get a unique execution exception on each get
-    assertNotSame(ee1, ee2);
+    assertThat(ee1).isNotSameInstanceAs(ee2);
 
-    assertThat(ee1).hasCauseThat().isSameInstanceAs(failure);
-    assertThat(ee2).hasCauseThat().isSameInstanceAs(failure);
+    assertThat(ee1).hasCauseThat().isEqualTo(failure);
+    assertThat(ee2).hasCauseThat().isEqualTo(failure);
 
     checkStackTrace(ee1);
     checkStackTrace(ee2);
@@ -162,7 +162,7 @@ public class AbstractFutureTest extends TestCase {
     normalFuture.setFuture(evilFuture);
     assertTrue(normalFuture.isDone());
     ExecutionException e = assertThrows(ExecutionException.class, () -> normalFuture.get());
-    assertThat(e).hasCauseThat().isSameInstanceAs(exception);
+    assertThat(e).hasCauseThat().isEqualTo(exception);
   }
 
   public void testRemoveWaiter_interruption() throws Exception {
@@ -1172,7 +1172,7 @@ public class AbstractFutureTest extends TestCase {
     normalFuture.setFuture(new FailFuture(exception));
     assertTrue(normalFuture.isDone());
     ExecutionException e = assertThrows(ExecutionException.class, () -> normalFuture.get());
-    assertSame(exception, e.getCause());
+    assertThat(e.getCause()).isEqualTo(exception);
   }
 
   private static void awaitUnchecked(CyclicBarrier barrier) {

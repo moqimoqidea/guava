@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.Synchronized.SynchronizedCollection;
 import com.google.common.collect.Synchronized.SynchronizedSet;
@@ -201,21 +202,21 @@ public class SynchronizedMapTest extends TestCase {
     Map<String, Integer> map = create();
     Set<String> keySet = map.keySet();
     assertTrue(keySet instanceof SynchronizedSet);
-    assertSame(mutex, ((SynchronizedSet<?>) keySet).mutex);
+    assertThat(((SynchronizedSet<?>) keySet).mutex).isSameInstanceAs(mutex);
   }
 
   public void testValues() {
     Map<String, Integer> map = create();
     Collection<Integer> values = map.values();
     assertTrue(values instanceof SynchronizedCollection);
-    assertSame(mutex, ((SynchronizedCollection<?>) values).mutex);
+    assertThat(((SynchronizedCollection<?>) values).mutex).isSameInstanceAs(mutex);
   }
 
   public void testEntrySet() {
     Map<String, Integer> map = create();
     Set<Entry<String, Integer>> entrySet = map.entrySet();
     assertTrue(entrySet instanceof SynchronizedSet);
-    assertSame(mutex, ((SynchronizedSet<?>) entrySet).mutex);
+    assertThat(((SynchronizedSet<?>) entrySet).mutex).isSameInstanceAs(mutex);
   }
 
   public void testEquals() {

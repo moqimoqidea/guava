@@ -62,7 +62,7 @@ public class TestLogHandlerTest extends TestCase {
     LogRecord record = handler.getStoredLogRecords().get(0);
     assertEquals(Level.INFO, record.getLevel());
     assertThat(record.getMessage()).isEqualTo("message");
-    assertSame(EXCEPTION, record.getThrown());
+    assertThat(record.getThrown()).isEqualTo(EXCEPTION);
   }
 
   public void testConcurrentModification() throws Exception {

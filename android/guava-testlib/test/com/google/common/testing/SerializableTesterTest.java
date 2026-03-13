@@ -34,8 +34,7 @@ public class SerializableTesterTest extends TestCase {
   public void testStringAssertions() {
     String original = "hello world";
     String copy = SerializableTester.reserializeAndAssert(original);
-    assertThat(copy).isEqualTo(original);
-    assertNotSame(original, copy);
+    assertThat(copy).isNotSameInstanceAs(original);
   }
 
   public void testClassWhichDoesNotImplementEquals() {

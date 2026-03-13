@@ -307,14 +307,15 @@ public class SynchronizedNavigableMapTest extends SynchronizedMapTest {
     NavigableMap<String, Integer> map = create();
     NavigableSet<String> descendingKeySet = map.descendingKeySet();
     assertTrue(descendingKeySet instanceof SynchronizedNavigableSet);
-    assertSame(mutex, ((SynchronizedNavigableSet<String>) descendingKeySet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) descendingKeySet).mutex).isSameInstanceAs(mutex);
   }
 
   public void testDescendingMap() {
     NavigableMap<String, Integer> map = create();
     NavigableMap<String, Integer> descendingMap = map.descendingMap();
     assertTrue(descendingMap instanceof SynchronizedNavigableMap);
-    assertSame(mutex, ((SynchronizedNavigableMap<String, Integer>) descendingMap).mutex);
+    assertThat(((SynchronizedNavigableMap<String, Integer>) descendingMap).mutex)
+        .isSameInstanceAs(mutex);
   }
 
   public void testFirstEntry() {
@@ -339,14 +340,14 @@ public class SynchronizedNavigableMapTest extends SynchronizedMapTest {
     NavigableMap<String, Integer> map = create();
     SortedMap<String, Integer> headMap = map.headMap("a");
     assertTrue(headMap instanceof SynchronizedSortedMap);
-    assertSame(mutex, ((SynchronizedSortedMap<String, Integer>) headMap).mutex);
+    assertThat(((SynchronizedSortedMap<String, Integer>) headMap).mutex).isSameInstanceAs(mutex);
   }
 
   public void testHeadMap_k_b() {
     NavigableMap<String, Integer> map = create();
     NavigableMap<String, Integer> headMap = map.headMap("a", true);
     assertTrue(headMap instanceof SynchronizedNavigableMap);
-    assertSame(mutex, ((SynchronizedNavigableMap<String, Integer>) headMap).mutex);
+    assertThat(((SynchronizedNavigableMap<String, Integer>) headMap).mutex).isSameInstanceAs(mutex);
   }
 
   public void testHigherEntry() {
@@ -379,7 +380,7 @@ public class SynchronizedNavigableMapTest extends SynchronizedMapTest {
     NavigableMap<String, Integer> map = create();
     NavigableSet<String> navigableKeySet = map.navigableKeySet();
     assertTrue(navigableKeySet instanceof SynchronizedNavigableSet);
-    assertSame(mutex, ((SynchronizedNavigableSet<String>) navigableKeySet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) navigableKeySet).mutex).isSameInstanceAs(mutex);
   }
 
   public void testPollFirstEntry() {
@@ -394,28 +395,28 @@ public class SynchronizedNavigableMapTest extends SynchronizedMapTest {
     NavigableMap<String, Integer> map = create();
     SortedMap<String, Integer> subMap = map.subMap("a", "b");
     assertTrue(subMap instanceof SynchronizedSortedMap);
-    assertSame(mutex, ((SynchronizedSortedMap<String, Integer>) subMap).mutex);
+    assertThat(((SynchronizedSortedMap<String, Integer>) subMap).mutex).isSameInstanceAs(mutex);
   }
 
   public void testSubMap_k_b_k_b() {
     NavigableMap<String, Integer> map = create();
     NavigableMap<String, Integer> subMap = map.subMap("a", true, "b", false);
     assertTrue(subMap instanceof SynchronizedNavigableMap);
-    assertSame(mutex, ((SynchronizedNavigableMap<String, Integer>) subMap).mutex);
+    assertThat(((SynchronizedNavigableMap<String, Integer>) subMap).mutex).isSameInstanceAs(mutex);
   }
 
   public void testTailMap_k() {
     NavigableMap<String, Integer> map = create();
     SortedMap<String, Integer> subMap = map.tailMap("a");
     assertTrue(subMap instanceof SynchronizedSortedMap);
-    assertSame(mutex, ((SynchronizedSortedMap<String, Integer>) subMap).mutex);
+    assertThat(((SynchronizedSortedMap<String, Integer>) subMap).mutex).isSameInstanceAs(mutex);
   }
 
   public void testTailMap_k_b() {
     NavigableMap<String, Integer> map = create();
     NavigableMap<String, Integer> subMap = map.tailMap("a", true);
     assertTrue(subMap instanceof SynchronizedNavigableMap);
-    assertSame(mutex, ((SynchronizedNavigableMap<String, Integer>) subMap).mutex);
+    assertThat(((SynchronizedNavigableMap<String, Integer>) subMap).mutex).isSameInstanceAs(mutex);
   }
 
   @Override

@@ -19,6 +19,7 @@ package com.google.common.collect;
 import static com.google.common.collect.Maps.immutableEntry;
 import static com.google.common.collect.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static java.util.Arrays.asList;
 
 import com.google.common.annotations.GwtCompatible;
@@ -128,17 +129,15 @@ public class ImmutableMultimapTest extends TestCase {
   public void testCopyOf() {
     ImmutableSetMultimap<String, String> setMultimap = ImmutableSetMultimap.of("k1", "v1");
     ImmutableMultimap<String, String> setMultimapCopy = ImmutableMultimap.copyOf(setMultimap);
-    assertSame(
-        "copyOf(ImmutableSetMultimap) should not create a new instance",
-        setMultimap,
-        setMultimapCopy);
+    assertWithMessage("copyOf(ImmutableSetMultimap) should not create a new instance")
+        .that(setMultimapCopy)
+        .isSameInstanceAs(setMultimap);
 
     ImmutableListMultimap<String, String> listMultimap = ImmutableListMultimap.of("k1", "v1");
     ImmutableMultimap<String, String> listMultimapCopy = ImmutableMultimap.copyOf(listMultimap);
-    assertSame(
-        "copyOf(ImmutableListMultimap) should not create a new instance",
-        listMultimap,
-        listMultimapCopy);
+    assertWithMessage("copyOf(ImmutableListMultimap) should not create a new instance")
+        .that(listMultimapCopy)
+        .isSameInstanceAs(listMultimap);
   }
 
   public void testUnhashableSingletonValue() {

@@ -72,8 +72,9 @@ public class ThreadFactoryBuilderTest extends TestCase {
     Thread defaultThread = defaultThreadFactory().newThread(monitoredRunnable);
     assertEquals(defaultThread.isDaemon(), thread.isDaemon());
     assertEquals(defaultThread.getPriority(), thread.getPriority());
-    assertSame(defaultThread.getThreadGroup(), thread.getThreadGroup());
-    assertSame(defaultThread.getUncaughtExceptionHandler(), thread.getUncaughtExceptionHandler());
+    assertThat(thread.getThreadGroup()).isEqualTo(defaultThread.getThreadGroup());
+    assertThat(thread.getUncaughtExceptionHandler())
+        .isEqualTo(defaultThread.getUncaughtExceptionHandler());
 
     assertFalse(completed);
     thread.start();
@@ -205,7 +206,7 @@ public class ThreadFactoryBuilderTest extends TestCase {
     assertThat(thread.getName()).isEqualTo(THREAD_NAME);
     assertEquals(THREAD_PRIORITY, thread.getPriority());
     assertEquals(THREAD_DAEMON, thread.isDaemon());
-    assertSame(UNCAUGHT_EXCEPTION_HANDLER, thread.getUncaughtExceptionHandler());
+    assertThat(thread.getUncaughtExceptionHandler()).isEqualTo(UNCAUGHT_EXCEPTION_HANDLER);
     assertThat(thread.getState()).isEqualTo(Thread.State.NEW);
 
     assertFalse(completed);

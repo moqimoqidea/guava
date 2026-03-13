@@ -89,7 +89,7 @@ public class FilesTest extends IoTestCase {
   public void testRoundTripSources() throws Exception {
     File asciiFile = getTestFile("ascii.txt");
     ByteSource byteSource = Files.asByteSource(asciiFile);
-    assertSame(byteSource, byteSource.asCharSource(UTF_8).asByteSource(UTF_8));
+    assertThat(byteSource.asCharSource(UTF_8).asByteSource(UTF_8)).isSameInstanceAs(byteSource);
   }
 
   public void testToByteArray() throws IOException {

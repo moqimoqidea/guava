@@ -101,7 +101,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
     MinMaxPriorityQueue<Integer> queue = MinMaxPriorityQueue.orderedBy(SOME_COMPARATOR).create();
     assertEquals(11, queue.capacity());
     checkUnbounded(queue);
-    assertSame(SOME_COMPARATOR, queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   // We use the rawtypeToWildcard "cast" to make the test work with J2KT in other tests. Leaving one
@@ -119,7 +119,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
         MinMaxPriorityQueue.orderedBy(SOME_COMPARATOR).expectedSize(8).create();
     assertEquals(8, queue.capacity());
     checkUnbounded(queue);
-    assertSame(SOME_COMPARATOR, queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   public void testCreation_maximumSize() {
@@ -135,7 +135,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
         MinMaxPriorityQueue.orderedBy(SOME_COMPARATOR).maximumSize(42).create();
     assertEquals(11, queue.capacity());
     assertEquals(42, queue.maximumSize);
-    assertSame(SOME_COMPARATOR, queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   public void testCreation_expectedSize_maximumSize() {
@@ -162,7 +162,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
     assertEquals(6, queue.size());
     assertEquals(11, queue.capacity());
     checkUnbounded(queue);
-    assertSame(SOME_COMPARATOR, queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   public void testCreation_expectedSize_withContents() {
@@ -194,14 +194,14 @@ public class MinMaxPriorityQueueTest extends TestCase {
     assertEquals(6, queue.size());
     assertEquals(8, queue.capacity());
     assertEquals(42, queue.maximumSize);
-    assertSame(SOME_COMPARATOR, queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(SOME_COMPARATOR);
   }
 
   // TODO: tests that check the weird interplay between expected size,
   // maximum size, size of initial contents, default capacity...
 
   private static void checkNatural(MinMaxPriorityQueue<Integer> queue) {
-    assertSame(Ordering.natural(), queue.comparator());
+    assertThat(queue.comparator()).isEqualTo(Ordering.natural());
   }
 
   private static void checkUnbounded(MinMaxPriorityQueue<Integer> queue) {

@@ -216,7 +216,7 @@ public class StripedTest extends TestCase {
     for (int i = 0; i < striped.size(); i++) {
       Object object = striped.getAt(i);
       assertThat(object).isNotNull();
-      assertSame(object, striped.getAt(i)); // idempotent
+      assertThat(striped.getAt(i)).isSameInstanceAs(object); // idempotent
       observed.add(object);
     }
     assertTrue("All stripes observed", observed.size() == striped.size());

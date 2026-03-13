@@ -455,7 +455,7 @@ public class ImmutableSetMultimapTest extends TestCase {
 
   public void testCopyOfImmutableSetMultimap() {
     Multimap<String, Integer> multimap = createMultimap();
-    assertSame(multimap, ImmutableSetMultimap.copyOf(multimap));
+    assertThat(ImmutableSetMultimap.copyOf(multimap)).isSameInstanceAs(multimap);
   }
 
   public void testCopyOfNullKey() {
@@ -631,11 +631,13 @@ public class ImmutableSetMultimapTest extends TestCase {
         ImmutableSetMultimap.of("of", 'o', "of", 'f', "to", 't', "to", 'o').inverse());
   }
 
+  // Yes, we want to test that inverse() returns the same instance each time that it's called.
+  @SuppressWarnings("SelfAssertion")
   public void testInverseMinimizesWork() {
     ImmutableSetMultimap<String, Character> multimap =
         ImmutableSetMultimap.of("of", 'o', "of", 'f', "to", 't', "to", 'o');
-    assertSame(multimap.inverse(), multimap.inverse());
-    assertSame(multimap, multimap.inverse().inverse());
+    assertThat(multimap.inverse()).isSameInstanceAs(multimap.inverse());
+    assertThat(multimap.inverse().inverse()).isSameInstanceAs(multimap);
   }
 
   private static <K, V> void assertMultimapEquals(
@@ -666,7 +668,7 @@ public class ImmutableSetMultimapTest extends TestCase {
   @GwtIncompatible // SerializableTester
   public void testEmptySerialization() {
     Multimap<String, Integer> multimap = ImmutableSetMultimap.of();
-    assertSame(multimap, SerializableTester.reserialize(multimap));
+    assertThat(SerializableTester.reserialize(multimap)).isSameInstanceAs(multimap);
   }
 
   @J2ktIncompatible

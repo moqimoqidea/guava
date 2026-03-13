@@ -68,12 +68,12 @@ public class OrderingTest extends TestCase {
 
   public void testAllEqual() {
     Ordering<@Nullable Object> comparator = Ordering.allEqual();
-    assertSame(comparator, comparator.reverse());
+    assertThat(comparator.reverse()).isSameInstanceAs(comparator);
 
     assertEquals(0, comparator.compare(null, null));
     assertEquals(0, comparator.compare(new Object(), new Object()));
     assertEquals(0, comparator.compare("apples", "oranges"));
-    assertSame(comparator, reserialize(comparator));
+    assertThat(reserialize(comparator)).isSameInstanceAs(comparator);
     assertThat(comparator.toString()).isEqualTo("Ordering.allEqual()");
 
     List<String> strings = ImmutableList.of("b", "a", "d", "c");
@@ -124,7 +124,7 @@ public class OrderingTest extends TestCase {
     assertThrows(NullPointerException.class, () -> comparator.compare(1, null));
     assertThrows(NullPointerException.class, () -> comparator.compare(null, 2));
     assertThrows(NullPointerException.class, () -> comparator.compare(null, null));
-    assertSame(comparator, reserialize(comparator));
+    assertThat(reserialize(comparator)).isSameInstanceAs(comparator);
     assertThat(comparator.toString()).isEqualTo("Ordering.natural()");
   }
 
@@ -247,7 +247,7 @@ public class OrderingTest extends TestCase {
     Ordering<Object> ordering = Ordering.usingToString();
     testComparator(ordering, 1, 12, 124, 2);
     assertThat(ordering.toString()).isEqualTo("Ordering.usingToString()");
-    assertSame(ordering, reserialize(ordering));
+    assertThat(reserialize(ordering)).isSameInstanceAs(ordering);
   }
 
   // use an enum to get easy serializability
@@ -355,7 +355,7 @@ public class OrderingTest extends TestCase {
   public void testReverseOfReverseSameAsForward() {
     // Not guaranteed by spec, but it works, and saves us from testing
     // exhaustively
-    assertSame(numberOrdering, numberOrdering.reverse().reverse());
+    assertThat(numberOrdering.reverse().reverse()).isSameInstanceAs(numberOrdering);
   }
 
   private enum StringLengthFunction implements Function<String, Integer> {
@@ -665,8 +665,8 @@ public class OrderingTest extends TestCase {
     Integer foo = new Integer(Integer.MAX_VALUE - 10);
     Integer bar = new Integer(Integer.MAX_VALUE - 10);
 
-    assertNotSame(foo, bar);
-    assertEquals(foo, bar);
+    assertThat(foo).isNotSameInstanceAs(bar);
+    assertThat(foo).isEqualTo(bar);
 
     List<Integer> list = asList(3, foo, bar, -1);
     List<Integer> result = numberOrdering.leastOf(list, list.size());
@@ -677,8 +677,8 @@ public class OrderingTest extends TestCase {
     Integer foo = new Integer(Integer.MAX_VALUE - 10);
     Integer bar = new Integer(Integer.MAX_VALUE - 10);
 
-    assertNotSame(foo, bar);
-    assertEquals(foo, bar);
+    assertThat(foo).isNotSameInstanceAs(bar);
+    assertThat(foo).isEqualTo(bar);
 
     List<Integer> list = asList(3, foo, bar, -1);
     List<Integer> result = numberOrdering.leastOf(list.iterator(), list.size());
@@ -762,8 +762,8 @@ public class OrderingTest extends TestCase {
     Integer a = new Integer(4);
     Integer b = new Integer(4);
     ints = Lists.newArrayList(a, b, b);
-    assertSame(a, numberOrdering.max(ints.iterator()));
-    assertSame(a, numberOrdering.min(ints.iterator()));
+    assertThat(numberOrdering.max(ints.iterator())).isSameInstanceAs(a);
+    assertThat(numberOrdering.min(ints.iterator())).isSameInstanceAs(a);
   }
 
   public void testIteratorMinExhaustsIterator() {
@@ -789,8 +789,8 @@ public class OrderingTest extends TestCase {
     Integer a = new Integer(4);
     Integer b = new Integer(4);
     ints = Lists.newArrayList(a, b, b);
-    assertSame(a, numberOrdering.max(ints));
-    assertSame(a, numberOrdering.min(ints));
+    assertThat(numberOrdering.max(ints)).isSameInstanceAs(a);
+    assertThat(numberOrdering.min(ints)).isSameInstanceAs(a);
   }
 
   public void testVarargsMinAndMax() {
@@ -810,8 +810,8 @@ public class OrderingTest extends TestCase {
     // when the values are the same, the first argument should be returned
     Integer a = new Integer(4);
     Integer b = new Integer(4);
-    assertSame(a, numberOrdering.max(a, b, b));
-    assertSame(a, numberOrdering.min(a, b, b));
+    assertThat(numberOrdering.max(a, b, b)).isSameInstanceAs(a);
+    assertThat(numberOrdering.min(a, b, b)).isSameInstanceAs(a);
   }
 
   public void testParameterMinAndMax() {
@@ -823,8 +823,8 @@ public class OrderingTest extends TestCase {
     // when the values are the same, the first argument should be returned
     Integer a = new Integer(4);
     Integer b = new Integer(4);
-    assertSame(a, numberOrdering.max(a, b));
-    assertSame(a, numberOrdering.min(a, b));
+    assertThat(numberOrdering.max(a, b)).isSameInstanceAs(a);
+    assertThat(numberOrdering.min(a, b)).isSameInstanceAs(a);
   }
 
   private static class NumberOrdering extends Ordering<Number> {

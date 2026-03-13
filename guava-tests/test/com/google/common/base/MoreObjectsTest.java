@@ -17,6 +17,7 @@
 package com.google.common.base;
 
 import static com.google.common.base.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -32,15 +33,15 @@ public class MoreObjectsTest extends TestCase {
   public void testFirstNonNull_withNonNull() {
     String s1 = "foo";
     String s2 = MoreObjects.firstNonNull(s1, "bar");
-    assertSame(s1, s2);
+    assertThat(s2).isSameInstanceAs(s1);
 
     Long n1 = 42L;
     Long n2 = MoreObjects.firstNonNull(null, n1);
-    assertSame(n1, n2);
+    assertThat(n2).isSameInstanceAs(n1);
 
     Boolean b1 = true;
     Boolean b2 = MoreObjects.firstNonNull(b1, null);
-    assertSame(b1, b2);
+    assertThat(b2).isSameInstanceAs(b1);
   }
 
   public void testFirstNonNull_throwsNullPointerException() {

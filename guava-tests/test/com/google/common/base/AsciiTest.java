@@ -44,14 +44,14 @@ public class AsciiTest extends TestCase {
 
   public void testToLowerCase() {
     assertThat(Ascii.toLowerCase(UPPER)).isEqualTo(LOWER);
-    assertSame(LOWER, Ascii.toLowerCase(LOWER));
+    assertThat(Ascii.toLowerCase(LOWER)).isSameInstanceAs(LOWER);
     assertThat(Ascii.toLowerCase(IGNORED)).isEqualTo(IGNORED);
     assertThat(Ascii.toLowerCase("fOobaR")).isEqualTo("foobar");
   }
 
   public void testToUpperCase() {
     assertThat(Ascii.toUpperCase(LOWER)).isEqualTo(UPPER);
-    assertSame(UPPER, Ascii.toUpperCase(UPPER));
+    assertThat(Ascii.toUpperCase(UPPER)).isSameInstanceAs(UPPER);
     assertThat(Ascii.toUpperCase(IGNORED)).isEqualTo(IGNORED);
     assertThat(Ascii.toUpperCase("FoOBAr")).isEqualTo("FOOBAR");
   }

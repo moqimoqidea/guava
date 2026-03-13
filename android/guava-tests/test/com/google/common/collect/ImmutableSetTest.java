@@ -322,7 +322,7 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
   public void testCopyOf_copiesImmutableSortedSet() {
     ImmutableSortedSet<String> sortedSet = ImmutableSortedSet.of("a");
     ImmutableSet<String> copy = ImmutableSet.copyOf(sortedSet);
-    assertNotSame(sortedSet, copy);
+    assertThat(copy).isNotSameInstanceAs(sortedSet);
   }
 
   // TODO(b/172823566): Use mainline testToImmutableSet once CollectorTester is usable to java7.

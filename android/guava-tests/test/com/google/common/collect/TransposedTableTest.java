@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import static com.google.common.collect.Tables.transpose;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import org.jspecify.annotations.NullMarked;
@@ -42,7 +43,7 @@ public class TransposedTableTest extends AbstractTableTest<Character> {
 
   public void testTransposeTransposed() {
     Table<Integer, String, Character> original = HashBasedTable.create();
-    assertSame(original, transpose(transpose(original)));
+    assertThat(transpose(transpose(original))).isSameInstanceAs(original);
   }
 
   public void testPutOriginalModifiesTranspose() {
@@ -63,11 +64,11 @@ public class TransposedTableTest extends AbstractTableTest<Character> {
     Table<Integer, String, Character> original = HashBasedTable.create();
     Table<String, Integer, Character> transpose = transpose(original);
     original.put(1, "foo", 'a');
-    assertSame(original.columnKeySet(), transpose.rowKeySet());
-    assertSame(original.rowKeySet(), transpose.columnKeySet());
-    assertSame(original.columnMap(), transpose.rowMap());
-    assertSame(original.rowMap(), transpose.columnMap());
-    assertSame(original.values(), transpose.values());
+    assertThat(transpose.rowKeySet()).isSameInstanceAs(original.columnKeySet());
+    assertThat(transpose.columnKeySet()).isSameInstanceAs(original.rowKeySet());
+    assertThat(transpose.rowMap()).isSameInstanceAs(original.columnMap());
+    assertThat(transpose.columnMap()).isSameInstanceAs(original.rowMap());
+    assertThat(transpose.values()).isSameInstanceAs(original.values());
     assertEquals(original.row(1), transpose.column(1));
     assertEquals(original.row(2), transpose.column(2));
     assertEquals(original.column("foo"), transpose.row("foo"));

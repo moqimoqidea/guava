@@ -18,6 +18,7 @@ package com.google.common.base;
 
 import static com.google.common.base.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.base.SneakyThrows.sneakyThrow;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -115,7 +116,7 @@ public class AbstractIteratorTest extends TestCase {
 
     // It should pass through untouched
     SomeUncheckedException e = assertThrows(SomeUncheckedException.class, iter::hasNext);
-    assertSame(exception, e);
+    assertThat(e).isSameInstanceAs(exception);
   }
 
   public void testExceptionAfterEndOfData() {

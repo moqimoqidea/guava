@@ -45,7 +45,7 @@ public class HtmlEscapersTest extends TestCase {
     // If the string contains no escapes, it should return the arg.
     // Note: assert<b>Same</b> for this implementation.
     String s = "blah blah farhvergnugen";
-    assertSame(s, htmlEscaper().escape(s));
+    assertThat(htmlEscaper().escape(s)).isSameInstanceAs(s);
 
     // Tests escapes at begin and end of string.
     assertThat(htmlEscaper().escape("<p>")).isEqualTo("&lt;p&gt;");
@@ -61,6 +61,6 @@ public class HtmlEscapersTest extends TestCase {
         "!@#$%^*()_+=-/?\\|]}[{,.;:"
             + "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             + "1234567890";
-    assertSame(s, htmlEscaper().escape(s));
+    assertThat(htmlEscaper().escape(s)).isSameInstanceAs(s);
   }
 }

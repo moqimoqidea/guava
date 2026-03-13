@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.Synchronized.SynchronizedNavigableSet;
 import com.google.common.collect.Synchronized.SynchronizedSortedSet;
 import com.google.common.collect.testing.NavigableSetTestSuiteBuilder;
@@ -202,48 +204,48 @@ public class SynchronizedNavigableSetTest extends TestCase {
     NavigableSet<String> set = create();
     NavigableSet<String> descendingSet = set.descendingSet();
     assertTrue(descendingSet instanceof SynchronizedNavigableSet);
-    assertSame(MUTEX, ((SynchronizedNavigableSet<String>) descendingSet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) descendingSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testHeadSet_e() {
     NavigableSet<String> set = create();
     SortedSet<String> headSet = set.headSet("a");
     assertTrue(headSet instanceof SynchronizedSortedSet);
-    assertSame(MUTEX, ((SynchronizedSortedSet<String>) headSet).mutex);
+    assertThat(((SynchronizedSortedSet<String>) headSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testHeadSet_e_b() {
     NavigableSet<String> set = create();
     NavigableSet<String> headSet = set.headSet("a", true);
     assertTrue(headSet instanceof SynchronizedNavigableSet);
-    assertSame(MUTEX, ((SynchronizedNavigableSet<String>) headSet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) headSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testSubSet_e_e() {
     NavigableSet<String> set = create();
     SortedSet<String> subSet = set.subSet("a", "b");
     assertTrue(subSet instanceof SynchronizedSortedSet);
-    assertSame(MUTEX, ((SynchronizedSortedSet<String>) subSet).mutex);
+    assertThat(((SynchronizedSortedSet<String>) subSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testSubSet_e_b_e_b() {
     NavigableSet<String> set = create();
     NavigableSet<String> subSet = set.subSet("a", false, "b", true);
     assertTrue(subSet instanceof SynchronizedNavigableSet);
-    assertSame(MUTEX, ((SynchronizedNavigableSet<String>) subSet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) subSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testTailSet_e() {
     NavigableSet<String> set = create();
     SortedSet<String> tailSet = set.tailSet("a");
     assertTrue(tailSet instanceof SynchronizedSortedSet);
-    assertSame(MUTEX, ((SynchronizedSortedSet<String>) tailSet).mutex);
+    assertThat(((SynchronizedSortedSet<String>) tailSet).mutex).isSameInstanceAs(MUTEX);
   }
 
   public void testTailSet_e_b() {
     NavigableSet<String> set = create();
     NavigableSet<String> tailSet = set.tailSet("a", true);
     assertTrue(tailSet instanceof SynchronizedNavigableSet);
-    assertSame(MUTEX, ((SynchronizedNavigableSet<String>) tailSet).mutex);
+    assertThat(((SynchronizedNavigableSet<String>) tailSet).mutex).isSameInstanceAs(MUTEX);
   }
 }

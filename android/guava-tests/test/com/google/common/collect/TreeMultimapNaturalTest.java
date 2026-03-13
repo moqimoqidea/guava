@@ -365,9 +365,9 @@ public class TreeMultimapNaturalTest extends TestCase {
 
     TreeMultimap<Double, Double> copyFromTree = TreeMultimap.create(tree);
     assertEquals(tree, copyFromTree);
-    assertSame(Ordering.natural(), copyFromTree.keyComparator());
-    assertSame(Ordering.natural(), copyFromTree.valueComparator());
-    assertSame(Ordering.natural(), copyFromTree.get(1.0).comparator());
+    assertThat(copyFromTree.keyComparator()).isEqualTo(Ordering.natural());
+    assertThat(copyFromTree.valueComparator()).isEqualTo(Ordering.natural());
+    assertThat(copyFromTree.get(1.0).comparator()).isEqualTo(Ordering.natural());
   }
 
   /** Test that creating one TreeMultimap from a non-TreeMultimap results in natural ordering. */
@@ -395,9 +395,9 @@ public class TreeMultimapNaturalTest extends TestCase {
     SortedSetMultimap<Double, Double> sorted = Multimaps.unmodifiableSortedSetMultimap(tree);
     TreeMultimap<Double, Double> copyFromSorted = TreeMultimap.create(sorted);
     assertEquals(tree, copyFromSorted);
-    assertSame(Ordering.natural(), copyFromSorted.keyComparator());
-    assertSame(Ordering.natural(), copyFromSorted.valueComparator());
-    assertSame(Ordering.natural(), copyFromSorted.get(1.0).comparator());
+    assertThat(copyFromSorted.keyComparator()).isEqualTo(Ordering.natural());
+    assertThat(copyFromSorted.valueComparator()).isEqualTo(Ordering.natural());
+    assertThat(copyFromSorted.get(1.0).comparator()).isEqualTo(Ordering.natural());
   }
 
   public void testComparators() {

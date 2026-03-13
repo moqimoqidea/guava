@@ -315,13 +315,13 @@ public class ArbitraryInstancesTest extends TestCase {
   }
 
   public void testGet_class() {
-    assertSame(SomeAbstractClass.INSTANCE, ArbitraryInstances.get(SomeAbstractClass.class));
-    assertSame(
-        WithPrivateConstructor.INSTANCE, ArbitraryInstances.get(WithPrivateConstructor.class));
+    assertThat(ArbitraryInstances.get(SomeAbstractClass.class))
+        .isSameInstanceAs(SomeAbstractClass.INSTANCE);
+    assertThat(ArbitraryInstances.get(WithPrivateConstructor.class))
+        .isSameInstanceAs(WithPrivateConstructor.INSTANCE);
     assertThat(ArbitraryInstances.get(NoDefaultConstructor.class)).isNull();
-    assertSame(
-        WithExceptionalConstructor.INSTANCE,
-        ArbitraryInstances.get(WithExceptionalConstructor.class));
+    assertThat(ArbitraryInstances.get(WithExceptionalConstructor.class))
+        .isSameInstanceAs(WithExceptionalConstructor.INSTANCE);
     assertThat(ArbitraryInstances.get(NonPublicClass.class)).isNull();
   }
 
@@ -381,15 +381,18 @@ public class ArbitraryInstancesTest extends TestCase {
   }
 
   public void testGet_usePublicConstant() {
-    assertSame(WithPublicConstant.INSTANCE, ArbitraryInstances.get(WithPublicConstant.class));
+    assertThat(ArbitraryInstances.get(WithPublicConstant.class))
+        .isSameInstanceAs(WithPublicConstant.INSTANCE);
   }
 
   public void testGet_useFirstPublicConstant() {
-    assertSame(WithPublicConstants.FIRST, ArbitraryInstances.get(WithPublicConstants.class));
+    assertThat(ArbitraryInstances.get(WithPublicConstants.class))
+        .isSameInstanceAs(WithPublicConstants.FIRST);
   }
 
   public void testGet_nullConstantIgnored() {
-    assertSame(FirstConstantIsNull.SECOND, ArbitraryInstances.get(FirstConstantIsNull.class));
+    assertThat(ArbitraryInstances.get(FirstConstantIsNull.class))
+        .isSameInstanceAs(FirstConstantIsNull.SECOND);
   }
 
   public void testGet_constantWithGenericsNotUsed() {
@@ -429,10 +432,9 @@ public class ArbitraryInstancesTest extends TestCase {
       assertWithMessage("Expected to return non-null for: %s", mutableClass)
           .that(instance)
           .isNotNull();
-      assertNotSame(
-          "Expected to return fresh instance for: " + mutableClass,
-          instance,
-          ArbitraryInstances.get(mutableClass));
+      assertWithMessage("Expected to return fresh instance for: " + mutableClass)
+          .that(ArbitraryInstances.get(mutableClass))
+          .isNotSameInstanceAs(instance);
     }
   }
 

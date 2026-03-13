@@ -60,7 +60,7 @@ public class VerifyTest extends TestCase {
 
   public void testVerifyNotNull_simple_success() {
     String result = verifyNotNull(NON_NULL_STRING);
-    assertSame(NON_NULL_STRING, result);
+    assertThat(result).isSameInstanceAs(NON_NULL_STRING);
   }
 
   public void testVerifyNotNull_simple_failure() {
@@ -69,7 +69,7 @@ public class VerifyTest extends TestCase {
 
   public void testVerifyNotNull_complexMessage_success() {
     String result = verifyNotNull(NON_NULL_STRING, "%s", IGNORE_ME);
-    assertSame(NON_NULL_STRING, result);
+    assertThat(result).isSameInstanceAs(NON_NULL_STRING);
   }
 
   public void testVerifyNotNull_simpleMessage_failure() {

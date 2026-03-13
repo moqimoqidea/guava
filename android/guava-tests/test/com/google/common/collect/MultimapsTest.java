@@ -86,37 +86,38 @@ public class MultimapsTest extends TestCase {
   public void testUnmodifiableListMultimapShortCircuit() {
     ListMultimap<String, Integer> mod = ArrayListMultimap.create();
     ListMultimap<String, Integer> unmod = Multimaps.unmodifiableListMultimap(mod);
-    assertNotSame(mod, unmod);
-    assertSame(unmod, Multimaps.unmodifiableListMultimap(unmod));
+    assertThat(unmod).isNotSameInstanceAs(mod);
+    assertThat(Multimaps.unmodifiableListMultimap(unmod)).isSameInstanceAs(unmod);
     ImmutableListMultimap<String, Integer> immutable =
         ImmutableListMultimap.of("a", 1, "b", 2, "a", 3);
-    assertSame(immutable, Multimaps.unmodifiableListMultimap(immutable));
-    assertSame(
-        immutable, Multimaps.unmodifiableListMultimap((ListMultimap<String, Integer>) immutable));
+    assertThat(Multimaps.unmodifiableListMultimap(immutable)).isSameInstanceAs(immutable);
+    assertThat(Multimaps.unmodifiableListMultimap((ListMultimap<String, Integer>) immutable))
+        .isSameInstanceAs(immutable);
   }
 
   @SuppressWarnings({"deprecation", "InlineMeInliner"}) // test of a deprecated method
   public void testUnmodifiableSetMultimapShortCircuit() {
     SetMultimap<String, Integer> mod = HashMultimap.create();
     SetMultimap<String, Integer> unmod = Multimaps.unmodifiableSetMultimap(mod);
-    assertNotSame(mod, unmod);
-    assertSame(unmod, Multimaps.unmodifiableSetMultimap(unmod));
+    assertThat(unmod).isNotSameInstanceAs(mod);
+    assertThat(Multimaps.unmodifiableSetMultimap(unmod)).isSameInstanceAs(unmod);
     ImmutableSetMultimap<String, Integer> immutable =
         ImmutableSetMultimap.of("a", 1, "b", 2, "a", 3);
-    assertSame(immutable, Multimaps.unmodifiableSetMultimap(immutable));
-    assertSame(
-        immutable, Multimaps.unmodifiableSetMultimap((SetMultimap<String, Integer>) immutable));
+    assertThat(Multimaps.unmodifiableSetMultimap(immutable)).isSameInstanceAs(immutable);
+    assertThat(Multimaps.unmodifiableSetMultimap((SetMultimap<String, Integer>) immutable))
+        .isSameInstanceAs(immutable);
   }
 
   @SuppressWarnings({"deprecation", "InlineMeInliner"}) // test of a deprecated method
   public void testUnmodifiableMultimapShortCircuit() {
     Multimap<String, Integer> mod = HashMultimap.create();
     Multimap<String, Integer> unmod = Multimaps.unmodifiableMultimap(mod);
-    assertNotSame(mod, unmod);
-    assertSame(unmod, Multimaps.unmodifiableMultimap(unmod));
+    assertThat(unmod).isNotSameInstanceAs(mod);
+    assertThat(Multimaps.unmodifiableMultimap(unmod)).isSameInstanceAs(unmod);
     ImmutableMultimap<String, Integer> immutable = ImmutableMultimap.of("a", 1, "b", 2, "a", 3);
-    assertSame(immutable, Multimaps.unmodifiableMultimap(immutable));
-    assertSame(immutable, Multimaps.unmodifiableMultimap((Multimap<String, Integer>) immutable));
+    assertThat(Multimaps.unmodifiableMultimap(immutable)).isSameInstanceAs(immutable);
+    assertThat(Multimaps.unmodifiableMultimap((Multimap<String, Integer>) immutable))
+        .isSameInstanceAs(immutable);
   }
 
   @GwtIncompatible // slow (~10s)
@@ -220,7 +221,7 @@ public class MultimapsTest extends TestCase {
         TreeMultimap.create(Ordering.<String>natural(), INT_COMPARATOR);
     SortedSetMultimap<String, Integer> multimap = synchronizedSortedSetMultimap(delegate);
     checkUnmodifiableMultimap(multimap, false, "null", 42);
-    assertSame(INT_COMPARATOR, multimap.valueComparator());
+    assertThat(multimap.valueComparator()).isEqualTo(INT_COMPARATOR);
   }
 
   @J2ktIncompatible
@@ -231,7 +232,7 @@ public class MultimapsTest extends TestCase {
     SortedSetMultimap<String, Integer> multimap = synchronizedSortedSetMultimap(delegate);
     Multimap<String, Integer> unmodifiable = prepareUnmodifiableTests(multimap, false, "null", 42);
     SerializableTester.reserializeAndAssert(unmodifiable);
-    assertSame(INT_COMPARATOR, multimap.valueComparator());
+    assertThat(multimap.valueComparator()).isEqualTo(INT_COMPARATOR);
   }
 
   public void testUnmodifiableMultimapIsView() {
@@ -253,7 +254,7 @@ public class MultimapsTest extends TestCase {
     Entry<String, Integer> fromToArray = (Entry<String, Integer>) unmod.entries().toArray()[0];
     assertThrows(UnsupportedOperationException.class, () -> fromToArray.setValue(2));
     Entry<String, Integer>[] array = (Entry<String, Integer>[]) new Entry<?, ?>[2];
-    assertSame(array, unmod.entries().toArray(array));
+    assertThat(unmod.entries().toArray(array)).isSameInstanceAs(array);
     assertThrows(UnsupportedOperationException.class, () -> array[0].setValue(2));
     assertFalse(unmod.entries().contains(nefariousMapEntry("pwnd", 2)));
     assertFalse(unmod.keys().contains("pwnd"));
@@ -363,7 +364,7 @@ public class MultimapsTest extends TestCase {
         new ImmutableMultimap.Builder<Integer, String>().put(1, "one").put(2, "two").build();
 
     // copy into existing multimap
-    assertSame(multimap, Multimaps.invertFrom(single, multimap));
+    assertThat(Multimaps.invertFrom(single, multimap)).isSameInstanceAs(multimap);
 
     ImmutableMultimap<String, Integer> expected =
         new ImmutableMultimap.Builder<String, Integer>().put("one", 1).put("two", 2).build();
@@ -375,25 +376,25 @@ public class MultimapsTest extends TestCase {
     Multimap<String, Integer> multimap =
         Multimaps.newMultimap(new HashMap<String, Collection<Integer>>(), new QueueSupplier());
     Map<String, Collection<Integer>> map = Multimaps.asMap(multimap);
-    assertSame(multimap.asMap(), map);
+    assertThat(map).isSameInstanceAs(multimap.asMap());
   }
 
   public void testAsMap_listMultimap() {
     ListMultimap<String, Integer> listMultimap = ArrayListMultimap.create();
     Map<String, List<Integer>> map = Multimaps.asMap(listMultimap);
-    assertSame(listMultimap.asMap(), map);
+    assertThat(map).isSameInstanceAs(listMultimap.asMap());
   }
 
   public void testAsMap_setMultimap() {
     SetMultimap<String, Integer> setMultimap = LinkedHashMultimap.create();
     Map<String, Set<Integer>> map = Multimaps.asMap(setMultimap);
-    assertSame(setMultimap.asMap(), map);
+    assertThat(map).isSameInstanceAs(setMultimap.asMap());
   }
 
   public void testAsMap_sortedSetMultimap() {
     SortedSetMultimap<String, Integer> sortedSetMultimap = TreeMultimap.create();
     Map<String, SortedSet<Integer>> map = Multimaps.asMap(sortedSetMultimap);
-    assertSame(sortedSetMultimap.asMap(), map);
+    assertThat(map).isSameInstanceAs(sortedSetMultimap.asMap());
   }
 
   public void testForMap() {

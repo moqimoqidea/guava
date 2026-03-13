@@ -17,6 +17,7 @@
 package com.google.common.testing;
 
 import static com.google.common.testing.ReflectionFreeAssertThrows.assertThrows;
+import static com.google.common.truth.Truth.assertThat;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
@@ -56,7 +57,7 @@ public class FakeTickerTest extends TestCase {
   public void testAdvance() {
     FakeTicker ticker = new FakeTicker();
     assertEquals(0, ticker.read());
-    assertSame(ticker, ticker.advance(10));
+    assertThat(ticker.advance(10)).isSameInstanceAs(ticker);
     assertEquals(10, ticker.read());
     ticker.advance(1, MILLISECONDS);
     assertEquals(1000010L, ticker.read());
@@ -66,7 +67,7 @@ public class FakeTickerTest extends TestCase {
 
   public void testAutoIncrementStep_returnsSameInstance() {
     FakeTicker ticker = new FakeTicker();
-    assertSame(ticker, ticker.setAutoIncrementStep(10, NANOSECONDS));
+    assertThat(ticker.setAutoIncrementStep(10, NANOSECONDS)).isSameInstanceAs(ticker);
   }
 
   public void testAutoIncrementStep_nanos() {

@@ -48,12 +48,12 @@ public class FunctionsTest extends TestCase {
   public void testIdentity_same() {
     Function<@Nullable String, @Nullable String> identity = Functions.identity();
     assertThat(identity.apply(null)).isNull();
-    assertSame("foo", identity.apply("foo"));
+    assertThat(identity.apply("foo")).isSameInstanceAs("foo");
   }
 
   public void testIdentity_notSame() {
     Function<Long, Long> identity = Functions.identity();
-    assertNotSame(new Long(135135L), identity.apply(new Long(135135L)));
+    assertThat(identity.apply(new Long(135135L))).isNotSameInstanceAs(new Long(135135L));
   }
 
   @J2ktIncompatible
@@ -453,7 +453,7 @@ public class FunctionsTest extends TestCase {
   @GwtIncompatible // SerializableTester
   private static <Y> void checkCanReserializeSingleton(Function<? super String, Y> f) {
     Function<? super String, Y> g = SerializableTester.reserializeAndAssert(f);
-    assertSame(f, g);
+    assertThat(g).isSameInstanceAs(f);
     for (Integer i = 1; i < 5; i++) {
       assertEquals(f.apply(i.toString()), g.apply(i.toString()));
     }

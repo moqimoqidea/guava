@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertSame;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
@@ -104,7 +103,7 @@ public final class TestThread<L> extends Thread implements TearDown {
     checkNotNull(methodName);
     checkNotNull(arguments);
     sendRequest(methodName, arguments);
-    assertSame(null, getResponse(methodName).getResult());
+    assertThat(getResponse(methodName).getResult()).isNull();
   }
 
   /**
@@ -246,7 +245,7 @@ public final class TestThread<L> extends Thread implements TearDown {
 
   @Override
   public void run() {
-    assertSame(this, Thread.currentThread());
+    assertThat(Thread.currentThread()).isEqualTo(this);
     try {
       while (true) {
         Request request = requestQueue.take();
