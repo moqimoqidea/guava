@@ -37,35 +37,35 @@ public class CharsetsTest extends TestCase {
   @J2ktIncompatible
   @GwtIncompatible // Non-UTF-8 Charset
   public void testUsAscii() {
-    assertEquals(Charset.forName("US-ASCII"), Charsets.US_ASCII);
+    assertThat(Charsets.US_ASCII).isEqualTo(Charset.forName("US-ASCII"));
   }
 
   @J2ktIncompatible
   @GwtIncompatible // Non-UTF-8 Charset
   public void testIso88591() {
-    assertEquals(Charset.forName("ISO-8859-1"), Charsets.ISO_8859_1);
+    assertThat(Charsets.ISO_8859_1).isEqualTo(Charset.forName("ISO-8859-1"));
   }
 
   public void testUtf8() {
-    assertEquals(Charset.forName("UTF-8"), Charsets.UTF_8);
+    assertThat(Charsets.UTF_8).isEqualTo(Charset.forName("UTF-8"));
   }
 
   @J2ktIncompatible
   @GwtIncompatible // Non-UTF-8 Charset
   public void testUtf16be() {
-    assertEquals(Charset.forName("UTF-16BE"), Charsets.UTF_16BE);
+    assertThat(Charsets.UTF_16BE).isEqualTo(Charset.forName("UTF-16BE"));
   }
 
   @J2ktIncompatible
   @GwtIncompatible // Non-UTF-8 Charset
   public void testUtf16le() {
-    assertEquals(Charset.forName("UTF-16LE"), Charsets.UTF_16LE);
+    assertThat(Charsets.UTF_16LE).isEqualTo(Charset.forName("UTF-16LE"));
   }
 
   @J2ktIncompatible
   @GwtIncompatible // Non-UTF-8 Charset
   public void testUtf16() {
-    assertEquals(Charset.forName("UTF-16"), Charsets.UTF_16);
+    assertThat(Charsets.UTF_16).isEqualTo(Charset.forName("UTF-16"));
   }
 
   @J2ktIncompatible
