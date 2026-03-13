@@ -131,9 +131,9 @@ public class EnumsTest extends TestCase {
 
   public void testStringConverter_reverse() {
     Converter<String, TestEnum> converter = Enums.stringConverter(TestEnum.class);
-    assertEquals("CHEETO", converter.reverse().convert(TestEnum.CHEETO));
-    assertEquals("HONDA", converter.reverse().convert(TestEnum.HONDA));
-    assertEquals("POODLE", converter.reverse().convert(TestEnum.POODLE));
+    assertThat(converter.reverse().convert(TestEnum.CHEETO)).isEqualTo("CHEETO");
+    assertThat(converter.reverse().convert(TestEnum.HONDA)).isEqualTo("HONDA");
+    assertThat(converter.reverse().convert(TestEnum.POODLE)).isEqualTo("POODLE");
   }
 
   @J2ktIncompatible
@@ -151,9 +151,8 @@ public class EnumsTest extends TestCase {
 
   @J2ktIncompatible
   public void testStringConverter_toString() {
-    assertEquals(
-        "Enums.stringConverter(com.google.common.base.EnumsTest$TestEnum.class)",
-        Enums.stringConverter(TestEnum.class).toString());
+    assertThat(Enums.stringConverter(TestEnum.class).toString())
+        .isEqualTo("Enums.stringConverter(com.google.common.base.EnumsTest$TestEnum.class)");
   }
 
   public void testStringConverter_serialization() {
@@ -178,11 +177,11 @@ public class EnumsTest extends TestCase {
   @J2ktIncompatible
   public void testGetField() {
     Field foo = Enums.getField(AnEnum.FOO);
-    assertEquals("FOO", foo.getName());
+    assertThat(foo.getName()).isEqualTo("FOO");
     assertTrue(foo.isAnnotationPresent(ExampleAnnotation.class));
 
     Field bar = Enums.getField(AnEnum.BAR);
-    assertEquals("BAR", bar.getName());
+    assertThat(bar.getName()).isEqualTo("BAR");
     assertFalse(bar.isAnnotationPresent(ExampleAnnotation.class));
   }
 

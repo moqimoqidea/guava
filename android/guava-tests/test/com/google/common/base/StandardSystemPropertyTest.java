@@ -18,6 +18,7 @@ package com.google.common.base;
 
 import static com.google.common.base.StandardSystemProperty.JAVA_COMPILER;
 import static com.google.common.base.StandardSystemProperty.JAVA_EXT_DIRS;
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -39,19 +40,19 @@ public class StandardSystemPropertyTest extends TestCase {
     for (StandardSystemProperty property : StandardSystemProperty.values()) {
       String fieldName = property.name();
       String expected = Ascii.toLowerCase(fieldName).replaceAll("_", ".");
-      assertEquals(expected, property.key());
+      assertThat(property.key()).isEqualTo(expected);
     }
   }
 
   public void testGetValue() {
     for (StandardSystemProperty property : StandardSystemProperty.values()) {
-      assertEquals(System.getProperty(property.key()), property.value());
+      assertThat(property.value()).isEqualTo(System.getProperty(property.key()));
     }
   }
 
   public void testToString() {
     for (StandardSystemProperty property : StandardSystemProperty.values()) {
-      assertEquals(property.key() + "=" + property.value(), property.toString());
+      assertThat(property.toString()).isEqualTo(property.key() + "=" + property.value());
     }
   }
 

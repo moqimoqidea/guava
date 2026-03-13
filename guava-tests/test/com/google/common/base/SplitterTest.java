@@ -73,9 +73,10 @@ public class SplitterTest extends TestCase {
   }
 
   public void testToString() {
-    assertEquals("[]", COMMA_SPLITTER.split("").toString());
-    assertEquals("[a, b, c]", COMMA_SPLITTER.split("a,b,c").toString());
-    assertEquals("[yam, bam, jam, ham]", Splitter.on(", ").split("yam, bam, jam, ham").toString());
+    assertThat(COMMA_SPLITTER.split("").toString()).isEqualTo("[]");
+    assertThat(COMMA_SPLITTER.split("a,b,c").toString()).isEqualTo("[a, b, c]");
+    assertThat(Splitter.on(", ").split("yam, bam, jam, ham").toString())
+        .isEqualTo("[yam, bam, jam, ham]");
   }
 
   public void testCharacterSimpleSplitWithNoDelimiter() {
@@ -510,11 +511,11 @@ public class SplitterTest extends TestCase {
     Iterator<String> iterator = splitter.split(builder).iterator();
 
     builder.append("A,");
-    assertEquals("A", iterator.next());
+    assertThat(iterator.next()).isEqualTo("A");
     builder.append("B,");
-    assertEquals("B", iterator.next());
+    assertThat(iterator.next()).isEqualTo("B");
     builder.append("C");
-    assertEquals("C", iterator.next());
+    assertThat(iterator.next()).isEqualTo("C");
     assertFalse(iterator.hasNext());
   }
 

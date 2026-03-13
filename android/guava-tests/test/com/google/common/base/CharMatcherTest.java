@@ -196,10 +196,10 @@ public class CharMatcherTest extends TestCase {
     assertFalse(matcher.matchesAnyOf(""));
     assertTrue(matcher.matchesAllOf(""));
     assertTrue(matcher.matchesNoneOf(""));
-    assertEquals("", matcher.removeFrom(""));
-    assertEquals("", matcher.replaceFrom("", 'z'));
-    assertEquals("", matcher.replaceFrom("", "ZZ"));
-    assertEquals("", matcher.trimFrom(""));
+    assertThat(matcher.removeFrom("")).isEqualTo("");
+    assertThat(matcher.replaceFrom("", 'z')).isEqualTo("");
+    assertThat(matcher.replaceFrom("", "ZZ")).isEqualTo("");
+    assertThat(matcher.trimFrom("")).isEqualTo("");
     assertEquals(0, matcher.countIn(""));
   }
 
@@ -287,10 +287,10 @@ public class CharMatcherTest extends TestCase {
     assertFalse(matcher.matchesAllOf(s));
     assertTrue(matcher.matchesNoneOf(s));
 
-    assertEquals(s.toString(), matcher.removeFrom(s));
-    assertEquals(s.toString(), matcher.replaceFrom(s, 'z'));
-    assertEquals(s.toString(), matcher.replaceFrom(s, "ZZ"));
-    assertEquals(s.toString(), matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isEqualTo(s.toString());
+    assertThat(matcher.replaceFrom(s, 'z')).isEqualTo(s.toString());
+    assertThat(matcher.replaceFrom(s, "ZZ")).isEqualTo(s.toString());
+    assertThat(matcher.trimFrom(s)).isEqualTo(s.toString());
     assertEquals(0, matcher.countIn(s));
   }
 
@@ -305,10 +305,10 @@ public class CharMatcherTest extends TestCase {
     assertTrue(matcher.matchesAnyOf(s));
     assertTrue(matcher.matchesAllOf(s));
     assertFalse(matcher.matchesNoneOf(s));
-    assertEquals("", matcher.removeFrom(s));
-    assertEquals(Strings.repeat("z", s.length()), matcher.replaceFrom(s, 'z'));
-    assertEquals(Strings.repeat("ZZ", s.length()), matcher.replaceFrom(s, "ZZ"));
-    assertEquals("", matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isEqualTo("");
+    assertThat(matcher.replaceFrom(s, 'z')).isEqualTo(Strings.repeat("z", s.length()));
+    assertThat(matcher.replaceFrom(s, "ZZ")).isEqualTo(Strings.repeat("ZZ", s.length()));
+    assertThat(matcher.trimFrom(s)).isEqualTo("");
     assertEquals(s.length(), matcher.countIn(s));
   }
 
@@ -378,10 +378,10 @@ public class CharMatcherTest extends TestCase {
     assertTrue(matcher.matchesAnyOf(s));
     assertTrue(matcher.matchesAllOf(s));
     assertFalse(matcher.matchesNoneOf(s));
-    assertEquals("", matcher.removeFrom(s));
-    assertEquals("z", matcher.replaceFrom(s, 'z'));
-    assertEquals("ZZ", matcher.replaceFrom(s, "ZZ"));
-    assertEquals("", matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isEqualTo("");
+    assertThat(matcher.replaceFrom(s, 'z')).isEqualTo("z");
+    assertThat(matcher.replaceFrom(s, "ZZ")).isEqualTo("ZZ");
+    assertThat(matcher.trimFrom(s)).isEqualTo("");
     assertEquals(1, matcher.countIn(s));
   }
 
@@ -417,10 +417,10 @@ public class CharMatcherTest extends TestCase {
     assertTrue(matcher.matchesAnyOf(s));
     assertFalse(matcher.matchesAllOf(s));
     assertFalse(matcher.matchesNoneOf(s));
-    assertEquals(s.substring(1), matcher.removeFrom(s));
-    assertEquals("z" + s.substring(1), matcher.replaceFrom(s, 'z'));
-    assertEquals("ZZ" + s.substring(1), matcher.replaceFrom(s, "ZZ"));
-    assertEquals(s.substring(1), matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isEqualTo(s.substring(1));
+    assertThat(matcher.replaceFrom(s, 'z')).isEqualTo("z" + s.substring(1));
+    assertThat(matcher.replaceFrom(s, "ZZ")).isEqualTo("ZZ" + s.substring(1));
+    assertThat(matcher.trimFrom(s)).isEqualTo(s.substring(1));
     assertEquals(1, matcher.countIn(s));
   }
 
@@ -433,10 +433,10 @@ public class CharMatcherTest extends TestCase {
     assertTrue(matcher.matchesAnyOf(s));
     assertFalse(matcher.matchesAllOf(s));
     assertFalse(matcher.matchesNoneOf(s));
-    assertEquals(s.substring(0, 1), matcher.removeFrom(s));
-    assertEquals(s.substring(0, 1) + "z", matcher.replaceFrom(s, 'z'));
-    assertEquals(s.substring(0, 1) + "ZZ", matcher.replaceFrom(s, "ZZ"));
-    assertEquals(s.substring(0, 1), matcher.trimFrom(s));
+    assertThat(matcher.removeFrom(s)).isEqualTo(s.substring(0, 1));
+    assertThat(matcher.replaceFrom(s, 'z')).isEqualTo(s.substring(0, 1) + "z");
+    assertThat(matcher.replaceFrom(s, "ZZ")).isEqualTo(s.substring(0, 1) + "ZZ");
+    assertThat(matcher.trimFrom(s)).isEqualTo(s.substring(0, 1));
     assertEquals(1, matcher.countIn(s));
   }
 
@@ -448,7 +448,7 @@ public class CharMatcherTest extends TestCase {
     if (expected.equals(in)) {
       assertSame(in, out);
     } else {
-      assertEquals(expected, out);
+      assertThat(out).isEqualTo(expected);
     }
   }
 
@@ -508,10 +508,10 @@ public class CharMatcherTest extends TestCase {
   }
 
   public void testCollapse_any() {
-    assertEquals("", CharMatcher.any().collapseFrom("", '_'));
-    assertEquals("_", CharMatcher.any().collapseFrom("a", '_'));
-    assertEquals("_", CharMatcher.any().collapseFrom("ab", '_'));
-    assertEquals("_", CharMatcher.any().collapseFrom("abcd", '_'));
+    assertThat(CharMatcher.any().collapseFrom("", '_')).isEqualTo("");
+    assertThat(CharMatcher.any().collapseFrom("a", '_')).isEqualTo("_");
+    assertThat(CharMatcher.any().collapseFrom("ab", '_')).isEqualTo("_");
+    assertThat(CharMatcher.any().collapseFrom("abcd", '_')).isEqualTo("_");
   }
 
   public void testTrimFrom() {
@@ -535,18 +535,18 @@ public class CharMatcherTest extends TestCase {
     doTestTrimFrom("x-xx", "x-xx");
     doTestTrimFrom("x-x--xx---x----x", "x-x--xx---x----x");
     // additional testing using the doc example
-    assertEquals("cat", anyOf("ab").trimFrom("abacatbab"));
+    assertThat(anyOf("ab").trimFrom("abacatbab")).isEqualTo("cat");
   }
 
   private void doTestTrimFrom(String in, String out) {
     // Try a few different matchers which all match '-' and not 'x'
-    assertEquals(out, is('-').trimFrom(in));
-    assertEquals(out, is('-').or(is('#')).trimFrom(in));
-    assertEquals(out, isNot('x').trimFrom(in));
-    assertEquals(out, is('x').negate().trimFrom(in));
-    assertEquals(out, anyOf("-").trimFrom(in));
-    assertEquals(out, anyOf("-#").trimFrom(in));
-    assertEquals(out, anyOf("-#123").trimFrom(in));
+    assertThat(is('-').trimFrom(in)).isEqualTo(out);
+    assertThat(is('-').or(is('#')).trimFrom(in)).isEqualTo(out);
+    assertThat(isNot('x').trimFrom(in)).isEqualTo(out);
+    assertThat(is('x').negate().trimFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-").trimFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#").trimFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#123").trimFrom(in)).isEqualTo(out);
   }
 
   public void testTrimLeadingFrom() {
@@ -570,17 +570,17 @@ public class CharMatcherTest extends TestCase {
     doTestTrimLeadingFrom("x-xx", "x-xx");
     doTestTrimLeadingFrom("x-x--xx---x----x", "x-x--xx---x----x");
     // additional testing using the doc example
-    assertEquals("catbab", anyOf("ab").trimLeadingFrom("abacatbab"));
+    assertThat(anyOf("ab").trimLeadingFrom("abacatbab")).isEqualTo("catbab");
   }
 
   private void doTestTrimLeadingFrom(String in, String out) {
     // Try a few different matchers which all match '-' and not 'x'
-    assertEquals(out, is('-').trimLeadingFrom(in));
-    assertEquals(out, is('-').or(is('#')).trimLeadingFrom(in));
-    assertEquals(out, isNot('x').trimLeadingFrom(in));
-    assertEquals(out, is('x').negate().trimLeadingFrom(in));
-    assertEquals(out, anyOf("-#").trimLeadingFrom(in));
-    assertEquals(out, anyOf("-#123").trimLeadingFrom(in));
+    assertThat(is('-').trimLeadingFrom(in)).isEqualTo(out);
+    assertThat(is('-').or(is('#')).trimLeadingFrom(in)).isEqualTo(out);
+    assertThat(isNot('x').trimLeadingFrom(in)).isEqualTo(out);
+    assertThat(is('x').negate().trimLeadingFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#").trimLeadingFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#123").trimLeadingFrom(in)).isEqualTo(out);
   }
 
   public void testTrimTrailingFrom() {
@@ -604,17 +604,17 @@ public class CharMatcherTest extends TestCase {
     doTestTrimTrailingFrom("x-xx", "x-xx");
     doTestTrimTrailingFrom("x-x--xx---x----x", "x-x--xx---x----x");
     // additional testing using the doc example
-    assertEquals("abacat", anyOf("ab").trimTrailingFrom("abacatbab"));
+    assertThat(anyOf("ab").trimTrailingFrom("abacatbab")).isEqualTo("abacat");
   }
 
   private void doTestTrimTrailingFrom(String in, String out) {
     // Try a few different matchers which all match '-' and not 'x'
-    assertEquals(out, is('-').trimTrailingFrom(in));
-    assertEquals(out, is('-').or(is('#')).trimTrailingFrom(in));
-    assertEquals(out, isNot('x').trimTrailingFrom(in));
-    assertEquals(out, is('x').negate().trimTrailingFrom(in));
-    assertEquals(out, anyOf("-#").trimTrailingFrom(in));
-    assertEquals(out, anyOf("-#123").trimTrailingFrom(in));
+    assertThat(is('-').trimTrailingFrom(in)).isEqualTo(out);
+    assertThat(is('-').or(is('#')).trimTrailingFrom(in)).isEqualTo(out);
+    assertThat(isNot('x').trimTrailingFrom(in)).isEqualTo(out);
+    assertThat(is('x').negate().trimTrailingFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#").trimTrailingFrom(in)).isEqualTo(out);
+    assertThat(anyOf("-#123").trimTrailingFrom(in)).isEqualTo(out);
   }
 
   public void testTrimAndCollapse() {
@@ -656,19 +656,19 @@ public class CharMatcherTest extends TestCase {
   }
 
   public void testReplaceFrom() {
-    assertEquals("yoho", is('a').replaceFrom("yaha", 'o'));
-    assertEquals("yh", is('a').replaceFrom("yaha", ""));
-    assertEquals("yoho", is('a').replaceFrom("yaha", "o"));
-    assertEquals("yoohoo", is('a').replaceFrom("yaha", "oo"));
-    assertEquals("12 &gt; 5", is('>').replaceFrom("12 > 5", "&gt;"));
+    assertThat(is('a').replaceFrom("yaha", 'o')).isEqualTo("yoho");
+    assertThat(is('a').replaceFrom("yaha", "")).isEqualTo("yh");
+    assertThat(is('a').replaceFrom("yaha", "o")).isEqualTo("yoho");
+    assertThat(is('a').replaceFrom("yaha", "oo")).isEqualTo("yoohoo");
+    assertThat(is('>').replaceFrom("12 > 5", "&gt;")).isEqualTo("12 &gt; 5");
   }
 
   public void testRetainFrom() {
-    assertEquals("aaa", is('a').retainFrom("bazaar"));
-    assertEquals("z", is('z').retainFrom("bazaar"));
-    assertEquals("!", is('!').retainFrom("!@#$%^&*()-="));
-    assertEquals("", is('x').retainFrom("bazaar"));
-    assertEquals("", is('a').retainFrom(""));
+    assertThat(is('a').retainFrom("bazaar")).isEqualTo("aaa");
+    assertThat(is('z').retainFrom("bazaar")).isEqualTo("z");
+    assertThat(is('!').retainFrom("!@#$%^&*()-=")).isEqualTo("!");
+    assertThat(is('x').retainFrom("bazaar")).isEqualTo("");
+    assertThat(is('a').retainFrom("")).isEqualTo("");
   }
 
   public void testPrecomputedOptimizations() {
@@ -677,15 +677,15 @@ public class CharMatcherTest extends TestCase {
     // build a precomputed version.
     CharMatcher m1 = is('x');
     assertSame(m1, m1.precomputed());
-    assertEquals(m1.toString(), m1.precomputed().toString());
+    assertThat(m1.precomputed().toString()).isEqualTo(m1.toString());
 
     CharMatcher m2 = anyOf("Az");
     assertSame(m2, m2.precomputed());
-    assertEquals(m2.toString(), m2.precomputed().toString());
+    assertThat(m2.precomputed().toString()).isEqualTo(m2.toString());
 
     CharMatcher m3 = inRange('A', 'Z');
     assertSame(m3, m3.precomputed());
-    assertEquals(m3.toString(), m3.precomputed().toString());
+    assertThat(m3.precomputed().toString()).isEqualTo(m3.toString());
 
     assertSame(CharMatcher.none(), CharMatcher.none().precomputed());
     assertSame(CharMatcher.any(), CharMatcher.any().precomputed());

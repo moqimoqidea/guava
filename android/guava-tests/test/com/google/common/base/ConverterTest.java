@@ -64,7 +64,7 @@ public class ConverterTest extends TestCase {
 
   public void testConverter() {
     assertEquals(LONG_VAL, STR_TO_LONG.convert(STR_VAL));
-    assertEquals(STR_VAL, STR_TO_LONG.reverse().convert(LONG_VAL));
+    assertThat(STR_TO_LONG.reverse().convert(LONG_VAL)).isEqualTo(STR_VAL);
 
     Iterable<Long> convertedValues = STR_TO_LONG.convertAll(STRINGS);
     assertEquals(LONGS, ImmutableList.copyOf(convertedValues));
@@ -84,7 +84,7 @@ public class ConverterTest extends TestCase {
   public void testReverse() {
     Converter<Long, String> reverseConverter = STR_TO_LONG.reverse();
 
-    assertEquals(STR_VAL, reverseConverter.convert(LONG_VAL));
+    assertThat(reverseConverter.convert(LONG_VAL)).isEqualTo(STR_VAL);
     assertEquals(LONG_VAL, reverseConverter.reverse().convert(STR_VAL));
 
     Iterable<String> convertedValues = reverseConverter.convertAll(LONGS);
@@ -92,7 +92,7 @@ public class ConverterTest extends TestCase {
 
     assertSame(STR_TO_LONG, reverseConverter.reverse());
 
-    assertEquals("string2long.reverse()", reverseConverter.toString());
+    assertThat(reverseConverter.toString()).isEqualTo("string2long.reverse()");
 
     new EqualsTester()
         .addEqualityGroup(STR_TO_LONG, STR_TO_LONG.reverse().reverse())
@@ -142,9 +142,9 @@ public class ConverterTest extends TestCase {
     Converter<StringWrapper, Long> converter = first.andThen(STR_TO_LONG);
 
     assertEquals(LONG_VAL, converter.convert(new StringWrapper(STR_VAL)));
-    assertEquals(STR_VAL, converter.reverse().convert(LONG_VAL).value);
+    assertThat(converter.reverse().convert(LONG_VAL).value).isEqualTo(STR_VAL);
 
-    assertEquals("StringWrapper.andThen(string2long)", converter.toString());
+    assertThat(converter.toString()).isEqualTo("StringWrapper.andThen(string2long)");
 
     new EqualsTester()
         .addEqualityGroup(first.andThen(STR_TO_LONG), first.andThen(STR_TO_LONG))
@@ -161,7 +161,7 @@ public class ConverterTest extends TestCase {
     assertSame(STR_VAL, stringIdentityConverter.convert(STR_VAL));
     assertSame(STR_VAL, stringIdentityConverter.reverse().convert(STR_VAL));
 
-    assertEquals("Converter.identity()", stringIdentityConverter.toString());
+    assertThat(stringIdentityConverter.toString()).isEqualTo("Converter.identity()");
 
     assertSame(Converter.identity(), Converter.identity());
   }
@@ -182,24 +182,24 @@ public class ConverterTest extends TestCase {
     assertThat(converter.reverse().convert(null)).isNull();
 
     assertEquals((Integer) 5, converter.convert("5"));
-    assertEquals("5", converter.reverse().convert(5));
+    assertThat(converter.reverse().convert(5)).isEqualTo("5");
   }
 
   // Null-passthrough violates our nullness annotations, so we don't support it under J2KT.
   @J2ktIncompatible
   public void testNullIsPassedThrough() {
     Converter<String, String> nullsArePassed = sillyConverter(false);
-    assertEquals("forward", nullsArePassed.convert("foo"));
-    assertEquals("forward", nullsArePassed.convert(null));
-    assertEquals("backward", nullsArePassed.reverse().convert("foo"));
-    assertEquals("backward", nullsArePassed.reverse().convert(null));
+    assertThat(nullsArePassed.convert("foo")).isEqualTo("forward");
+    assertThat(nullsArePassed.convert(null)).isEqualTo("forward");
+    assertThat(nullsArePassed.reverse().convert("foo")).isEqualTo("backward");
+    assertThat(nullsArePassed.reverse().convert(null)).isEqualTo("backward");
   }
 
   public void testNullIsNotPassedThrough() {
     Converter<String, String> nullsAreHandled = sillyConverter(true);
-    assertEquals("forward", nullsAreHandled.convert("foo"));
+    assertThat(nullsAreHandled.convert("foo")).isEqualTo("forward");
     assertThat(nullsAreHandled.convert(null)).isNull();
-    assertEquals("backward", nullsAreHandled.reverse().convert("foo"));
+    assertThat(nullsAreHandled.reverse().convert("foo")).isEqualTo("backward");
     assertThat(nullsAreHandled.reverse().convert(null)).isNull();
   }
 

@@ -68,7 +68,7 @@ public final class OptionalTest extends TestCase {
   }
 
   public void testOf() {
-    assertEquals("training", Optional.of("training").get());
+    assertThat(Optional.of("training").get()).isEqualTo("training");
   }
 
   public void testOf_null() {
@@ -77,7 +77,7 @@ public final class OptionalTest extends TestCase {
 
   public void testFromNullable() {
     Optional<String> optionalName = Optional.fromNullable("bob");
-    assertEquals("bob", optionalName.get());
+    assertThat(optionalName.get()).isEqualTo("bob");
   }
 
   public void testFromNullable_null() {
@@ -100,12 +100,12 @@ public final class OptionalTest extends TestCase {
   }
 
   public void testGet_present() {
-    assertEquals("training", Optional.of("training").get());
+    assertThat(Optional.of("training").get()).isEqualTo("training");
   }
 
   @SuppressWarnings("OptionalOfRedundantMethod") // Unit tests for Optional
   public void testOr_t_present() {
-    assertEquals("a", Optional.of("a").or("default"));
+    assertThat(Optional.of("a").or("default")).isEqualTo("a");
   }
 
   public void testOr_t_absent() {
@@ -114,7 +114,7 @@ public final class OptionalTest extends TestCase {
 
   @SuppressWarnings("OptionalOfRedundantMethod") // Unit tests for Optional
   public void testOr_supplier_present() {
-    assertEquals("a", Optional.of("a").or(Suppliers.ofInstance("fallback")));
+    assertThat(Optional.of("a").or(Suppliers.ofInstance("fallback"))).isEqualTo("a");
   }
 
   public void testOr_supplier_absent() {
@@ -130,7 +130,7 @@ public final class OptionalTest extends TestCase {
   @SuppressWarnings("OptionalOfRedundantMethod") // Unit tests for Optional
   public void testOr_nullSupplier_present() {
     Supplier<String> nullSupplier = (Supplier<String>) Suppliers.<@Nullable String>ofInstance(null);
-    assertEquals("a", Optional.of("a").or(nullSupplier));
+    assertThat(Optional.of("a").or(nullSupplier)).isEqualTo("a");
   }
 
   @SuppressWarnings("OptionalOfRedundantMethod") // Unit tests for Optional
@@ -144,7 +144,7 @@ public final class OptionalTest extends TestCase {
 
   @SuppressWarnings("OptionalOfRedundantMethod") // Unit tests for Optional
   public void testOrNull_present() {
-    assertEquals("a", Optional.of("a").orNull());
+    assertThat(Optional.of("a").orNull()).isEqualTo("a");
   }
 
   public void testOrNull_absent() {
@@ -200,11 +200,11 @@ public final class OptionalTest extends TestCase {
   }
 
   public void testToString_absent() {
-    assertEquals("Optional.absent()", Optional.absent().toString());
+    assertThat(Optional.absent().toString()).isEqualTo("Optional.absent()");
   }
 
   public void testToString_present() {
-    assertEquals("Optional.of(training)", Optional.of("training").toString());
+    assertThat(Optional.of("training").toString()).isEqualTo("Optional.of(training)");
   }
 
   public void testPresentInstances_allPresent() {
