@@ -224,6 +224,7 @@ public final class OptionalTest extends TestCase {
     assertThat(Optional.presentInstances(optionals)).containsExactly("a", "c").inOrder();
   }
 
+  @SuppressWarnings("DuplicateAssertion") // We intentionally iterate multiple times.
   public void testPresentInstances_callingIteratorTwice() {
     List<Optional<String>> optionals =
         ImmutableList.of(Optional.of("a"), Optional.<String>absent(), Optional.of("c"));

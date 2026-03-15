@@ -159,7 +159,6 @@ public class ObjectArraysTest extends TestCase {
 
     assertEquals(reference.getClass(), target.getClass());
     assertThat(target).isEqualTo(reference);
-    assertThat(target).isEqualTo(reference);
 
     Object[] expectedArray1 = expectModify ? reference : starting;
     Object[] expectedArray2 = expectModify ? target : starting;

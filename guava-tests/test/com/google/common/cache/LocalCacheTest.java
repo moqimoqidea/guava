@@ -2699,8 +2699,6 @@ public class LocalCacheTest extends TestCase {
     LocalCache<Object, Object> localCacheTwo = two.localCache;
 
     assertThat(localCacheTwo.keyStrength).isEqualTo(localCacheOne.keyStrength);
-    assertThat(localCacheTwo.keyStrength).isEqualTo(localCacheOne.keyStrength);
-    assertThat(localCacheTwo.valueEquivalence).isEqualTo(localCacheOne.valueEquivalence);
     assertThat(localCacheTwo.valueEquivalence).isEqualTo(localCacheOne.valueEquivalence);
     assertThat(localCacheTwo.maxWeight).isEqualTo(localCacheOne.maxWeight);
     assertThat(localCacheTwo.weigher).isEqualTo(localCacheOne.weigher);
@@ -2717,8 +2715,6 @@ public class LocalCacheTest extends TestCase {
 
     assertThat(localCacheThree.defaultLoader).isEqualTo(localCacheTwo.defaultLoader);
     assertThat(localCacheThree.keyStrength).isEqualTo(localCacheTwo.keyStrength);
-    assertThat(localCacheThree.keyStrength).isEqualTo(localCacheTwo.keyStrength);
-    assertThat(localCacheThree.valueEquivalence).isEqualTo(localCacheTwo.valueEquivalence);
     assertThat(localCacheThree.valueEquivalence).isEqualTo(localCacheTwo.valueEquivalence);
     assertThat(localCacheThree.maxWeight).isEqualTo(localCacheTwo.maxWeight);
     assertThat(localCacheThree.weigher).isEqualTo(localCacheTwo.weigher);
@@ -2759,8 +2755,6 @@ public class LocalCacheTest extends TestCase {
     LocalCache<Object, Object> localCacheTwo = two.localCache;
 
     assertThat(localCacheTwo.keyStrength).isEqualTo(localCacheOne.keyStrength);
-    assertThat(localCacheTwo.keyStrength).isEqualTo(localCacheOne.keyStrength);
-    assertThat(localCacheTwo.valueEquivalence).isEqualTo(localCacheOne.valueEquivalence);
     assertThat(localCacheTwo.valueEquivalence).isEqualTo(localCacheOne.valueEquivalence);
     assertThat(localCacheTwo.maxWeight).isEqualTo(localCacheOne.maxWeight);
     assertThat(localCacheTwo.weigher).isEqualTo(localCacheOne.weigher);
@@ -2775,8 +2769,6 @@ public class LocalCacheTest extends TestCase {
     LocalCache<Object, Object> localCacheThree = three.localCache;
 
     assertThat(localCacheThree.keyStrength).isEqualTo(localCacheTwo.keyStrength);
-    assertThat(localCacheThree.keyStrength).isEqualTo(localCacheTwo.keyStrength);
-    assertThat(localCacheThree.valueEquivalence).isEqualTo(localCacheTwo.valueEquivalence);
     assertThat(localCacheThree.valueEquivalence).isEqualTo(localCacheTwo.valueEquivalence);
     assertThat(localCacheThree.maxWeight).isEqualTo(localCacheTwo.maxWeight);
     assertThat(localCacheThree.weigher).isEqualTo(localCacheTwo.weigher);
