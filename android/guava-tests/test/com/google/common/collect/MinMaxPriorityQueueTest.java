@@ -561,7 +561,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
       mmHeap.add(random.nextInt());
     }
     for (int i = 0; i < numberOfModifications; i++) {
-      mmHeap.removeAt(random.nextInt(mmHeap.size()));
+      mmHeap.removeAtForTesting(random.nextInt(mmHeap.size()));
       assertIntactUsingSeed(seed, mmHeap);
       mmHeap.add(random.nextInt());
       assertIntactUsingSeed(seed, mmHeap);
@@ -574,7 +574,7 @@ public class MinMaxPriorityQueueTest extends TestCase {
     for (Collection<Integer> perm : Collections2.permutations(expected)) {
       for (int i = 0; i < perm.size(); i++) {
         MinMaxPriorityQueue<Integer> q = MinMaxPriorityQueue.create(perm);
-        q.removeAt(i);
+        q.removeAtForTesting(i);
         assertIntactUsingStartedWith(perm, q);
       }
     }

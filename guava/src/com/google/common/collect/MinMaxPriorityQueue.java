@@ -403,9 +403,8 @@ public final class MinMaxPriorityQueue<E> extends AbstractQueue<E> {
    * down to replace the element at {@code index}. This fact is used by iterator.remove so as to
    * visit elements during a traversal once and only once.
    */
-  @VisibleForTesting
   @CanIgnoreReturnValue
-  @Nullable MoveDesc<E> removeAt(int index) {
+  private @Nullable MoveDesc<E> removeAt(int index) {
     checkPositionIndex(index, size);
     modCount++;
     size--;
@@ -438,6 +437,11 @@ public final class MinMaxPriorityQueue<E> extends AbstractQueue<E> {
     }
     // Trickled element was after index to begin with, no adjustment needed.
     return changes;
+  }
+
+  @VisibleForTesting
+  void removeAtForTesting(int index) {
+    removeAt(index);
   }
 
   private @Nullable MoveDesc<E> fillHole(int index, E toTrickle) {

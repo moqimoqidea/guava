@@ -124,14 +124,15 @@ public final class TreeMultiset<E extends @Nullable Object> extends AbstractSort
    */
   private transient @Nullable TreeMultiset<E> deserializationReplacement;
 
-  TreeMultiset(Reference<AvlNode<E>> rootReference, GeneralRange<E> range, AvlNode<E> endLink) {
+  private TreeMultiset(
+      Reference<AvlNode<E>> rootReference, GeneralRange<E> range, AvlNode<E> endLink) {
     super(range.comparator());
     this.rootReference = rootReference;
     this.range = range;
     this.header = endLink;
   }
 
-  TreeMultiset(Comparator<? super E> comparator) {
+  private TreeMultiset(Comparator<? super E> comparator) {
     super(comparator);
     this.range = GeneralRange.all(comparator);
     this.header = new AvlNode<>();
@@ -241,7 +242,7 @@ public final class TreeMultiset<E extends @Nullable Object> extends AbstractSort
     return Ints.saturatedCast(aggregateForEntries(Aggregate.DISTINCT));
   }
 
-  static int distinctElements(@Nullable AvlNode<?> node) {
+  private static int distinctElements(@Nullable AvlNode<?> node) {
     return (node == null) ? 0 : node.distinctElements;
   }
 
@@ -451,8 +452,8 @@ public final class TreeMultiset<E extends @Nullable Object> extends AbstractSort
   @Override
   Iterator<Entry<E>> entryIterator() {
     return new Iterator<Entry<E>>() {
-      @Nullable AvlNode<E> current = firstNode();
-      @Nullable Entry<E> prevEntry;
+      private @Nullable AvlNode<E> current = firstNode();
+      private @Nullable Entry<E> prevEntry;
 
       @Override
       public boolean hasNext() {
@@ -494,8 +495,8 @@ public final class TreeMultiset<E extends @Nullable Object> extends AbstractSort
   @Override
   Iterator<Entry<E>> descendingEntryIterator() {
     return new Iterator<Entry<E>>() {
-      @Nullable AvlNode<E> current = lastNode();
-      @Nullable Entry<E> prevEntry = null;
+      private @Nullable AvlNode<E> current = lastNode();
+      private @Nullable Entry<E> prevEntry = null;
 
       @Override
       public boolean hasNext() {

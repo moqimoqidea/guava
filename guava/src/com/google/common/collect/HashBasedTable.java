@@ -99,7 +99,7 @@ public class HashBasedTable<R, C, V> extends StandardTable<R, C, V> {
     return result;
   }
 
-  HashBasedTable(Map<R, Map<C, V>> backingMap, Factory<C, V> factory) {
+  private HashBasedTable(Map<R, Map<C, V>> backingMap, Factory<C, V> factory) {
     super(backingMap, factory);
   }
 
