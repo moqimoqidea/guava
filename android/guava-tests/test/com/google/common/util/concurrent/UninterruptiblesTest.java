@@ -82,19 +82,6 @@ public class UninterruptiblesTest extends TestCase {
               + "Some test probably didn't clear the interrupt state");
     }
 
-    /*
-     * b/456222735: Initialize Truth up front. Android Marshmallow appears to sometimes clear the
-     * interrupt bit when requesting class initialization, breaking our tests that check that the
-     * interrupt bit is set when appropriate.
-     *
-     * Merely calling assert_(), while apparently enough to clear the interrupt in my experiments,
-     * is not enough to make the test reliably pass. (Presumably it leaves more classes to be
-     * initialized later, at which point they cause more clearing of the interrupt?) It's not
-     * obvious that the following assertion is necessarily enough, either, but in practice, it seems
-     * to work, at least with the current set of Truth classes that this test uses.
-     */
-    assertThat(1L).isGreaterThan(0);
-
     tearDownStack.addTearDown(
         new TearDown() {
           @Override
@@ -107,6 +94,20 @@ public class UninterruptiblesTest extends TestCase {
   @Override
   protected void tearDown() {
     tearDownStack.runTearDown();
+  }
+
+  @Override
+  public void runBare() throws Throwable {
+    try {
+      super.runBare();
+    } catch (AssertionError e) {
+      if (e.getMessage() != null && e.getMessage().contains("Dude, where's my interrupt?")) {
+        // Rerun test to work around Marshamallow class-loading issue b/456222735.
+        super.runBare();
+        return;
+      }
+      throw e;
+    }
   }
 
   public void testNull() throws Exception {
@@ -197,10 +198,22 @@ public class UninterruptiblesTest extends TestCase {
   // Condition.await() tests
 
   /*
+   * RE: the WaitNotInLoop warnings:
+   *
    * Our tests for awaitUninterruptibly are written under the assumption that no spurious wakeups
    * occur except for those produced by awaitUninterruptibly itself in response to interrupts.
+   *
+   * This isn't guaranteed to work, so any further spurious wakeups would probably cause failures in
+   * tests that assert that a certain amount of time has passed, that the method returned `false`,
+   * or even that an interrupt occurred (if the spurious wakeup happens before the interrupt).
+   *
+   * Fundamentally, there's not really anything we can do about that. In the unlikely event that it
+   * comes up in practice (maybe through some kind of sanitizer-like testing that intentionally
+   * inflicts spurious interrupts on us?), we might have to accept some flakiness or disable some
+   * tests, at least under whichever environment (JRE or Android) we see such problems.
    */
 
+  @SuppressWarnings("WaitNotInLoop") // see comment above
   public void testConditionAwaitTimeoutExceeded() {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Condition condition = TestCondition.create();
@@ -212,6 +225,7 @@ public class UninterruptiblesTest extends TestCase {
     assertNotInterrupted();
   }
 
+  @SuppressWarnings("WaitNotInLoop") // see comment above
   public void testConditionAwaitTimeoutNotExceeded() {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Condition condition = TestCondition.createAndSignalAfter(500, MILLISECONDS);
@@ -223,6 +237,7 @@ public class UninterruptiblesTest extends TestCase {
     assertNotInterrupted();
   }
 
+  @SuppressWarnings("WaitNotInLoop") // see comment above
   public void testConditionAwaitInterruptedTimeoutExceeded() {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Condition condition = TestCondition.create();
@@ -235,6 +250,7 @@ public class UninterruptiblesTest extends TestCase {
     assertInterrupted();
   }
 
+  @SuppressWarnings("WaitNotInLoop") // see comment above
   public void testConditionAwaitInterruptedTimeoutNotExceeded() {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Condition condition = TestCondition.createAndSignalAfter(1000, MILLISECONDS);
@@ -247,6 +263,7 @@ public class UninterruptiblesTest extends TestCase {
     assertInterrupted();
   }
 
+  @SuppressWarnings("WaitNotInLoop") // see comment above
   public void testConditionAwaitMultiInterrupt() {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Condition condition = TestCondition.createAndSignalAfter(1000, MILLISECONDS);
