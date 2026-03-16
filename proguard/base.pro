@@ -18,6 +18,9 @@
 # Proguard is intelligent enough to spot the use of reflection onto this, so we
 # only need to keep the names, and allow it to be stripped out if
 # FinalizableReferenceQueue is unused.
+#
+# (Under Android, we end up using Finalzier non-reflectively, so we could
+# likely rework all this configuration.)
 -keepclassmembernames class com.google.common.base.internal.Finalizer {
   *** startFinalizer(...);
 }
@@ -25,6 +28,7 @@
 -keepclassmembers class com.google.common.base.internal.Finalizer {
   *** startFinalizer(...);
 }
+
 -keepclassmembernames class com.google.common.base.FinalizableReference {
   void finalizeReferent();
 }

@@ -187,12 +187,14 @@ public class FinalizableReferenceQueue implements Closeable {
   private static final String FINALIZER_CLASS_NAME = "com.google.common.base.internal.Finalizer";
 
   /** Reference to Finalizer.startFinalizer(). */
-  private static final Method startFinalizer;
+  private static final FinalizerStarter finalizerStarter;
 
   static {
-    Class<?> finalizer =
-        loadFinalizer(new SystemLoader(), new DecoupledLoader(), new DirectLoader());
-    startFinalizer = getStartFinalizer(finalizer);
+    Class<?> finalizer = loadFinalizer(new SystemLoader(), new DecoupledLoader());
+    finalizerStarter =
+        finalizer != null
+            ? new ReflectiveStarter(getStartFinalizer(finalizer))
+            : new DirectStarter();
   }
 
   /** The actual reference queue that our background thread will poll. */
@@ -210,10 +212,8 @@ public class FinalizableReferenceQueue implements Closeable {
     frqRef = new PhantomReference<>(this, queue);
     boolean threadStarted = false;
     try {
-      startFinalizer.invoke(null, FinalizableReference.class, queue, frqRef);
+      finalizerStarter.startFinalizer(FinalizableReference.class, queue, frqRef);
       threadStarted = true;
-    } catch (IllegalAccessException impossible) {
-      throw new AssertionError(impossible); // startFinalizer() is public
     } catch (Throwable t) {
       logger.log(
           Level.INFO,
@@ -257,11 +257,11 @@ public class FinalizableReferenceQueue implements Closeable {
   }
 
   /**
-   * Iterates through the given loaders until it finds one that can load Finalizer.
+   * Iterates through the given loaders until it finds one that will load Finalizer.
    *
-   * @return Finalizer.class
+   * @return a {@link Class} for {@link Finalizer} or {@code null} if none of the loaders load it
    */
-  private static Class<?> loadFinalizer(FinalizerLoader... loaders) {
+  private static @Nullable Class<?> loadFinalizer(FinalizerLoader... loaders) {
     for (FinalizerLoader loader : loaders) {
       Class<?> finalizer = loader.loadFinalizer();
       if (finalizer != null) {
@@ -269,14 +269,15 @@ public class FinalizableReferenceQueue implements Closeable {
       }
     }
 
-    throw new AssertionError();
+    return null;
   }
 
   /** Loads Finalizer.class. */
   interface FinalizerLoader {
 
     /**
-     * Returns Finalizer.class or null if this loader shouldn't or can't load it.
+     * Returns a {@link Class} for {@link Finalizer} or {@code null} if this loader shouldn't or
+     * can't load it.
      *
      * @throws SecurityException if we don't have the appropriate privileges
      */
@@ -384,14 +385,38 @@ public class FinalizableReferenceQueue implements Closeable {
     }
   }
 
-  /**
-   * Returns the {@code Finalizer} class from the current class loader. If that class gets used,
-   * then we won't be able garbage collect this class loader, but at least the world doesn't end.
-   */
-  private static final class DirectLoader implements FinalizerLoader {
+  private interface FinalizerStarter {
+    void startFinalizer(
+        Class<?> finalizableReferenceClass,
+        ReferenceQueue<Object> queue,
+        PhantomReference<Object> frqRef)
+        throws Throwable;
+  }
+
+  private static final class ReflectiveStarter implements FinalizerStarter {
+    final Method startFinalizer;
+
+    ReflectiveStarter(Method startFinalizer) {
+      this.startFinalizer = startFinalizer;
+    }
+
     @Override
-    public Class<?> loadFinalizer() {
-      return Finalizer.class;
+    public void startFinalizer(
+        Class<?> finalizableReferenceClass,
+        ReferenceQueue<Object> queue,
+        PhantomReference<Object> frqRef)
+        throws Throwable {
+      startFinalizer.invoke(null, finalizableReferenceClass, queue, frqRef);
+    }
+  }
+
+  private static final class DirectStarter implements FinalizerStarter {
+    @Override
+    public void startFinalizer(
+        Class<?> finalizableReferenceClass,
+        ReferenceQueue<Object> queue,
+        PhantomReference<Object> frqRef) {
+      Finalizer.startFinalizer(finalizableReferenceClass, queue, frqRef);
     }
   }
 
