@@ -48,7 +48,6 @@ import org.jspecify.annotations.Nullable;
  */
 @NullMarked
 @GwtCompatible
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class PredicatesTest extends TestCase {
   private static final Predicate<@Nullable Integer> TRUE = Predicates.alwaysTrue();
   private static final Predicate<@Nullable Integer> FALSE = Predicates.alwaysFalse();
@@ -954,7 +953,7 @@ public class PredicatesTest extends TestCase {
       actualRuntimeException = e;
     }
 
-    assertEquals(expectedResult, actualResult);
+    assertThat(actualResult).isEqualTo(expectedResult);
     if (expectedRuntimeException != null) {
       assertThat(actualRuntimeException).isNotNull();
       assertEquals(expectedRuntimeException.getClass(), actualRuntimeException.getClass());

@@ -26,7 +26,6 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 final class FuturesGetCheckedInputs {
   static final Exception CHECKED_EXCEPTION = new Exception("mymessage");
   static final Future<String> FAILED_FUTURE_CHECKED_EXCEPTION =
@@ -98,7 +97,7 @@ final class FuturesGetCheckedInputs {
       super(message);
     }
 
-    public Throwable getAntecedent() {
+    public @Nullable Throwable getAntecedent() {
       return antecedent;
     }
   }

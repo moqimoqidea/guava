@@ -42,7 +42,6 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class ToStringHelperTest extends TestCase {
 
   @GwtIncompatible // Class names are obfuscated in GWT
@@ -235,6 +234,7 @@ public class ToStringHelperTest extends TestCase {
     assertTrue(toTest, toTest.matches(expectedRegex));
   }
 
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testToString_addWithNullName() {
     MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(new TestClass());
     assertThrows(NullPointerException.class, () -> helper.add(null, "Hello"));

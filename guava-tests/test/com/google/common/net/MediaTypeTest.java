@@ -60,7 +60,6 @@ import org.jspecify.annotations.NullUnmarked;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class MediaTypeTest extends TestCase {
   @J2ktIncompatible
   @GwtIncompatible // reflection
@@ -326,6 +325,7 @@ public class MediaTypeTest extends TestCase {
         IllegalArgumentException.class, () -> mediaType.withParameters("a", ImmutableSet.of("…")));
   }
 
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testWithParametersIterable_nullValue() {
     MediaType mediaType = MediaType.parse("text/plain");
     assertThrows(

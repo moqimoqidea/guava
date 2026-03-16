@@ -35,7 +35,6 @@ import org.jspecify.annotations.NullUnmarked;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class PercentEscaperTest extends TestCase {
 
   /** Tests that the simple escaper treats 0-9, a-z and A-Z as safe */
@@ -100,6 +99,7 @@ public class PercentEscaperTest extends TestCase {
   }
 
   /** Test that giving a null 'safeChars' string causes a {@link NullPointerException}. */
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testBadArguments_null() {
     assertThrows(NullPointerException.class, () -> new PercentEscaper(null, false));
   }

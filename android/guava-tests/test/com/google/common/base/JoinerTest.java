@@ -47,7 +47,6 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullMarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class JoinerTest extends TestCase {
   private static final Joiner J = Joiner.on("-");
 
@@ -165,11 +164,12 @@ public class JoinerTest extends TestCase {
     checkResult(zeroForNull, iterableFourNulls, "0-0-0-0");
   }
 
-  private static void checkNoOutput(Joiner joiner, Iterable<Integer> set) {
+  @SuppressWarnings("AppendIterableIterator") // We intentionally test the Iterator overload.
+  private static void checkNoOutput(Joiner joiner, Iterable<? extends @Nullable Integer> set) {
     assertThat(joiner.join(set)).isEqualTo("");
     assertThat(joiner.join(set.iterator())).isEqualTo("");
 
-    Object[] array = newArrayList(set).toArray(new Integer[0]);
+    @Nullable Integer[] array = newArrayList(set).toArray(new @Nullable Integer[0]);
     assertThat(joiner.join(array)).isEqualTo("");
 
     StringBuilder sb1FromIterable = new StringBuilder();
@@ -222,7 +222,8 @@ public class JoinerTest extends TestCase {
         }
       };
 
-  private static void checkResult(Joiner joiner, Iterable<Integer> parts, String expected) {
+  private static void checkResult(
+      Joiner joiner, Iterable<? extends @Nullable Integer> parts, String expected) {
     assertThat(joiner.join(parts)).isEqualTo(expected);
     assertThat(joiner.join(parts.iterator())).isEqualTo(expected);
 
@@ -235,7 +236,8 @@ public class JoinerTest extends TestCase {
     assertThat(sb1FromIterator.toString()).isEqualTo("x" + expected);
 
     // The use of iterator() works around J2KT b/381065164.
-    Integer[] partsArray = newArrayList(parts.iterator()).toArray(new Integer[0]);
+    @Nullable Integer[] partsArray =
+        newArrayList(parts.iterator()).toArray(new @Nullable Integer[0]);
     assertThat(joiner.join(partsArray)).isEqualTo(expected);
 
     StringBuilder sb2 = new StringBuilder().append('x');
@@ -244,7 +246,7 @@ public class JoinerTest extends TestCase {
 
     int num = partsArray.length - 2;
     if (num >= 0) {
-      Object[] rest = new Integer[num];
+      @Nullable Integer[] rest = new @Nullable Integer[num];
       for (int i = 0; i < num; i++) {
         rest[i] = partsArray[i + 2];
       }
@@ -303,7 +305,7 @@ public class JoinerTest extends TestCase {
     Map<@Nullable String, @Nullable String> mapWithNulls = new LinkedHashMap<>();
     mapWithNulls.put("a", null);
     mapWithNulls.put(null, "b");
-    Set<Entry<String, String>> entriesWithNulls = mapWithNulls.entrySet();
+    Set<Entry<@Nullable String, @Nullable String>> entriesWithNulls = mapWithNulls.entrySet();
 
     assertThrows(NullPointerException.class, () -> j.join(entriesWithNulls));
 

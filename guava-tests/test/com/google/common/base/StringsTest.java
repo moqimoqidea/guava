@@ -33,7 +33,6 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @GwtCompatible
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class StringsTest extends TestCase {
   public void testNullToEmpty() {
     assertThat(Strings.nullToEmpty(null)).isEqualTo("");
@@ -73,7 +72,7 @@ public class StringsTest extends TestCase {
     assertThat(Strings.padStart("x", -1, '-')).isSameInstanceAs("x");
   }
 
-  // TODO: could remove if we got NPT working in GWT somehow
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testPadStart_null() {
     assertThrows(NullPointerException.class, () -> Strings.padStart(null, 5, '0'));
   }
@@ -98,6 +97,7 @@ public class StringsTest extends TestCase {
     assertThat(Strings.padEnd("x", -1, '-')).isSameInstanceAs("x");
   }
 
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testPadEnd_null() {
     assertThrows(NullPointerException.class, () -> Strings.padEnd(null, 5, '0'));
   }
@@ -121,7 +121,10 @@ public class StringsTest extends TestCase {
         ArrayIndexOutOfBoundsException.class, () -> Strings.repeat("12345678", (1 << 30) + 3));
   }
 
-  @SuppressWarnings("InlineMeInliner") // test of method that doesn't just delegate
+  @SuppressWarnings({
+    "InlineMeInliner", // test of method that doesn't just delegate
+    "nullness", // test of a bogus call
+  })
   public void testRepeat_null() {
     assertThrows(NullPointerException.class, () -> Strings.repeat(null, 5));
   }

@@ -33,12 +33,12 @@ import org.jspecify.annotations.NullUnmarked;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 final class UrlEscaperTesting {
   /**
    * Helper to assert common expected behaviour of uri escapers. You should call
    * assertBasicUrlEscaper() unless the escaper explicitly does not escape '%'.
    */
+  @SuppressWarnings("nullness") // test of a bogus call
   static void assertBasicUrlEscaperExceptPercent(UnicodeEscaper e) {
     // URL escapers should throw null pointer exceptions for null input
     try {

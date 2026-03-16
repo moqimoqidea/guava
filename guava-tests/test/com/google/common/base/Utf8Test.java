@@ -24,6 +24,7 @@ import static java.lang.Character.MIN_HIGH_SURROGATE;
 import static java.lang.Character.MIN_LOW_SURROGATE;
 import static java.lang.Character.MIN_SUPPLEMENTARY_CODE_POINT;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -43,7 +44,6 @@ import org.jspecify.annotations.NullUnmarked;
  */
 @GwtCompatible
 @NullUnmarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class Utf8Test extends TestCase {
 
   private static final ImmutableList<String> ILL_FORMED_STRINGS;
@@ -102,7 +102,7 @@ public class Utf8Test extends TestCase {
       for (int i = 0; i < 6; i++) {
         Integer randomCodePoint = codePoints[rnd.nextInt(codePoints.length)];
         sb.appendCodePoint(randomCodePoint);
-        utf8Length += utf8Lengths.get(randomCodePoint);
+        utf8Length += requireNonNull(utf8Lengths.get(randomCodePoint));
         if (utf8Length != Utf8.encodedLength(sb)) {
           StringBuilder repro = new StringBuilder();
           for (int j = 0; j < sb.length(); j++) {

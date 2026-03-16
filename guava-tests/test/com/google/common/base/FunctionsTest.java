@@ -42,7 +42,6 @@ import org.jspecify.annotations.Nullable;
  */
 @GwtCompatible
 @NullMarked
-@SuppressWarnings("nullness") // TODO(cpovirk): fix errors
 public class FunctionsTest extends TestCase {
 
   public void testIdentity_same() {
@@ -62,6 +61,7 @@ public class FunctionsTest extends TestCase {
     checkCanReserializeSingleton(Functions.identity());
   }
 
+  @SuppressWarnings("nullness") // test of a bogus call
   public void testToStringFunction_apply() {
     assertThat(Functions.toStringFunction().apply(3)).isEqualTo("3");
     assertThat(Functions.toStringFunction().apply("hiya")).isEqualTo("hiya");
@@ -167,7 +167,7 @@ public class FunctionsTest extends TestCase {
     ImmutableMap<String, Integer> map = ImmutableMap.of("One", 1);
     Function<String, @Nullable Integer> function = Functions.forMap(map, null);
 
-    assertEquals((Integer) 1, function.apply("One"));
+    assertThat(function.apply("One")).isEqualTo(1);
     assertThat(function.apply("Two")).isNull();
 
     // check basic sanity of equals and hashCode
@@ -267,7 +267,7 @@ public class FunctionsTest extends TestCase {
     Map<String, Integer> mapJapaneseToInteger = new HashMap<>();
     Function<String, Integer> japaneseToInteger = Functions.forMap(mapJapaneseToInteger);
 
-    Function<Object, String> numberToSpanish = Functions.constant("Yo no se");
+    Function<@Nullable Object, String> numberToSpanish = Functions.constant("Yo no se");
 
     Function<String, String> unusedJapaneseToSpanish =
         Functions.compose(numberToSpanish, japaneseToInteger);

@@ -19,6 +19,7 @@ package com.google.common.util.concurrent;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.util.concurrent.AbstractFuture.TrustedFuture;
 import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Tests for {@link AbstractFuture} that use a non-{@link TrustedFuture} for {@link
@@ -28,8 +29,8 @@ import org.jspecify.annotations.NullUnmarked;
 @NullUnmarked
 public class UntrustedInputFutureTest extends AbstractAbstractFutureTest {
   @Override
-  AbstractFuture<Integer> newDelegate() {
-    AbstractFuture<Integer> future = new AbstractFuture<Integer>() {};
+  AbstractFuture<@Nullable Integer> newDelegate() {
+    AbstractFuture<@Nullable Integer> future = new AbstractFuture<@Nullable Integer>() {};
     assertFalse(future instanceof TrustedFuture); // sanity check
     return future;
   }
