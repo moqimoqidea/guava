@@ -30,7 +30,6 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -230,15 +229,12 @@ public class GeneratedMonitorTest extends TestCase {
   private static void sortMethods(Method[] methods) {
     Arrays.sort(
         methods,
-        new Comparator<Method>() {
-          @Override
-          public int compare(Method m1, Method m2) {
-            int nameComparison = m1.getName().compareTo(m2.getName());
-            if (nameComparison != 0) {
-              return nameComparison;
-            } else {
-              return Integer.compare(m1.getParameterTypes().length, m2.getParameterTypes().length);
-            }
+        (m1, m2) -> {
+          int nameComparison = m1.getName().compareTo(m2.getName());
+          if (nameComparison != 0) {
+            return nameComparison;
+          } else {
+            return Integer.compare(m1.getParameterTypes().length, m2.getParameterTypes().length);
           }
         });
   }
@@ -499,21 +495,8 @@ public class GeneratedMonitorTest extends TestCase {
 
   @Override
   protected void runTest() throws Throwable {
-    Runnable runChosenTest =
-        new Runnable() {
-          @Override
-          public void run() {
-            runChosenTest();
-          }
-        };
-    FutureTask<@Nullable Void> task = new FutureTask<>(runChosenTest, null);
-    startThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            task.run();
-          }
-        });
+    FutureTask<@Nullable Void> task = new FutureTask<>(this::runChosenTest, null);
+    startThread(task::run);
     awaitUninterruptibly(doingCallLatch);
     long hangDelayMillis =
         (expectedOutcome == Outcome.HANG)
@@ -704,12 +687,9 @@ public class GeneratedMonitorTest extends TestCase {
   private void enterSatisfyGuardAndLeaveInAnotherThread() {
     CountDownLatch startedLatch = new CountDownLatch(1);
     startThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            startedLatch.countDown();
-            enterSatisfyGuardAndLeaveInCurrentThread();
-          }
+        () -> {
+          startedLatch.countDown();
+          enterSatisfyGuardAndLeaveInCurrentThread();
         });
     awaitUninterruptibly(startedLatch);
   }
@@ -717,17 +697,14 @@ public class GeneratedMonitorTest extends TestCase {
   private void enterAndRemainOccupyingInAnotherThread() {
     CountDownLatch enteredLatch = new CountDownLatch(1);
     startThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            monitor.enter();
-            try {
-              enteredLatch.countDown();
-              awaitUninterruptibly(tearDownLatch);
-              guard.setSatisfied(true);
-            } finally {
-              monitor.leave();
-            }
+        () -> {
+          monitor.enter();
+          try {
+            enteredLatch.countDown();
+            awaitUninterruptibly(tearDownLatch);
+            guard.setSatisfied(true);
+          } finally {
+            monitor.leave();
           }
         });
     awaitUninterruptibly(enteredLatch);

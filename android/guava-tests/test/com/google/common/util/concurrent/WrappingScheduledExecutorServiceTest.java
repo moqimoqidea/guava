@@ -44,20 +44,14 @@ import org.jspecify.annotations.NullUnmarked;
 @GwtIncompatible
 @J2ktIncompatible
 public class WrappingScheduledExecutorServiceTest extends TestCase {
-  private static final Runnable DO_NOTHING =
-      new Runnable() {
-        @Override
-        public void run() {}
-      };
-
   public void testSchedule() {
     MockExecutor mock = new MockExecutor();
     TestExecutor testExecutor = new TestExecutor(mock);
 
-    Future<?> unused1 = testExecutor.schedule(DO_NOTHING, 10, MINUTES);
+    Future<?> unused1 = testExecutor.schedule(() -> {}, 10, MINUTES);
     mock.assertLastMethodCalled("scheduleRunnable", 10, MINUTES);
 
-    Future<?> unused2 = testExecutor.schedule(callable(DO_NOTHING), 5, SECONDS);
+    Future<?> unused2 = testExecutor.schedule(() -> null, 5, SECONDS);
     mock.assertLastMethodCalled("scheduleCallable", 5, SECONDS);
   }
 
@@ -66,11 +60,11 @@ public class WrappingScheduledExecutorServiceTest extends TestCase {
     TestExecutor testExecutor = new TestExecutor(mock);
     @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
     Future<?> possiblyIgnoredError =
-        testExecutor.scheduleWithFixedDelay(DO_NOTHING, 100, 10, MINUTES);
+        testExecutor.scheduleWithFixedDelay(() -> {}, 100, 10, MINUTES);
     mock.assertLastMethodCalled("scheduleWithFixedDelay", 100, 10, MINUTES);
 
     @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
-    Future<?> possiblyIgnoredError1 = testExecutor.scheduleAtFixedRate(DO_NOTHING, 3, 7, SECONDS);
+    Future<?> possiblyIgnoredError1 = testExecutor.scheduleAtFixedRate(() -> {}, 3, 7, SECONDS);
     mock.assertLastMethodCalled("scheduleAtFixedRate", 3, 7, SECONDS);
   }
 

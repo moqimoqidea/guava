@@ -58,14 +58,7 @@ public class ExecutionListTest extends TestCase {
 
   public void testExecute_idempotent() {
     AtomicInteger runCalled = new AtomicInteger();
-    list.add(
-        new Runnable() {
-          @Override
-          public void run() {
-            runCalled.getAndIncrement();
-          }
-        },
-        directExecutor());
+    list.add(runCalled::getAndIncrement, directExecutor());
     list.execute();
     assertEquals(1, runCalled.get());
     list.execute();
@@ -76,26 +69,17 @@ public class ExecutionListTest extends TestCase {
     CountDownLatch okayToRun = new CountDownLatch(1);
     AtomicInteger runCalled = new AtomicInteger();
     list.add(
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              okayToRun.await();
-            } catch (InterruptedException e) {
-              Thread.currentThread().interrupt();
-              throw new RuntimeException(e);
-            }
-            runCalled.getAndIncrement();
+        () -> {
+          try {
+            okayToRun.await();
+          } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
           }
+          runCalled.getAndIncrement();
         },
         directExecutor());
-    Runnable execute =
-        new Runnable() {
-          @Override
-          public void run() {
-            list.execute();
-          }
-        };
+    Runnable execute = list::execute;
     Thread thread1 = new Thread(execute);
     Thread thread2 = new Thread(execute);
     thread1.start();
@@ -121,14 +105,7 @@ public class ExecutionListTest extends TestCase {
     AtomicInteger integer = new AtomicInteger();
     for (int i = 0; i < 10; i++) {
       int expectedCount = i;
-      list.add(
-          new Runnable() {
-            @Override
-            public void run() {
-              integer.compareAndSet(expectedCount, expectedCount + 1);
-            }
-          },
-          directExecutor());
+      list.add(() -> integer.compareAndSet(expectedCount, expectedCount + 1), directExecutor());
     }
     list.execute();
     assertEquals(10, integer.get());
@@ -158,10 +135,7 @@ public class ExecutionListTest extends TestCase {
   }
 
   private static final Runnable THROWING_RUNNABLE =
-      new Runnable() {
-        @Override
-        public void run() {
-          throw new RuntimeException();
-        }
+      () -> {
+        throw new RuntimeException();
       };
 }

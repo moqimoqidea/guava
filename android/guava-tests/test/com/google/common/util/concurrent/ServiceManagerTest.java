@@ -452,8 +452,7 @@ public class ServiceManagerTest extends TestCase {
     // following awaitHealthy call is just to get the exception.
     manager.startAsync();
     assertThat(manager.servicesByState().get(State.FAILED)).hasSize(2);
-    IllegalStateException e =
-        assertThrows(IllegalStateException.class, () -> manager.awaitHealthy());
+    IllegalStateException e = assertThrows(IllegalStateException.class, manager::awaitHealthy);
     assertThat(e)
         .hasMessageThat()
         .contains("Expected to be healthy after starting. The following services are not running:");

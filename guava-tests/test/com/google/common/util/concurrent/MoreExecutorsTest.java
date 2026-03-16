@@ -91,11 +91,7 @@ import org.mockito.InOrder;
 @J2ktIncompatible
 public class MoreExecutorsTest extends JSR166TestCase {
 
-  private static final Runnable EMPTY_RUNNABLE =
-      new Runnable() {
-        @Override
-        public void run() {}
-      };
+  private static final Runnable EMPTY_RUNNABLE = () -> {};
 
   public void testDirectExecutorServiceServiceInThreadExecution() throws Exception {
     ListeningExecutorService executor = newDirectExecutorService();
@@ -106,13 +102,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
             return 0;
           }
         };
-    Runnable incrementTask =
-        new Runnable() {
-          @Override
-          public void run() {
-            threadLocalCount.set(threadLocalCount.get() + 1);
-          }
-        };
+    Runnable incrementTask = () -> threadLocalCount.set(threadLocalCount.get() + 1);
 
     FutureTask<@Nullable Void> otherTask =
         new FutureTask<>(
@@ -142,13 +132,10 @@ public class MoreExecutorsTest extends JSR166TestCase {
         };
 
     Callable<Integer> incrementTask =
-        new Callable<Integer>() {
-          @Override
-          public Integer call() {
-            int i = threadLocalCount.get();
-            threadLocalCount.set(i + 1);
-            return i;
-          }
+        () -> {
+          int i = threadLocalCount.get();
+          threadLocalCount.set(i + 1);
+          return i;
         };
 
     List<Future<Integer>> futures = executor.invokeAll(Collections.nCopies(10, incrementTask));
@@ -302,11 +289,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
   public void testListeningDecorator_noWrapExecuteTask() {
     ExecutorService delegate = mock(ExecutorService.class);
     ListeningExecutorService service = listeningDecorator(delegate);
-    Runnable task =
-        new Runnable() {
-          @Override
-          public void run() {}
-        };
+    Runnable task = () -> {};
     service.execute(task);
     verify(delegate).execute(task);
   }
@@ -371,13 +354,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
     ListenableFuture<?> future;
     ScheduledFuture<?> delegateFuture;
 
-    Runnable runnable =
-        new Runnable() {
-          @Override
-          public void run() {}
-        };
-
-    future = service.schedule(runnable, 5, MINUTES);
+    future = service.schedule(() -> {}, 5, MINUTES);
     future.cancel(true);
     assertTrue(future.isCancelled());
     delegateFuture = (ScheduledFuture<?>) delegateQueue.element();
@@ -385,7 +362,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
 
     delegateQueue.clear();
 
-    future = service.scheduleAtFixedRate(runnable, 5, 5, MINUTES);
+    future = service.scheduleAtFixedRate(() -> {}, 5, 5, MINUTES);
     future.cancel(true);
     assertTrue(future.isCancelled());
     delegateFuture = (ScheduledFuture<?>) delegateQueue.element();
@@ -393,7 +370,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
 
     delegateQueue.clear();
 
-    future = service.scheduleWithFixedDelay(runnable, 5, 5, MINUTES);
+    future = service.scheduleWithFixedDelay(() -> {}, 5, 5, MINUTES);
     future.cancel(true);
     assertTrue(future.isCancelled());
     delegateFuture = (ScheduledFuture<?>) delegateQueue.element();
@@ -457,11 +434,8 @@ public class MoreExecutorsTest extends JSR166TestCase {
     ListeningExecutorService e = newDirectExecutorService();
     List<Callable<Integer>> l = new ArrayList<>();
     l.add(
-        new Callable<Integer>() {
-          @Override
-          public Integer call() {
-            throw new ArithmeticException("/ by zero");
-          }
+        () -> {
+          throw new ArithmeticException("/ by zero");
         });
     l.add(null);
     try {
@@ -614,12 +588,7 @@ public class MoreExecutorsTest extends JSR166TestCase {
         renamingDecorator(newDirectExecutorService(), Suppliers.ofInstance("FooBar"));
     String oldName = Thread.currentThread().getName();
     renamingExecutor.execute(
-        new Runnable() {
-          @Override
-          public void run() {
-            assertThat(Thread.currentThread().getName()).isEqualTo("FooBar");
-          }
-        });
+        () -> assertThat(Thread.currentThread().getName()).isEqualTo("FooBar"));
     assertThat(Thread.currentThread().getName()).isEqualTo(oldName);
   }
 
@@ -706,12 +675,9 @@ public class MoreExecutorsTest extends JSR166TestCase {
     // the current one, owned by JUnit, would make the test fail
     Thread thread =
         new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                terminated.set(shutdownAndAwaitTermination(service, 1L, SECONDS));
-                interrupted.set(Thread.currentThread().isInterrupted());
-              }
+            () -> {
+              terminated.set(shutdownAndAwaitTermination(service, 1L, SECONDS));
+              interrupted.set(Thread.currentThread().isInterrupted());
             });
     thread.start();
     thread.join();

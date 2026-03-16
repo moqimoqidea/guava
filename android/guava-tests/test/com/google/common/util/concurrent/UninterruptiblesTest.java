@@ -35,7 +35,6 @@ import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.testing.NullPointerTester;
-import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownStack;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.time.Duration;
@@ -82,13 +81,7 @@ public class UninterruptiblesTest extends TestCase {
               + "Some test probably didn't clear the interrupt state");
     }
 
-    tearDownStack.addTearDown(
-        new TearDown() {
-          @Override
-          public void tearDown() {
-            Thread.interrupted();
-          }
-        });
+    tearDownStack.addTearDown(() -> Thread.interrupted());
   }
 
   @Override
@@ -1087,16 +1080,7 @@ public class UninterruptiblesTest extends TestCase {
 
       ScheduledExecutorService scheduledPool = newScheduledThreadPool(1);
       // If signal() fails somehow, we should see a failed test, even without looking at the Future.
-      Future<?> unused =
-          scheduledPool.schedule(
-              new Runnable() {
-                @Override
-                public void run() {
-                  testCondition.signal();
-                }
-              },
-              delay,
-              unit);
+      Future<?> unused = scheduledPool.schedule(testCondition::signal, delay, unit);
 
       return testCondition;
     }

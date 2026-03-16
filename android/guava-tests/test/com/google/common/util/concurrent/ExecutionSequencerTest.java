@@ -98,14 +98,7 @@ public class ExecutionSequencerTest extends TestCase {
     BlockingCallable blockingCallable = new BlockingCallable();
     ListenableFuture<@Nullable Void> unused = serializer.submit(blockingCallable, executor);
     ListenableFuture<Boolean> future2 =
-        serializer.submit(
-            new Callable<Boolean>() {
-              @Override
-              public Boolean call() {
-                return blockingCallable.isRunning();
-              }
-            },
-            directExecutor());
+        serializer.submit(blockingCallable::isRunning, directExecutor());
 
     // Wait for the first task to be started in the background. It will block until we explicitly
     // stop it.
@@ -125,14 +118,7 @@ public class ExecutionSequencerTest extends TestCase {
     BlockingCallable blockingCallable = new BlockingCallable();
     ListenableFuture<@Nullable Void> future1 = serializer.submit(blockingCallable, executor);
     ListenableFuture<Boolean> future2 =
-        serializer.submit(
-            new Callable<Boolean>() {
-              @Override
-              public Boolean call() {
-                return blockingCallable.isRunning();
-              }
-            },
-            directExecutor());
+        serializer.submit(blockingCallable::isRunning, directExecutor());
 
     // Wait for the first task to be started in the background. It will block until we explicitly
     // stop it.
@@ -159,27 +145,14 @@ public class ExecutionSequencerTest extends TestCase {
     Object toBeGCed = new Object();
     WeakReference<Object> ref = new WeakReference<>(toBeGCed);
     SettableFuture<@Nullable Void> settableFuture = SettableFuture.create();
-    ListenableFuture<?> ignored =
-        serializer.submitAsync(
-            new AsyncCallable<@Nullable Void>() {
-              @Override
-              public ListenableFuture<@Nullable Void> call() {
-                return settableFuture;
-              }
-            },
-            directExecutor());
+    ListenableFuture<?> ignored = serializer.submitAsync(() -> settableFuture, directExecutor());
     serializer.submit(toStringCallable(toBeGCed), directExecutor()).cancel(true);
     toBeGCed = null;
     GcFinalization.awaitClear(ref);
   }
 
   private static Callable<String> toStringCallable(Object object) {
-    return new Callable<String>() {
-      @Override
-      public String call() {
-        return object.toString();
-      }
-    };
+    return object::toString;
   }
 
   public void testCancellationDuringReentrancy() throws Exception {
@@ -200,12 +173,9 @@ public class ExecutionSequencerTest extends TestCase {
     Future<?>[] thingToCancel = new Future<?>[1];
     results.add(
         serializer.submit(
-            new Callable<@Nullable Void>() {
-              @Override
-              public @Nullable Void call() {
-                thingToCancel[0].cancel(false);
-                return null;
-              }
+            () -> {
+              thingToCancel[0].cancel(false);
+              return null;
             },
             directExecutor()));
     thingToCancel[0] = serializer.submit(Callables.returning(null), directExecutor());
@@ -230,15 +200,7 @@ public class ExecutionSequencerTest extends TestCase {
   public void testAvoidsStackOverflow_manySubmitted() throws Exception {
     SettableFuture<@Nullable Void> settableFuture = SettableFuture.create();
     ArrayList<ListenableFuture<@Nullable Void>> results = new ArrayList<>(50_001);
-    results.add(
-        serializer.submitAsync(
-            new AsyncCallable<@Nullable Void>() {
-              @Override
-              public ListenableFuture<@Nullable Void> call() {
-                return settableFuture;
-              }
-            },
-            directExecutor()));
+    results.add(serializer.submitAsync(() -> settableFuture, directExecutor()));
     for (int i = 0; i < 50_000; i++) {
       results.add(serializer.submit(Callables.returning(null), directExecutor()));
     }
@@ -249,26 +211,12 @@ public class ExecutionSequencerTest extends TestCase {
   public void testAvoidsStackOverflow_manyCancelled() throws Exception {
     SettableFuture<@Nullable Void> settableFuture = SettableFuture.create();
     ListenableFuture<@Nullable Void> unused =
-        serializer.submitAsync(
-            new AsyncCallable<@Nullable Void>() {
-              @Override
-              public ListenableFuture<@Nullable Void> call() {
-                return settableFuture;
-              }
-            },
-            directExecutor());
+        serializer.submitAsync(() -> settableFuture, directExecutor());
     for (int i = 0; i < 50_000; i++) {
       serializer.submit(Callables.<Void>returning(null), directExecutor()).cancel(true);
     }
     ListenableFuture<Integer> stackDepthCheck =
-        serializer.submit(
-            new Callable<Integer>() {
-              @Override
-              public Integer call() {
-                return Thread.currentThread().getStackTrace().length;
-              }
-            },
-            directExecutor());
+        serializer.submit(() -> Thread.currentThread().getStackTrace().length, directExecutor());
     settableFuture.set(null);
     assertThat(getDone(stackDepthCheck))
         .isLessThan(Thread.currentThread().getStackTrace().length + 100);
@@ -277,27 +225,13 @@ public class ExecutionSequencerTest extends TestCase {
   public void testAvoidsStackOverflow_alternatingCancelledAndSubmitted() throws Exception {
     SettableFuture<@Nullable Void> settableFuture = SettableFuture.create();
     ListenableFuture<@Nullable Void> unused =
-        serializer.submitAsync(
-            new AsyncCallable<@Nullable Void>() {
-              @Override
-              public ListenableFuture<@Nullable Void> call() {
-                return settableFuture;
-              }
-            },
-            directExecutor());
+        serializer.submitAsync(() -> settableFuture, directExecutor());
     for (int i = 0; i < 25_000; i++) {
       serializer.submit(Callables.<Void>returning(null), directExecutor()).cancel(true);
       unused = serializer.submit(Callables.returning(null), directExecutor());
     }
     ListenableFuture<Integer> stackDepthCheck =
-        serializer.submit(
-            new Callable<Integer>() {
-              @Override
-              public Integer call() {
-                return Thread.currentThread().getStackTrace().length;
-              }
-            },
-            directExecutor());
+        serializer.submit(() -> Thread.currentThread().getStackTrace().length, directExecutor());
     settableFuture.set(null);
     assertThat(getDone(stackDepthCheck))
         .isLessThan(Thread.currentThread().getStackTrace().length + 100);
@@ -321,61 +255,35 @@ public class ExecutionSequencerTest extends TestCase {
     try {
       // Avoid counting frames from the executor itself, or the ExecutionSequencer
       baseStackDepth =
-          serializer
-              .submit(
-                  new Callable<Integer>() {
-                    @Override
-                    public Integer call() {
-                      return Thread.currentThread().getStackTrace().length;
-                    }
-                  },
-                  service)
-              .get();
+          serializer.submit(() -> Thread.currentThread().getStackTrace().length, service).get();
       SettableFuture<@Nullable Void> settableFuture = SettableFuture.create();
-      ListenableFuture<?> unused =
-          serializer.submitAsync(
-              new AsyncCallable<@Nullable Void>() {
-                @Override
-                public ListenableFuture<@Nullable Void> call() {
-                  return settableFuture;
-                }
-              },
-              directExecutor());
+      ListenableFuture<?> unused = serializer.submitAsync(() -> settableFuture, directExecutor());
       for (int i = 0; i < 50_000; i++) {
         if (i % DIRECT_EXECUTIONS_PER_THREAD == 0) {
           // after some number of iterations, switch threads
           unused =
               serializer.submit(
-                  new Callable<@Nullable Void>() {
-                    @Override
-                    public @Nullable Void call() {
-                      holder.count++;
-                      return null;
-                    }
+                  () -> {
+                    holder.count++;
+                    return null;
                   },
                   service);
         } else if (i % DIRECT_EXECUTIONS_PER_THREAD == DIRECT_EXECUTIONS_PER_THREAD - 1) {
           // When at max depth, record stack trace depth
           lengthChecks.add(
               serializer.submit(
-                  new Callable<Integer>() {
-                    @Override
-                    public Integer call() {
-                      holder.count++;
-                      return Thread.currentThread().getStackTrace().length;
-                    }
+                  () -> {
+                    holder.count++;
+                    return Thread.currentThread().getStackTrace().length;
                   },
                   directExecutor()));
         } else {
           // Otherwise, schedule a task on directExecutor
           unused =
               serializer.submit(
-                  new Callable<@Nullable Void>() {
-                    @Override
-                    public @Nullable Void call() {
-                      holder.count++;
-                      return null;
-                    }
+                  () -> {
+                    holder.count++;
+                    return null;
                   },
                   directExecutor());
         }

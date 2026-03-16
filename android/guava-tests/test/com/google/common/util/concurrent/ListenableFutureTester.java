@@ -56,14 +56,7 @@ public class ListenableFutureTester {
   }
 
   public void setUp() {
-    future.addListener(
-        new Runnable() {
-          @Override
-          public void run() {
-            latch.countDown();
-          }
-        },
-        exec);
+    future.addListener(latch::countDown, exec);
 
     assertEquals(1, latch.getCount());
     assertFalse(future.isDone());
@@ -94,7 +87,7 @@ public class ListenableFutureTester {
     assertTrue(future.isDone());
     assertTrue(future.isCancelled());
 
-    assertThrows(CancellationException.class, () -> future.get());
+    assertThrows(CancellationException.class, future::get);
   }
 
   public void testFailedFuture(@Nullable String message) throws InterruptedException {

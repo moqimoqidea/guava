@@ -290,11 +290,8 @@ abstract class AbstractAbstractFutureTest extends TestCase {
     class BadRunnableException extends RuntimeException {}
 
     Runnable bad =
-        new Runnable() {
-          @Override
-          public void run() {
-            throw new BadRunnableException();
-          }
+        () -> {
+          throw new BadRunnableException();
         };
 
     future.set(1);
@@ -306,11 +303,8 @@ abstract class AbstractAbstractFutureTest extends TestCase {
 
     CountingRunnable before = new CountingRunnable();
     Runnable bad =
-        new Runnable() {
-          @Override
-          public void run() {
-            throw new BadRunnableException();
-          }
+        () -> {
+          throw new BadRunnableException();
         };
     CountingRunnable after = new CountingRunnable();
 
@@ -425,8 +419,8 @@ abstract class AbstractAbstractFutureTest extends TestCase {
     verifyGetOnPendingFuture(future);
     verifyTimedGetOnPendingFuture(future);
 
-    assertThrows(IllegalStateException.class, () -> future.resultNow());
-    assertThrows(IllegalStateException.class, () -> future.exceptionNow());
+    assertThrows(IllegalStateException.class, future::resultNow);
+    assertThrows(IllegalStateException.class, future::exceptionNow);
   }
 
   private static void assertSuccessful(
@@ -439,7 +433,7 @@ abstract class AbstractAbstractFutureTest extends TestCase {
     assertThat(getDoneFromTimeoutOverload(future)).isEqualTo(expectedResult);
 
     assertThat(future.resultNow()).isEqualTo(expectedResult);
-    assertThrows(IllegalStateException.class, () -> future.exceptionNow());
+    assertThrows(IllegalStateException.class, future::exceptionNow);
   }
 
   private static void assertFailed(
@@ -462,7 +456,7 @@ abstract class AbstractAbstractFutureTest extends TestCase {
       assertThat(e).hasCauseThat().isSameInstanceAs(expectedException);
     }
 
-    assertThrows(IllegalStateException.class, () -> future.resultNow());
+    assertThrows(IllegalStateException.class, future::resultNow);
     assertThat(future.exceptionNow()).isSameInstanceAs(expectedException);
   }
 
@@ -485,8 +479,8 @@ abstract class AbstractAbstractFutureTest extends TestCase {
     } catch (CancellationException expected) {
     }
 
-    assertThrows(IllegalStateException.class, () -> future.resultNow());
-    assertThrows(IllegalStateException.class, () -> future.exceptionNow());
+    assertThrows(IllegalStateException.class, future::resultNow);
+    assertThrows(IllegalStateException.class, future::exceptionNow);
   }
 
   private static void assertDone(AbstractFuture<@Nullable Integer> future) {

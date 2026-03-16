@@ -154,8 +154,7 @@ public class AbstractScheduledServiceTest extends TestCase {
     service.runFirstBarrier.await();
     service.stopAsync();
     service.runSecondBarrier.await();
-    IllegalStateException e =
-        assertThrows(IllegalStateException.class, () -> service.awaitTerminated());
+    IllegalStateException e = assertThrows(IllegalStateException.class, service::awaitTerminated);
     assertThat(e).hasCauseThat().isEqualTo(service.shutDownException);
     assertEquals(Service.State.FAILED, service.state());
   }
@@ -365,11 +364,13 @@ public class AbstractScheduledServiceTest extends TestCase {
   private static final TimeUnit UNIT = MILLISECONDS;
 
   // Unique runnable object used for comparison.
+  @SuppressWarnings("AnonymousToLambda")
   final Runnable testRunnable =
       new Runnable() {
         @Override
         public void run() {}
       };
+
   boolean called = false;
 
   private void assertSingleCallWithCorrectParameters(
@@ -486,17 +487,14 @@ public class AbstractScheduledServiceTest extends TestCase {
     CyclicBarrier secondBarrier = new CyclicBarrier(2);
     AtomicBoolean shouldWait = new AtomicBoolean(true);
     Runnable task =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              if (shouldWait.get()) {
-                firstBarrier.await();
-                secondBarrier.await();
-              }
-            } catch (Exception e) {
-              throw new RuntimeException(e);
+        () -> {
+          try {
+            if (shouldWait.get()) {
+              firstBarrier.await();
+              secondBarrier.await();
             }
+          } catch (Exception e) {
+            throw new RuntimeException(e);
           }
         };
     TestCustomScheduler scheduler = new TestCustomScheduler();

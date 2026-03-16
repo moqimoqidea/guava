@@ -63,48 +63,20 @@ public class StripedTest extends TestCase {
         Striped.semaphore(256, 1));
   }
 
-  private static final Supplier<ReadWriteLock> READ_WRITE_LOCK_SUPPLIER =
-      new Supplier<ReadWriteLock>() {
-        @Override
-        public ReadWriteLock get() {
-          return new ReentrantReadWriteLock();
-        }
-      };
+  private static final Supplier<Lock> FAIR_LOCK_SUPPLER = () -> new ReentrantLock(true);
 
-  private static final Supplier<Lock> LOCK_SUPPLER =
-      new Supplier<Lock>() {
-        @Override
-        public Lock get() {
-          return new ReentrantLock();
-        }
-      };
-
-  private static final Supplier<Lock> FAIR_LOCK_SUPPLER =
-      new Supplier<Lock>() {
-        @Override
-        public Lock get() {
-          return new ReentrantLock(true);
-        }
-      };
-
-  private static final Supplier<Semaphore> SEMAPHORE_SUPPLER =
-      new Supplier<Semaphore>() {
-        @Override
-        public Semaphore get() {
-          return new Semaphore(1, false);
-        }
-      };
+  private static final Supplier<Semaphore> SEMAPHORE_SUPPLER = () -> new Semaphore(1, false);
 
   private static List<Striped<?>> weakImplementations() {
     return ImmutableList.<Striped<?>>builder()
-        .add(new Striped.SmallLazyStriped<ReadWriteLock>(50, READ_WRITE_LOCK_SUPPLIER))
-        .add(new Striped.SmallLazyStriped<ReadWriteLock>(64, READ_WRITE_LOCK_SUPPLIER))
-        .add(new Striped.LargeLazyStriped<ReadWriteLock>(50, READ_WRITE_LOCK_SUPPLIER))
-        .add(new Striped.LargeLazyStriped<ReadWriteLock>(64, READ_WRITE_LOCK_SUPPLIER))
-        .add(new Striped.SmallLazyStriped<Lock>(50, LOCK_SUPPLER))
-        .add(new Striped.SmallLazyStriped<Lock>(64, LOCK_SUPPLER))
-        .add(new Striped.LargeLazyStriped<Lock>(50, LOCK_SUPPLER))
-        .add(new Striped.LargeLazyStriped<Lock>(64, LOCK_SUPPLER))
+        .add(new Striped.SmallLazyStriped<ReadWriteLock>(50, ReentrantReadWriteLock::new))
+        .add(new Striped.SmallLazyStriped<ReadWriteLock>(64, ReentrantReadWriteLock::new))
+        .add(new Striped.LargeLazyStriped<ReadWriteLock>(50, ReentrantReadWriteLock::new))
+        .add(new Striped.LargeLazyStriped<ReadWriteLock>(64, ReentrantReadWriteLock::new))
+        .add(new Striped.SmallLazyStriped<Lock>(50, ReentrantLock::new))
+        .add(new Striped.SmallLazyStriped<Lock>(64, ReentrantLock::new))
+        .add(new Striped.LargeLazyStriped<Lock>(50, ReentrantLock::new))
+        .add(new Striped.LargeLazyStriped<Lock>(64, ReentrantLock::new))
         .add(new Striped.SmallLazyStriped<Semaphore>(50, SEMAPHORE_SUPPLER))
         .add(new Striped.SmallLazyStriped<Semaphore>(64, SEMAPHORE_SUPPLER))
         .add(new Striped.LargeLazyStriped<Semaphore>(50, SEMAPHORE_SUPPLER))

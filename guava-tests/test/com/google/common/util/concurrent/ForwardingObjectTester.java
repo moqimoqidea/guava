@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mock;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.base.Function;
 import com.google.common.collect.ForwardingObject;
 import com.google.common.collect.Iterables;
 import com.google.common.testing.ForwardingWrapperTester;
@@ -68,18 +67,15 @@ final class ForwardingObjectTester {
     new ForwardingWrapperTester()
         .testForwarding(
             interfaceType,
-            new Function<Object, T>() {
-              @Override
-              public T apply(Object delegate) {
-                T mock = mock(forwarderClass, CALLS_REAL_METHODS);
-                try {
-                  T stubber = doReturn(delegate).when(mock);
-                  DELEGATE_METHOD.invoke(stubber);
-                } catch (Exception e) {
-                  throw new RuntimeException(e);
-                }
-                return mock;
+            delegate -> {
+              T mock = mock(forwarderClass, CALLS_REAL_METHODS);
+              try {
+                T stubber = doReturn(delegate).when(mock);
+                DELEGATE_METHOD.invoke(stubber);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
               }
+              return mock;
             });
   }
 

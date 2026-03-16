@@ -93,13 +93,10 @@ public class SequentialExecutorTest extends TestCase {
   public void testBasics() {
     AtomicInteger totalCalls = new AtomicInteger();
     Runnable intCounter =
-        new Runnable() {
-          @Override
-          public void run() {
-            totalCalls.incrementAndGet();
-            // Make sure that no other tasks are scheduled to run while this is running.
-            assertFalse(fakePool.hasNext());
-          }
+        () -> {
+          totalCalls.incrementAndGet();
+          // Make sure that no other tasks are scheduled to run while this is running.
+          assertFalse(fakePool.hasNext());
         };
 
     assertFalse(fakePool.hasNext());
@@ -154,12 +151,9 @@ public class SequentialExecutorTest extends TestCase {
     AtomicInteger numCalls = new AtomicInteger();
 
     Runnable runMe =
-        new Runnable() {
-          @Override
-          public void run() {
-            numCalls.incrementAndGet();
-            throw new RuntimeException("FAKE EXCEPTION!");
-          }
+        () -> {
+          numCalls.incrementAndGet();
+          throw new RuntimeException("FAKE EXCEPTION!");
         };
 
     e.execute(runMe);
@@ -171,21 +165,9 @@ public class SequentialExecutorTest extends TestCase {
 
   public void testInterrupt_beforeRunRestoresInterruption() throws Exception {
     // Run a task on the composed Executor that interrupts its thread (i.e. this thread).
-    fakePool.execute(
-        new Runnable() {
-          @Override
-          public void run() {
-            Thread.currentThread().interrupt();
-          }
-        });
+    fakePool.execute(() -> Thread.currentThread().interrupt());
     // Run a task that expects that it is not interrupted while it is running.
-    e.execute(
-        new Runnable() {
-          @Override
-          public void run() {
-            assertThat(Thread.currentThread().isInterrupted()).isFalse();
-          }
-        });
+    e.execute(() -> assertThat(Thread.currentThread().isInterrupted()).isFalse());
 
     // Run these together.
     fakePool.runAll();
@@ -198,21 +180,9 @@ public class SequentialExecutorTest extends TestCase {
 
   public void testInterrupt_doesNotInterruptSubsequentTask() throws Exception {
     // Run a task that interrupts its thread (i.e. this thread).
-    e.execute(
-        new Runnable() {
-          @Override
-          public void run() {
-            Thread.currentThread().interrupt();
-          }
-        });
+    e.execute(() -> Thread.currentThread().interrupt());
     // Run a task that expects that it is not interrupted while it is running.
-    e.execute(
-        new Runnable() {
-          @Override
-          public void run() {
-            assertThat(Thread.currentThread().isInterrupted()).isFalse();
-          }
-        });
+    e.execute(() -> assertThat(Thread.currentThread().isInterrupted()).isFalse());
 
     // Run those tasks together.
     fakePool.runAll();
@@ -227,13 +197,7 @@ public class SequentialExecutorTest extends TestCase {
 
     AtomicInteger numCalls = new AtomicInteger();
 
-    Runnable runMe =
-        new Runnable() {
-          @Override
-          public void run() {
-            numCalls.incrementAndGet();
-          }
-        };
+    Runnable runMe = numCalls::incrementAndGet;
 
     Thread.currentThread().interrupt();
 
@@ -260,13 +224,7 @@ public class SequentialExecutorTest extends TestCase {
                 r.run();
               }
             });
-    Runnable task =
-        new Runnable() {
-          @Override
-          public void run() {
-            numCalls.incrementAndGet();
-          }
-        };
+    Runnable task = numCalls::incrementAndGet;
     assertThrows(RejectedExecutionException.class, () -> executor.execute(task));
     assertEquals(0, numCalls.get());
     reject.set(false);
@@ -290,21 +248,15 @@ public class SequentialExecutorTest extends TestCase {
     try {
       SequentialExecutor executor = new SequentialExecutor(service);
       Runnable errorTask =
-          new Runnable() {
-            @Override
-            public void run() {
-              throw new MyError();
-            }
+          () -> {
+            throw new MyError();
           };
       Runnable barrierTask =
-          new Runnable() {
-            @Override
-            public void run() {
-              try {
-                barrier.await();
-              } catch (Exception e) {
-                throw new RuntimeException(e);
-              }
+          () -> {
+            try {
+              barrier.await();
+            } catch (Exception e) {
+              throw new RuntimeException(e);
             }
           };
       executor.execute(errorTask);
@@ -335,14 +287,7 @@ public class SequentialExecutorTest extends TestCase {
         };
     SequentialExecutor executor = new SequentialExecutor(delegate);
     ExecutorService blocked = newCachedThreadPool();
-    Future<?> first =
-        blocked.submit(
-            new Runnable() {
-              @Override
-              public void run() {
-                executor.execute(Runnables.doNothing());
-              }
-            });
+    Future<?> first = blocked.submit(() -> executor.execute(Runnables.doNothing()));
     future.get(10, SECONDS);
     assertThrows(RejectedExecutionException.class, () -> executor.execute(Runnables.doNothing()));
     latch.countDown();

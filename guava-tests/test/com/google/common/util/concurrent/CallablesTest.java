@@ -56,13 +56,7 @@ public class CallablesTest extends TestCase {
   @GwtIncompatible
   public void testAsAsyncCallable() throws Exception {
     String expected = "MyCallableString";
-    Callable<String> callable =
-        new Callable<String>() {
-          @Override
-          public String call() throws Exception {
-            return expected;
-          }
-        };
+    Callable<String> callable = () -> expected;
 
     AsyncCallable<String> asyncCallable =
         Callables.asAsyncCallable(callable, newDirectExecutorService());
@@ -76,11 +70,8 @@ public class CallablesTest extends TestCase {
   public void testAsAsyncCallable_exception() throws Exception {
     Exception expected = new IllegalArgumentException();
     Callable<String> callable =
-        new Callable<String>() {
-          @Override
-          public String call() throws Exception {
-            throw expected;
-          }
+        () -> {
+          throw expected;
         };
 
     AsyncCallable<String> asyncCallable =
@@ -97,12 +88,9 @@ public class CallablesTest extends TestCase {
     String oldName = Thread.currentThread().getName();
     Supplier<String> newName = Suppliers.ofInstance("MyCrazyThreadName");
     Callable<@Nullable Void> callable =
-        new Callable<@Nullable Void>() {
-          @Override
-          public @Nullable Void call() throws Exception {
-            assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
-            return null;
-          }
+        () -> {
+          assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
+          return null;
         };
     Callables.threadRenaming(callable, newName).call();
     assertThat(Thread.currentThread().getName()).isEqualTo(oldName);
@@ -114,12 +102,9 @@ public class CallablesTest extends TestCase {
     String oldName = Thread.currentThread().getName();
     Supplier<String> newName = Suppliers.ofInstance("MyCrazyThreadName");
     Callable<@Nullable Void> callable =
-        new Callable<@Nullable Void>() {
-          @Override
-          public @Nullable Void call() throws Exception {
-            assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
-            throw new SomeCheckedException();
-          }
+        () -> {
+          assertThat(Thread.currentThread().getName()).isEqualTo(newName.get());
+          throw new SomeCheckedException();
         };
     assertThrows(
         SomeCheckedException.class, () -> Callables.threadRenaming(callable, newName).call());

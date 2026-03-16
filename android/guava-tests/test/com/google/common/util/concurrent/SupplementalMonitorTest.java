@@ -45,7 +45,7 @@ public class SupplementalMonitorTest extends TestCase {
 
   public void testLeaveWithoutEnterThrowsIMSE() {
     Monitor monitor = new Monitor();
-    assertThrows(IllegalMonitorStateException.class, () -> monitor.leave());
+    assertThrows(IllegalMonitorStateException.class, monitor::leave);
   }
 
   public void testGetWaitQueueLengthWithWrongMonitorThrowsIMSE() {
@@ -116,16 +116,13 @@ public class SupplementalMonitorTest extends TestCase {
     AtomicReference<Throwable> thrown = new AtomicReference<>();
     joinUninterruptibly(
         startThread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  actualIsOccupied.set(monitor.isOccupied());
-                  actualIsOccupiedByCurrentThread.set(monitor.isOccupiedByCurrentThread());
-                  actualOccupiedDepth.set(monitor.getOccupiedDepth());
-                } catch (Throwable t) {
-                  thrown.set(t);
-                }
+            () -> {
+              try {
+                actualIsOccupied.set(monitor.isOccupied());
+                actualIsOccupiedByCurrentThread.set(monitor.isOccupiedByCurrentThread());
+                actualOccupiedDepth.set(monitor.getOccupiedDepth());
+              } catch (Throwable t) {
+                thrown.set(t);
               }
             }));
     assertThat(thrown.get()).isNull();

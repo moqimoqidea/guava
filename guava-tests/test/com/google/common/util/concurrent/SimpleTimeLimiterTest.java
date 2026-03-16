@@ -50,43 +50,31 @@ public class SimpleTimeLimiterTest extends TestCase {
 
   private static final String GOOD_CALLABLE_RESULT = "good callable result";
   private static final Callable<String> GOOD_CALLABLE =
-      new Callable<String>() {
-        @Override
-        public String call() throws InterruptedException {
-          MILLISECONDS.sleep(DELAY_MS);
-          return GOOD_CALLABLE_RESULT;
-        }
+      () -> {
+        MILLISECONDS.sleep(DELAY_MS);
+        return GOOD_CALLABLE_RESULT;
       };
   private static final Callable<String> BAD_CALLABLE =
-      new Callable<String>() {
-        @Override
-        public String call() throws InterruptedException, SampleException {
-          MILLISECONDS.sleep(DELAY_MS);
-          throw new SampleException();
-        }
+      () -> {
+        MILLISECONDS.sleep(DELAY_MS);
+        throw new SampleException();
       };
   private static final Runnable GOOD_RUNNABLE =
-      new Runnable() {
-        @Override
-        public void run() {
-          try {
-            MILLISECONDS.sleep(DELAY_MS);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
+      () -> {
+        try {
+          MILLISECONDS.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
         }
       };
   private static final Runnable BAD_RUNNABLE =
-      new Runnable() {
-        @Override
-        public void run() {
-          try {
-            MILLISECONDS.sleep(DELAY_MS);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-          throw new SampleRuntimeException();
+      () -> {
+        try {
+          MILLISECONDS.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
         }
+        throw new SampleRuntimeException();
       };
 
   private TimeLimiter service;
@@ -130,7 +118,7 @@ public class SimpleTimeLimiterTest extends TestCase {
     Sample proxy = service.newProxy(target, Sample.class, ENOUGH_MS, MILLISECONDS);
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    assertThrows(SampleException.class, () -> proxy.sleepThenThrowException());
+    assertThrows(SampleException.class, proxy::sleepThenThrowException);
 
     assertThat(stopwatch.elapsed(MILLISECONDS)).isIn(Range.closed(DELAY_MS, ENOUGH_MS));
   }
@@ -140,7 +128,7 @@ public class SimpleTimeLimiterTest extends TestCase {
     Sample proxy = service.newProxy(target, Sample.class, NOT_ENOUGH_MS, MILLISECONDS);
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    assertThrows(UncheckedTimeoutException.class, () -> proxy.sleepThenThrowException());
+    assertThrows(UncheckedTimeoutException.class, proxy::sleepThenThrowException);
 
     assertThat(stopwatch.elapsed(MILLISECONDS)).isIn(Range.closed(NOT_ENOUGH_MS, DELAY_MS * 2));
   }

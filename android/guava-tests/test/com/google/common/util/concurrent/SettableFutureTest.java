@@ -107,7 +107,7 @@ public class SettableFutureTest extends TestCase {
     // Check that the future has been set properly.
     assertTrue(future.isDone());
     assertFalse(future.isCancelled());
-    ExecutionException ee = assertThrows(ExecutionException.class, () -> future.get());
+    ExecutionException ee = assertThrows(ExecutionException.class, future::get);
     assertThat(ee).hasCauseThat().isSameInstanceAs(e);
   }
 
@@ -158,7 +158,7 @@ public class SettableFutureTest extends TestCase {
     async.setFuture(inner);
     inner.cancel(true);
     assertTrue(async.isCancelled());
-    assertThrows(CancellationException.class, () -> async.get());
+    assertThrows(CancellationException.class, async::get);
   }
 
   public void testCancel_resultCancelsInner_interrupted() throws Exception {
@@ -168,7 +168,7 @@ public class SettableFutureTest extends TestCase {
     async.cancel(true);
     assertTrue(inner.isCancelled());
     assertTrue(inner.wasInterrupted());
-    assertThrows(CancellationException.class, () -> inner.get());
+    assertThrows(CancellationException.class, inner::get);
   }
 
   public void testCancel_resultCancelsInner() throws Exception {
@@ -178,7 +178,7 @@ public class SettableFutureTest extends TestCase {
     async.cancel(false);
     assertTrue(inner.isCancelled());
     assertFalse(inner.wasInterrupted());
-    assertThrows(CancellationException.class, () -> inner.get());
+    assertThrows(CancellationException.class, inner::get);
   }
 
   public void testCancel_beforeSet() throws Exception {

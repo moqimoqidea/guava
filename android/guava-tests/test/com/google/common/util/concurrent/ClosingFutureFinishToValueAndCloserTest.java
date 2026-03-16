@@ -26,8 +26,6 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.util.concurrent.ClosingFuture.ClosingCallable;
-import com.google.common.util.concurrent.ClosingFuture.DeferredCloser;
 import com.google.common.util.concurrent.ClosingFuture.ValueAndCloser;
 import com.google.common.util.concurrent.ClosingFuture.ValueAndCloserConsumer;
 import java.io.Closeable;
@@ -58,14 +56,7 @@ public class ClosingFutureFinishToValueAndCloserTest extends AbstractClosingFutu
 
   public void testFinishToValueAndCloser_throwsIfCalledTwice() throws Exception {
     ClosingFuture<Closeable> closingFuture =
-        ClosingFuture.submit(
-            new ClosingCallable<Closeable>() {
-              @Override
-              public Closeable call(DeferredCloser closer) throws Exception {
-                return closer.eventuallyClose(mockCloseable, executor);
-              }
-            },
-            executor);
+        ClosingFuture.submit(closer -> closer.eventuallyClose(mockCloseable, executor), executor);
     closingFuture.finishToValueAndCloser(
         new NoOpValueAndCloserConsumer<>(), finishToValueAndCloserExecutor);
     assertThrows(
@@ -77,14 +68,7 @@ public class ClosingFutureFinishToValueAndCloserTest extends AbstractClosingFutu
 
   public void testFinishToValueAndCloser_throwsAfterCallingFinishToFuture() throws Exception {
     ClosingFuture<Closeable> closingFuture =
-        ClosingFuture.submit(
-            new ClosingCallable<Closeable>() {
-              @Override
-              public Closeable call(DeferredCloser closer) throws Exception {
-                return closer.eventuallyClose(mockCloseable, executor);
-              }
-            },
-            executor);
+        ClosingFuture.submit(closer -> closer.eventuallyClose(mockCloseable, executor), executor);
     FluentFuture<Closeable> unused = closingFuture.finishToFuture();
     assertThrows(
         IllegalStateException.class,
@@ -135,12 +119,9 @@ public class ClosingFutureFinishToValueAndCloserTest extends AbstractClosingFutu
   private <V> ValueAndCloser<V> finishToValueAndCloser(ClosingFuture<V> closingFuture) {
     CountDownLatch valueAndCloserSet = new CountDownLatch(1);
     closingFuture.finishToValueAndCloser(
-        new ValueAndCloserConsumer<V>() {
-          @Override
-          public void accept(ValueAndCloser<V> valueAndCloser) {
-            ClosingFutureFinishToValueAndCloserTest.this.valueAndCloser = valueAndCloser;
-            valueAndCloserSet.countDown();
-          }
+        valueAndCloser -> {
+          ClosingFutureFinishToValueAndCloserTest.this.valueAndCloser = valueAndCloser;
+          valueAndCloserSet.countDown();
         },
         finishToValueAndCloserExecutor);
     assertWithMessage("valueAndCloser was set")

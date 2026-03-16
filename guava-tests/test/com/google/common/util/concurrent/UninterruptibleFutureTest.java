@@ -27,9 +27,7 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownStack;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -57,23 +55,11 @@ public class UninterruptibleFutureTest extends TestCase {
   @Override
   protected void setUp() {
     ExecutorService executor = newSingleThreadExecutor();
-    tearDownStack.addTearDown(
-        new TearDown() {
-          @Override
-          public void tearDown() {
-            executor.shutdownNow();
-          }
-        });
+    tearDownStack.addTearDown(executor::shutdownNow);
     sleeper = new SleepingRunnable(1000);
     delayedFuture = executor.submit(sleeper, true);
 
-    tearDownStack.addTearDown(
-        new TearDown() {
-          @Override
-          public void tearDown() {
-            Thread.interrupted();
-          }
-        });
+    tearDownStack.addTearDown(() -> Thread.interrupted());
   }
 
   @Override
@@ -220,8 +206,7 @@ public class UninterruptibleFutureTest extends TestCase {
     Thread waitingThread = new Thread(wasInterrupted);
     waitingThread.start();
     waitingThread.interrupt();
-    ExecutionException expected =
-        assertThrows(ExecutionException.class, () -> wasInterrupted.get());
+    ExecutionException expected = assertThrows(ExecutionException.class, wasInterrupted::get);
     assertTrue(expected.getCause().toString(), expected.getCause() instanceof InterruptedException);
   }
 
@@ -252,29 +237,23 @@ public class UninterruptibleFutureTest extends TestCase {
   private static FutureTask<Boolean> untimedInterruptReporter(
       Future<?> future, boolean allowInterruption) {
     return new FutureTask<>(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() throws Exception {
-            Object actual;
-            if (allowInterruption) {
-              actual = future.get();
-            } else {
-              actual = getUninterruptibly(future);
-            }
-            assertEquals(RESULT, actual);
-            return Thread.interrupted();
+        () -> {
+          Object actual;
+          if (allowInterruption) {
+            actual = future.get();
+          } else {
+            actual = getUninterruptibly(future);
           }
+          assertEquals(RESULT, actual);
+          return Thread.interrupted();
         });
   }
 
   private static FutureTask<Boolean> timedInterruptReporter(Future<?> future) {
     return new FutureTask<>(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() throws Exception {
-            assertEquals(RESULT, getUninterruptibly(future, 10, MINUTES));
-            return Thread.interrupted();
-          }
+        () -> {
+          assertEquals(RESULT, getUninterruptibly(future, 10, MINUTES));
+          return Thread.interrupted();
         });
   }
 

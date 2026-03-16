@@ -19,6 +19,7 @@ package com.google.common.util.concurrent;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.util.concurrent.Callables.returning;
 import static com.google.common.util.concurrent.Futures.getDone;
+import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.google.common.util.concurrent.ReflectionFreeAssertThrows.assertThrows;
 import static com.google.common.util.concurrent.TestPlatform.verifyThreadWasNotInterrupted;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -26,7 +27,6 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -67,11 +67,8 @@ public class TrustedListenableFutureTaskTest extends TestCase {
     Exception e = new Exception();
     TrustedListenableFutureTask<Integer> task =
         TrustedListenableFutureTask.create(
-            new Callable<Integer>() {
-              @Override
-              public Integer call() throws Exception {
-                throw e;
-              }
+            () -> {
+              throw e;
             });
     task.run();
     assertTrue(task.isDone());
@@ -89,31 +86,25 @@ public class TrustedListenableFutureTaskTest extends TestCase {
     CountDownLatch exitLatch = new CountDownLatch(1);
     TrustedListenableFutureTask<Integer> task =
         TrustedListenableFutureTask.create(
-            new Callable<Integer>() {
-              @Override
-              public Integer call() throws Exception {
-                enterLatch.countDown();
-                try {
-                  new CountDownLatch(1).await(); // wait forever
-                  throw new AssertionError();
-                } catch (InterruptedException e) {
-                  interruptedExceptionThrown.set(true);
-                  throw e;
-                } finally {
-                }
+            () -> {
+              enterLatch.countDown();
+              try {
+                new CountDownLatch(1).await(); // wait forever
+                throw new AssertionError();
+              } catch (InterruptedException e) {
+                interruptedExceptionThrown.set(true);
+                throw e;
+              } finally {
               }
             });
     assertFalse(task.isDone());
     Thread thread =
         new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  task.run();
-                } finally {
-                  exitLatch.countDown();
-                }
+            () -> {
+              try {
+                task.run();
+              } finally {
+                exitLatch.countDown();
               }
             });
     thread.start();
@@ -136,22 +127,13 @@ public class TrustedListenableFutureTaskTest extends TestCase {
     for (int i = 0; i < 1000; i++) {
       AtomicInteger counter = new AtomicInteger();
       TrustedListenableFutureTask<Integer> task =
-          TrustedListenableFutureTask.create(
-              new Callable<Integer>() {
-                @Override
-                public Integer call() {
-                  return counter.incrementAndGet();
-                }
-              });
+          TrustedListenableFutureTask.create(counter::incrementAndGet);
       CyclicBarrier barrier = new CyclicBarrier(numThreads + 1);
       Runnable wrapper =
-          new Runnable() {
-            @Override
-            public void run() {
-              awaitUnchecked(barrier);
-              task.run();
-              awaitUnchecked(barrier);
-            }
+          () -> {
+            awaitUnchecked(barrier);
+            task.run();
+            awaitUnchecked(barrier);
           };
       for (int j = 0; j < 10; j++) {
         executor.execute(wrapper);
@@ -171,25 +153,19 @@ public class TrustedListenableFutureTaskTest extends TestCase {
     CountDownLatch exitLatch = new CountDownLatch(1);
     TrustedListenableFutureTask<@Nullable Void> task =
         TrustedListenableFutureTask.create(
-            new Callable<@Nullable Void>() {
-              @Override
-              public @Nullable Void call() throws Exception {
-                enterLatch.countDown();
-                new CountDownLatch(1).await(); // wait forever
-                return null;
-              }
+            () -> {
+              enterLatch.countDown();
+              new CountDownLatch(1).await(); // wait forever
+              return immediateFuture(null);
             });
     assertFalse(task.isDone());
     Thread thread =
         new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  task.run();
-                } finally {
-                  exitLatch.countDown();
-                }
+            () -> {
+              try {
+                task.run();
+              } finally {
+                exitLatch.countDown();
               }
             },
             "Custom thread name");

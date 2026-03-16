@@ -234,7 +234,7 @@ public class CycleDetectingLockFactoryTest extends TestCase {
     Lock lockB = factory.newReentrantReadWriteLock(OtherOrder.FIRST).readLock();
 
     lockA.lock();
-    assertThrows(IllegalStateException.class, () -> lockB.lock());
+    assertThrows(IllegalStateException.class, lockB::lock);
 
     lockA.unlock();
     lockB.lock();

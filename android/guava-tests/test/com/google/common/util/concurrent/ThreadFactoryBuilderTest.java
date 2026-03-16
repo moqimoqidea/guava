@@ -40,21 +40,10 @@ import org.jspecify.annotations.NullUnmarked;
 @GwtIncompatible
 @J2ktIncompatible
 public class ThreadFactoryBuilderTest extends TestCase {
-  private final Runnable monitoredRunnable =
-      new Runnable() {
-        @Override
-        public void run() {
-          completed = true;
-        }
-      };
+  private final Runnable monitoredRunnable = () -> completed = true;
 
   private static final UncaughtExceptionHandler UNCAUGHT_EXCEPTION_HANDLER =
-      new UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread t, Throwable e) {
-          // No-op
-        }
-      };
+      (thread, throwable) -> {};
 
   private ThreadFactoryBuilder builder;
   private volatile boolean completed = false;

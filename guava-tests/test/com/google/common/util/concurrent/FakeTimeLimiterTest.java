@@ -105,21 +105,15 @@ public class FakeTimeLimiterTest extends TestCase {
     assertThat(e).hasCauseThat().isEqualTo(exception);
   }
 
-  public static <T> Callable<T> callableThrowing(Exception exception) {
-    return new Callable<T>() {
-      @Override
-      public T call() throws Exception {
-        throw exception;
-      }
+  private static <T> Callable<T> callableThrowing(Exception exception) {
+    return () -> {
+      throw exception;
     };
   }
 
   private static Runnable runnableThrowing(RuntimeException e) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        throw e;
-      }
+    return () -> {
+      throw e;
     };
   }
 

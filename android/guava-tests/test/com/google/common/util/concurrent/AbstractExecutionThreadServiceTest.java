@@ -27,7 +27,6 @@ import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownStack;
 import com.google.common.util.concurrent.testing.TestingExecutors;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -58,12 +57,7 @@ public class AbstractExecutionThreadServiceTest extends TestCase {
         public void execute(Runnable command) {
           executionThread = new Thread(command);
           executionThread.setUncaughtExceptionHandler(
-              new UncaughtExceptionHandler() {
-                @Override
-                public void uncaughtException(Thread thread, Throwable e) {
-                  thrownByExecutionThread = e;
-                }
-              });
+              (thread, throwable) -> thrownByExecutionThread = throwable);
           executionThread.start();
         }
       };
@@ -184,7 +178,7 @@ public class AbstractExecutionThreadServiceTest extends TestCase {
 
     service.startAsync();
     IllegalStateException expected =
-        assertThrows(IllegalStateException.class, () -> service.awaitRunning());
+        assertThrows(IllegalStateException.class, service::awaitRunning);
     assertThat(expected).hasCauseThat().hasMessageThat().isEqualTo("kaboom!");
     executionThread.join();
 
@@ -218,7 +212,7 @@ public class AbstractExecutionThreadServiceTest extends TestCase {
 
     service.startAsync();
     IllegalStateException expected =
-        assertThrows(IllegalStateException.class, () -> service.awaitTerminated());
+        assertThrows(IllegalStateException.class, service::awaitTerminated);
     executionThread.join();
     assertThat(expected).hasCauseThat().isEqualTo(service.failureCause());
     assertThat(expected).hasCauseThat().hasMessageThat().isEqualTo("kaboom!");
@@ -232,7 +226,7 @@ public class AbstractExecutionThreadServiceTest extends TestCase {
 
     service.startAsync();
     IllegalStateException expected =
-        assertThrows(IllegalStateException.class, () -> service.awaitTerminated());
+        assertThrows(IllegalStateException.class, service::awaitTerminated);
     executionThread.join();
     assertThat(expected).hasCauseThat().isEqualTo(service.failureCause());
     assertThat(expected).hasCauseThat().hasMessageThat().isEqualTo("kaboom!");

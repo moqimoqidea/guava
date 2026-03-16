@@ -24,8 +24,6 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.util.concurrent.ClosingFuture.ClosingCallable;
-import com.google.common.util.concurrent.ClosingFuture.DeferredCloser;
 import java.io.Closeable;
 import java.util.concurrent.ExecutionException;
 import org.jspecify.annotations.NullUnmarked;
@@ -37,14 +35,7 @@ import org.jspecify.annotations.NullUnmarked;
 public class ClosingFutureFinishToFutureTest extends AbstractClosingFutureTest {
   public void testFinishToFuture_throwsIfCalledTwice() throws Exception {
     ClosingFuture<Closeable> closingFuture =
-        ClosingFuture.submit(
-            new ClosingCallable<Closeable>() {
-              @Override
-              public Closeable call(DeferredCloser closer) throws Exception {
-                return closer.eventuallyClose(mockCloseable, executor);
-              }
-            },
-            executor);
+        ClosingFuture.submit(closer -> closer.eventuallyClose(mockCloseable, executor), executor);
     FluentFuture<Closeable> unused = closingFuture.finishToFuture();
     assertThrows(
         IllegalStateException.class,
@@ -55,14 +46,7 @@ public class ClosingFutureFinishToFutureTest extends AbstractClosingFutureTest {
 
   public void testFinishToFuture_throwsAfterCallingFinishToValueAndCloser() throws Exception {
     ClosingFuture<Closeable> closingFuture =
-        ClosingFuture.submit(
-            new ClosingCallable<Closeable>() {
-              @Override
-              public Closeable call(DeferredCloser closer) throws Exception {
-                return closer.eventuallyClose(mockCloseable, executor);
-              }
-            },
-            executor);
+        ClosingFuture.submit(closer -> closer.eventuallyClose(mockCloseable, executor), executor);
     closingFuture.finishToValueAndCloser(new NoOpValueAndCloserConsumer<>(), directExecutor());
     assertThrows(
         IllegalStateException.class,

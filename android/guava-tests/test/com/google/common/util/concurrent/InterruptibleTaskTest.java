@@ -74,7 +74,7 @@ public final class InterruptibleTaskTest extends TestCase {
     Thread runner = new Thread(task);
     runner.start();
     isInterruptibleRegistered.await();
-    RuntimeException expected = assertThrows(RuntimeException.class, () -> task.interruptTask());
+    RuntimeException expected = assertThrows(RuntimeException.class, task::interruptTask);
     assertThat(expected)
         .hasMessageThat()
         .isEqualTo("I bet you didn't think Thread.interrupt could throw");

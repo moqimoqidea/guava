@@ -23,7 +23,6 @@ import static junit.framework.Assert.fail;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.testing.TearDown;
 import com.google.common.testing.TearDownAccepter;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -67,16 +66,13 @@ final class InterruptionUtil {
     checkNotNull(unit);
     Thread interruptee = Thread.currentThread();
     new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  unit.sleep(time);
-                } catch (InterruptedException wontHappen) {
-                  throw new AssertionError(wontHappen);
-                }
-                interruptee.interrupt();
+            () -> {
+              try {
+                unit.sleep(time);
+              } catch (InterruptedException wontHappen) {
+                throw new AssertionError(wontHappen);
               }
+              interruptee.interrupt();
             })
         .start();
   }
@@ -86,22 +82,19 @@ final class InterruptionUtil {
     Thread interruptingThread = new Thread(interruptingTask);
     interruptingThread.start();
     tearDownAccepter.addTearDown(
-        new TearDown() {
-          @Override
-          public void tearDown() throws Exception {
-            interruptingTask.stopInterrupting();
-            interruptingThread.interrupt();
-            joinUninterruptibly(interruptingThread, 2500, MILLISECONDS);
-            Thread.interrupted();
-            if (interruptingThread.isAlive()) {
-              // This will be hidden by test-output redirection:
-              logger.severe("InterruptenatorTask did not exit; future tests may be affected");
-              /*
-               * This won't do any good under JUnit 3, but I'll leave it around in
-               * case we ever switch to JUnit 4:
-               */
-              fail();
-            }
+        () -> {
+          interruptingTask.stopInterrupting();
+          interruptingThread.interrupt();
+          joinUninterruptibly(interruptingThread, 2500, MILLISECONDS);
+          Thread.interrupted();
+          if (interruptingThread.isAlive()) {
+            // This will be hidden by test-output redirection:
+            logger.severe("InterruptenatorTask did not exit; future tests may be affected");
+            /*
+             * This won't do any good under JUnit 3, but I'll leave it around in
+             * case we ever switch to JUnit 4:
+             */
+            fail();
           }
         });
   }

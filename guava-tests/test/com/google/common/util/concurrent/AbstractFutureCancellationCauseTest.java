@@ -96,7 +96,7 @@ public class AbstractFutureCancellationCauseTest extends TestCase {
     assertTrue(future.isCancelled());
     assertTrue(future.isDone());
     assertThat(tryInternalFastPathGetFailure(future)).isNull();
-    CancellationException e = assertThrows(CancellationException.class, () -> future.get());
+    CancellationException e = assertThrows(CancellationException.class, future::get);
     assertThat(e.getCause()).isNotNull();
   }
 
@@ -106,7 +106,7 @@ public class AbstractFutureCancellationCauseTest extends TestCase {
     assertTrue(future.isCancelled());
     assertTrue(future.isDone());
     assertThat(tryInternalFastPathGetFailure(future)).isNull();
-    CancellationException e = assertThrows(CancellationException.class, () -> future.get());
+    CancellationException e = assertThrows(CancellationException.class, future::get);
     assertThat(e.getCause()).isNotNull();
   }
 
@@ -150,7 +150,7 @@ public class AbstractFutureCancellationCauseTest extends TestCase {
             "setFuture",
             future.getClass().getClassLoader().loadClass(ListenableFuture.class.getName()))
         .invoke(future, badFuture);
-    CancellationException expected = assertThrows(CancellationException.class, () -> future.get());
+    CancellationException expected = assertThrows(CancellationException.class, future::get);
     assertThat(expected).hasCauseThat().isInstanceOf(IllegalArgumentException.class);
     assertThat(expected).hasCauseThat().hasMessageThat().contains(badFuture.toString());
   }

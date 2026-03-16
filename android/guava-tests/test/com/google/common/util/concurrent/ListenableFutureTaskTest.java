@@ -24,7 +24,6 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -43,24 +42,21 @@ public class ListenableFutureTaskTest extends TestCase {
 
   private ExecutorService exec;
 
-  protected final CountDownLatch runLatch = new CountDownLatch(1);
-  protected final CountDownLatch taskLatch = new CountDownLatch(1);
-  protected final CountDownLatch listenerLatch = new CountDownLatch(1);
+  private final CountDownLatch runLatch = new CountDownLatch(1);
+  private final CountDownLatch taskLatch = new CountDownLatch(1);
+  private final CountDownLatch listenerLatch = new CountDownLatch(1);
 
-  protected volatile boolean throwException = false;
+  private volatile boolean throwException = false;
 
-  protected final ListenableFutureTask<Integer> task =
+  private final ListenableFutureTask<Integer> task =
       ListenableFutureTask.create(
-          new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-              runLatch.countDown();
-              taskLatch.await();
-              if (throwException) {
-                throw new IllegalStateException("Fail");
-              }
-              return 25;
+          () -> {
+            runLatch.countDown();
+            taskLatch.await();
+            if (throwException) {
+              throw new IllegalStateException("Fail");
             }
+            return 25;
           });
 
   @Override
@@ -69,14 +65,7 @@ public class ListenableFutureTaskTest extends TestCase {
 
     exec = newCachedThreadPool();
 
-    task.addListener(
-        new Runnable() {
-          @Override
-          public void run() {
-            listenerLatch.countDown();
-          }
-        },
-        directExecutor());
+    task.addListener(listenerLatch::countDown, directExecutor());
   }
 
   @Override
