@@ -227,7 +227,7 @@ class FreshValueGenerator {
     if (emptyGenerate != null) {
       if (emptyInstanceGenerated.containsKey(type.getType())) {
         // empty instance already generated
-        if (emptyInstanceGenerated.get(type.getType()).intValue() == freshness.get()) {
+        if (emptyInstanceGenerated.get(type.getType()) == freshness.get()) {
           // same freshness, generate again.
           return invokeGeneratorMethod(emptyGenerate);
         } else {

@@ -672,7 +672,7 @@ public abstract class BaseEncoding {
             writtenChars++;
             if (paddingChar != null) {
               while (writtenChars % alphabet.charsPerChunk != 0) {
-                out.write(paddingChar.charValue());
+                out.write(paddingChar);
                 writtenChars++;
               }
             }
@@ -710,7 +710,7 @@ public abstract class BaseEncoding {
       }
       if (paddingChar != null) {
         while (bitsProcessed < alphabet.bytesPerChunk * 8) {
-          target.append(paddingChar.charValue());
+          target.append(paddingChar);
           bitsProcessed += alphabet.bitsPerChar;
         }
       }
@@ -727,7 +727,7 @@ public abstract class BaseEncoding {
       if (paddingChar == null) {
         return chars;
       }
-      char padChar = paddingChar.charValue();
+      char padChar = paddingChar;
       int l;
       for (l = chars.length() - 1; l >= 0; l--) {
         if (chars.charAt(l) != padChar) {
@@ -800,7 +800,7 @@ public abstract class BaseEncoding {
             }
             readChars++;
             char ch = (char) readChar;
-            if (paddingChar != null && paddingChar.charValue() == ch) {
+            if (paddingChar != null && paddingChar == ch) {
               if (!hitPadding
                   && (readChars == 1 || !alphabet.isValidPaddingStartPosition(readChars - 1))) {
                 throw new DecodingException("Padding cannot start at index " + readChars);
@@ -857,8 +857,7 @@ public abstract class BaseEncoding {
 
     @Override
     public BaseEncoding withPadChar(char padChar) {
-      if (8 % alphabet.bitsPerChar == 0
-          || (paddingChar != null && paddingChar.charValue() == padChar)) {
+      if (8 % alphabet.bitsPerChar == 0 || (paddingChar != null && paddingChar == padChar)) {
         return this;
       } else {
         return newInstance(alphabet, padChar);
@@ -875,7 +874,7 @@ public abstract class BaseEncoding {
       }
       if (paddingChar != null) {
         checkArgument(
-            separator.indexOf(paddingChar.charValue()) < 0,
+            separator.indexOf(paddingChar) < 0,
             "Separator (%s) cannot contain padding character",
             separator);
       }

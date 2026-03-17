@@ -676,9 +676,7 @@ public class LongsTest extends TestCase {
           .isNull();
     }
     assertWithMessage("Hex string and dec parm").that(Longs.tryParse("FFFF", 10)).isNull();
-    assertWithMessage("Mixed hex case")
-        .that(Longs.tryParse("ffFF", 16).longValue())
-        .isEqualTo(65535);
+    assertWithMessage("Mixed hex case").that(Longs.tryParse("ffFF", 16)).isEqualTo(65535);
   }
 
   /**

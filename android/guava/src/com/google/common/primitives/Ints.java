@@ -842,7 +842,7 @@ public final class Ints extends IntsMethodsForWeb {
    */
   public static @Nullable Integer tryParse(String string, int radix) {
     Long result = Longs.tryParse(string, radix);
-    if (result == null || result.longValue() != result.intValue()) {
+    if (result == null || result != result.intValue()) {
       return null;
     } else {
       return result.intValue();

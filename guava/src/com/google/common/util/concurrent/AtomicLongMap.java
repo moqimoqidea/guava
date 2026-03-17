@@ -148,8 +148,7 @@ public final class AtomicLongMap<K> implements Serializable {
     Long result =
         map.compute(
             key,
-            (K k, @Nullable Long value) ->
-                updaterFunction.applyAsLong(value == null ? 0L : value.longValue()));
+            (K k, @Nullable Long value) -> updaterFunction.applyAsLong(value == null ? 0L : value));
     return requireNonNull(result);
   }
 
@@ -167,7 +166,7 @@ public final class AtomicLongMap<K> implements Serializable {
     map.compute(
         key,
         (K k, @Nullable Long value) -> {
-          long oldValue = (value == null) ? 0L : value.longValue();
+          long oldValue = (value == null) ? 0L : value;
           holder.set(oldValue);
           return updaterFunction.applyAsLong(oldValue);
         });
@@ -228,7 +227,7 @@ public final class AtomicLongMap<K> implements Serializable {
   @CanIgnoreReturnValue
   public long remove(K key) {
     Long result = map.remove(key);
-    return (result == null) ? 0L : result.longValue();
+    return (result == null) ? 0L : result;
   }
 
   /**
@@ -331,7 +330,7 @@ public final class AtomicLongMap<K> implements Serializable {
                 return oldValue;
               }
             });
-    return noValue.get() ? 0L : requireNonNull(result).longValue();
+    return noValue.get() ? 0L : requireNonNull(result);
   }
 
   /**

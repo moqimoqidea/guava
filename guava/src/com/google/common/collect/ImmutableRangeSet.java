@@ -606,7 +606,7 @@ public final class ImmutableRangeSet<C extends Comparable> extends AbstractRange
         }
         result = size = Ints.saturatedCast(total);
       }
-      return result.intValue();
+      return result;
     }
 
     @Override
