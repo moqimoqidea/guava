@@ -116,10 +116,7 @@ public class LinearTransformationTest extends TestCase {
     double x = 1.2;
     double y = 3.4;
     assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          LinearTransformation.mapping(x, y).and(x, y);
-        });
+        IllegalArgumentException.class, () -> LinearTransformation.mapping(x, y).and(x, y));
   }
 
   public void testMappingWithSlope_regular() {

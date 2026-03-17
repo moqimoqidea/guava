@@ -30,7 +30,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Comparator;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 
@@ -142,14 +141,7 @@ abstract class SubtypeTester implements Cloneable {
   final void testAllDeclarations() throws Exception {
     checkState(method == null);
     Method[] methods = getClass().getMethods();
-    Arrays.sort(
-        methods,
-        new Comparator<Method>() {
-          @Override
-          public int compare(Method a, Method b) {
-            return a.getName().compareTo(b.getName());
-          }
-        });
+    Arrays.sort(methods, (a, b) -> a.getName().compareTo(b.getName()));
     for (Method method : methods) {
       if (method.isAnnotationPresent(TestSubtype.class)) {
         method.setAccessible(true);

@@ -121,8 +121,8 @@ public class StatsTest extends TestCase {
   }
 
   public void testMean() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.mean());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.mean());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::mean);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::mean);
     assertThat(ONE_VALUE_STATS.mean()).isWithin(ALLOWED_ERROR).of(ONE_VALUE);
     assertThat(Stats.of(POSITIVE_INFINITY).mean()).isPositiveInfinity();
     assertThat(Stats.of(NEGATIVE_INFINITY).mean()).isNegativeInfinity();
@@ -205,8 +205,8 @@ public class StatsTest extends TestCase {
   }
 
   public void testPopulationVariance() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.populationVariance());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.populationVariance());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::populationVariance);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::populationVariance);
     assertThat(ONE_VALUE_STATS.populationVariance()).isEqualTo(0.0);
     assertThat(Stats.of(POSITIVE_INFINITY).populationVariance()).isNaN();
     assertThat(Stats.of(NEGATIVE_INFINITY).populationVariance()).isNaN();
@@ -257,10 +257,8 @@ public class StatsTest extends TestCase {
   }
 
   public void testPopulationStandardDeviation() {
-    assertThrows(
-        IllegalStateException.class, () -> EMPTY_STATS_VARARGS.populationStandardDeviation());
-    assertThrows(
-        IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.populationStandardDeviation());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::populationStandardDeviation);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::populationStandardDeviation);
     assertThat(ONE_VALUE_STATS.populationStandardDeviation()).isEqualTo(0.0);
     assertThat(TWO_VALUES_STATS.populationStandardDeviation())
         .isWithin(ALLOWED_ERROR)
@@ -292,9 +290,9 @@ public class StatsTest extends TestCase {
   }
 
   public void testSampleVariance() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.sampleVariance());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.sampleVariance());
-    assertThrows(IllegalStateException.class, () -> ONE_VALUE_STATS.sampleVariance());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::sampleVariance);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::sampleVariance);
+    assertThrows(IllegalStateException.class, ONE_VALUE_STATS::sampleVariance);
     assertThat(TWO_VALUES_STATS.sampleVariance())
         .isWithin(ALLOWED_ERROR)
         .of(TWO_VALUES_SUM_OF_SQUARES_OF_DELTAS);
@@ -325,9 +323,9 @@ public class StatsTest extends TestCase {
   }
 
   public void testSampleStandardDeviation() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.sampleStandardDeviation());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.sampleStandardDeviation());
-    assertThrows(IllegalStateException.class, () -> ONE_VALUE_STATS.sampleStandardDeviation());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::sampleStandardDeviation);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::sampleStandardDeviation);
+    assertThrows(IllegalStateException.class, ONE_VALUE_STATS::sampleStandardDeviation);
     assertThat(TWO_VALUES_STATS.sampleStandardDeviation())
         .isWithin(ALLOWED_ERROR)
         .of(sqrt(TWO_VALUES_SUM_OF_SQUARES_OF_DELTAS));
@@ -358,8 +356,8 @@ public class StatsTest extends TestCase {
   }
 
   public void testMax() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.max());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.max());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::max);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::max);
     assertThat(ONE_VALUE_STATS.max()).isEqualTo(ONE_VALUE);
     assertThat(Stats.of(POSITIVE_INFINITY).max()).isPositiveInfinity();
     assertThat(Stats.of(NEGATIVE_INFINITY).max()).isNegativeInfinity();
@@ -387,8 +385,8 @@ public class StatsTest extends TestCase {
   }
 
   public void testMin() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_VARARGS.min());
-    assertThrows(IllegalStateException.class, () -> EMPTY_STATS_ITERABLE.min());
+    assertThrows(IllegalStateException.class, EMPTY_STATS_VARARGS::min);
+    assertThrows(IllegalStateException.class, EMPTY_STATS_ITERABLE::min);
     assertThat(ONE_VALUE_STATS.min()).isEqualTo(ONE_VALUE);
     assertThat(Stats.of(POSITIVE_INFINITY).min()).isPositiveInfinity();
     assertThat(Stats.of(NEGATIVE_INFINITY).min()).isNegativeInfinity();
@@ -493,7 +491,7 @@ public class StatsTest extends TestCase {
   }
 
   public void testMeanOf() {
-    assertThrows(IllegalArgumentException.class, () -> Stats.meanOf());
+    assertThrows(IllegalArgumentException.class, Stats::meanOf);
     assertThrows(IllegalArgumentException.class, () -> Stats.meanOf(ImmutableList.<Number>of()));
     assertThat(Stats.meanOf(ONE_VALUE)).isWithin(ALLOWED_ERROR).of(ONE_VALUE);
     assertThat(Stats.meanOf(POSITIVE_INFINITY)).isPositiveInfinity();

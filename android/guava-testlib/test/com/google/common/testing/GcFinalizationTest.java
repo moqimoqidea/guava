@@ -124,13 +124,10 @@ public class GcFinalizationTest extends TestCase {
     @SuppressWarnings("ThreadPriorityCheck") // TODO: b/175898629 - Consider onSpinWait.
     Interruptenator(Thread interruptee, AtomicBoolean shutdown) {
       super(
-          new Runnable() {
-            @Override
-            public void run() {
-              while (!shutdown.get()) {
-                interruptee.interrupt();
-                Thread.yield();
-              }
+          () -> {
+            while (!shutdown.get()) {
+              interruptee.interrupt();
+              Thread.yield();
             }
           });
       this.shutdown = shutdown;

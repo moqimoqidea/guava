@@ -37,9 +37,7 @@ import static java.util.Arrays.asList;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMultimap;
@@ -104,15 +102,12 @@ public class MediaTypeTest extends TestCase {
   private static FluentIterable<Field> getConstantFields() {
     return FluentIterable.from(asList(MediaType.class.getDeclaredFields()))
         .filter(
-            new Predicate<Field>() {
-              @Override
-              public boolean apply(Field input) {
-                int modifiers = input.getModifiers();
-                return isPublic(modifiers)
-                    && isStatic(modifiers)
-                    && isFinal(modifiers)
-                    && MediaType.class.equals(input.getType());
-              }
+            field -> {
+              int modifiers = field.getModifiers();
+              return isPublic(modifiers)
+                  && isStatic(modifiers)
+                  && isFinal(modifiers)
+                  && MediaType.class.equals(field.getType());
             });
   }
 
@@ -121,14 +116,11 @@ public class MediaTypeTest extends TestCase {
   private static FluentIterable<MediaType> getConstants() {
     return getConstantFields()
         .transform(
-            new Function<Field, MediaType>() {
-              @Override
-              public MediaType apply(Field input) {
-                try {
-                  return (MediaType) input.get(null);
-                } catch (Exception e) {
-                  throw new RuntimeException(e);
-                }
+            field -> {
+              try {
+                return (MediaType) field.get(null);
+              } catch (Exception e) {
+                throw new RuntimeException(e);
               }
             });
   }

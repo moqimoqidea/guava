@@ -49,65 +49,36 @@ public class ForwardingWrapperTesterTest extends TestCase {
   private final ForwardingWrapperTester tester = new ForwardingWrapperTester();
 
   public void testGoodForwarder() {
-    tester.testForwarding(
-        Arithmetic.class,
-        new Function<Arithmetic, Arithmetic>() {
-          @Override
-          public Arithmetic apply(Arithmetic arithmetic) {
-            return new ForwardingArithmetic(arithmetic);
-          }
-        });
-    tester.testForwarding(
-        ParameterTypesDifferent.class,
-        new Function<ParameterTypesDifferent, ParameterTypesDifferent>() {
-          @Override
-          public ParameterTypesDifferent apply(ParameterTypesDifferent delegate) {
-            return new ParameterTypesDifferentForwarder(delegate);
-          }
-        });
+    tester.testForwarding(Arithmetic.class, ForwardingArithmetic::new);
+    tester.testForwarding(ParameterTypesDifferent.class, ParameterTypesDifferentForwarder::new);
   }
 
   public void testVoidMethodForwarding() {
-    tester.testForwarding(
-        Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable);
-          }
-        });
+    tester.testForwarding(Runnable.class, ForwardingRunnable::new);
   }
 
   public void testToStringForwarding() {
     tester.testForwarding(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
               @Override
               public String toString() {
                 return runnable.toString();
               }
-            };
-          }
-        });
+            });
   }
 
   public void testFailsToForwardToString() {
     assertFailure(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
               @Override
               public String toString() {
                 return "";
               }
-            };
-          }
-        },
+            },
         "toString()");
   }
 
@@ -115,10 +86,8 @@ public class ForwardingWrapperTesterTest extends TestCase {
     tester.includingEquals();
     assertFailure(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
 
               @SuppressWarnings("EqualsHashCode")
               @Override
@@ -129,9 +98,7 @@ public class ForwardingWrapperTesterTest extends TestCase {
                 }
                 return false;
               }
-            };
-          }
-        },
+            },
         "Runnable");
   }
 
@@ -139,10 +106,8 @@ public class ForwardingWrapperTesterTest extends TestCase {
     tester.includingEquals();
     tester.testForwarding(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
               @Override
               public boolean equals(@Nullable Object o) {
                 if (o instanceof ForwardingRunnable) {
@@ -156,41 +121,31 @@ public class ForwardingWrapperTesterTest extends TestCase {
               public int hashCode() {
                 return runnable.hashCode();
               }
-            };
-          }
-        });
+            });
   }
 
   public void testFailsToForwardEquals() {
     tester.includingEquals();
     assertFailure(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
               @Override
               public int hashCode() {
                 return runnable.hashCode();
               }
-            };
-          }
-        },
+            },
         "Runnable");
   }
 
   public void testFailsToForward() {
     assertFailure(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new ForwardingRunnable(runnable) {
+        runnable ->
+            new ForwardingRunnable(runnable) {
               @Override
               public void run() {}
-            };
-          }
-        },
+            },
         "run()",
         "Failed to forward");
   }
@@ -198,71 +153,29 @@ public class ForwardingWrapperTesterTest extends TestCase {
   public void testRedundantForwarding() {
     assertFailure(
         Runnable.class,
-        new Function<Runnable, Runnable>() {
-          @Override
-          public Runnable apply(Runnable runnable) {
-            return new Runnable() {
-              @Override
-              public void run() {
-                runnable.run();
-                runnable.run();
-              }
-            };
-          }
-        },
+        runnable ->
+            () -> {
+              runnable.run();
+              runnable.run();
+            },
         "run()",
         "invoked more than once");
   }
 
   public void testFailsToForwardParameters() {
-    assertFailure(
-        Adder.class,
-        new Function<Adder, Adder>() {
-          @Override
-          public Adder apply(Adder adder) {
-            return new FailsToForwardParameters(adder);
-          }
-        },
-        "add(",
-        "Parameter #0");
+    assertFailure(Adder.class, FailsToForwardParameters::new, "add(", "Parameter #0");
   }
 
   public void testForwardsToTheWrongMethod() {
-    assertFailure(
-        Arithmetic.class,
-        new Function<Arithmetic, Arithmetic>() {
-          @Override
-          public Arithmetic apply(Arithmetic adder) {
-            return new ForwardsToTheWrongMethod(adder);
-          }
-        },
-        "minus");
+    assertFailure(Arithmetic.class, ForwardsToTheWrongMethod::new, "minus");
   }
 
   public void testFailsToForwardReturnValue() {
-    assertFailure(
-        Adder.class,
-        new Function<Adder, Adder>() {
-          @Override
-          public Adder apply(Adder adder) {
-            return new FailsToForwardReturnValue(adder);
-          }
-        },
-        "add(",
-        "Return value");
+    assertFailure(Adder.class, FailsToForwardReturnValue::new, "add(", "Return value");
   }
 
   public void testFailsToPropagateException() {
-    assertFailure(
-        Adder.class,
-        new Function<Adder, Adder>() {
-          @Override
-          public Adder apply(Adder adder) {
-            return new FailsToPropagateException(adder);
-          }
-        },
-        "add(",
-        "exception");
+    assertFailure(Adder.class, FailsToPropagateException::new, "add(", "exception");
   }
 
   public void testNotInterfaceType() {
@@ -494,15 +407,7 @@ public class ForwardingWrapperTesterTest extends TestCase {
   }
 
   public void testCovariantReturn() {
-    new ForwardingWrapperTester()
-        .testForwarding(
-            Sub.class,
-            new Function<Sub, Sub>() {
-              @Override
-              public Sub apply(Sub sub) {
-                return new ForwardingSub(sub);
-              }
-            });
+    new ForwardingWrapperTester().testForwarding(Sub.class, ForwardingSub::new);
   }
 
   interface Base {
@@ -545,14 +450,6 @@ public class ForwardingWrapperTesterTest extends TestCase {
 
   private static class NoDelegateToEquals implements Equals {
 
-    private static final Function<Equals, Equals> WRAPPER =
-        new Function<Equals, Equals>() {
-          @Override
-          public NoDelegateToEquals apply(Equals delegate) {
-            return new NoDelegateToEquals(delegate);
-          }
-        };
-
     private final Equals delegate;
 
     NoDelegateToEquals(Equals delegate) {
@@ -566,14 +463,14 @@ public class ForwardingWrapperTesterTest extends TestCase {
   }
 
   public void testExplicitEqualsAndHashCodeNotDelegatedByDefault() {
-    new ForwardingWrapperTester().testForwarding(Equals.class, NoDelegateToEquals.WRAPPER);
+    new ForwardingWrapperTester().testForwarding(Equals.class, NoDelegateToEquals::new);
   }
 
   public void testExplicitEqualsAndHashCodeDelegatedWhenExplicitlyAsked() {
     try {
       new ForwardingWrapperTester()
           .includingEquals()
-          .testForwarding(Equals.class, NoDelegateToEquals.WRAPPER);
+          .testForwarding(Equals.class, NoDelegateToEquals::new);
     } catch (AssertionFailedError expected) {
       return;
     }
@@ -616,13 +513,6 @@ public class ForwardingWrapperTesterTest extends TestCase {
   }
 
   public void testChainingCalls() {
-    tester.testForwarding(
-        ChainingCalls.class,
-        new Function<ChainingCalls, ChainingCalls>() {
-          @Override
-          public ChainingCalls apply(ChainingCalls delegate) {
-            return new ForwardingChainingCalls(delegate);
-          }
-        });
+    tester.testForwarding(ChainingCalls.class, ForwardingChainingCalls::new);
   }
 }

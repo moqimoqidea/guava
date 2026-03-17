@@ -47,12 +47,9 @@ public class TestLogHandlerTest extends TestCase {
     ExampleClassUnderTest.logger.setUseParentHandlers(false); // optional
 
     stack.addTearDown(
-        new TearDown() {
-          @Override
-          public void tearDown() throws Exception {
-            ExampleClassUnderTest.logger.setUseParentHandlers(true);
-            ExampleClassUnderTest.logger.removeHandler(handler);
-          }
+        () -> {
+          ExampleClassUnderTest.logger.setUseParentHandlers(true);
+          ExampleClassUnderTest.logger.removeHandler(handler);
         });
   }
 

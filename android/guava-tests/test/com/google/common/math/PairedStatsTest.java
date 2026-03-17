@@ -94,7 +94,7 @@ public class PairedStatsTest extends TestCase {
   }
 
   public void testPopulationCovariance() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_PAIRED_STATS.populationCovariance());
+    assertThrows(IllegalStateException.class, EMPTY_PAIRED_STATS::populationCovariance);
     assertThat(ONE_VALUE_PAIRED_STATS.populationCovariance()).isEqualTo(0.0);
     assertThat(createSingleStats(Double.POSITIVE_INFINITY, 1.23).populationCovariance()).isNaN();
     assertThat(createSingleStats(Double.NEGATIVE_INFINITY, 1.23).populationCovariance()).isNaN();
@@ -124,8 +124,8 @@ public class PairedStatsTest extends TestCase {
   }
 
   public void testSampleCovariance() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_PAIRED_STATS.sampleCovariance());
-    assertThrows(IllegalStateException.class, () -> ONE_VALUE_PAIRED_STATS.sampleCovariance());
+    assertThrows(IllegalStateException.class, EMPTY_PAIRED_STATS::sampleCovariance);
+    assertThrows(IllegalStateException.class, ONE_VALUE_PAIRED_STATS::sampleCovariance);
     assertThat(TWO_VALUES_PAIRED_STATS.sampleCovariance())
         .isWithin(ALLOWED_ERROR)
         .of(TWO_VALUES_SUM_OF_PRODUCTS_OF_DELTAS);
@@ -138,13 +138,11 @@ public class PairedStatsTest extends TestCase {
   }
 
   public void testPearsonsCorrelationCoefficient() {
+    assertThrows(IllegalStateException.class, EMPTY_PAIRED_STATS::pearsonsCorrelationCoefficient);
     assertThrows(
-        IllegalStateException.class, () -> EMPTY_PAIRED_STATS.pearsonsCorrelationCoefficient());
-    assertThrows(
-        IllegalStateException.class, () -> ONE_VALUE_PAIRED_STATS.pearsonsCorrelationCoefficient());
-    assertThrows(
-        IllegalStateException.class,
-        () -> createSingleStats(Double.POSITIVE_INFINITY, 1.23).pearsonsCorrelationCoefficient());
+        IllegalStateException.class, ONE_VALUE_PAIRED_STATS::pearsonsCorrelationCoefficient);
+    PairedStats infiniteXStats = createSingleStats(Double.POSITIVE_INFINITY, 1.23);
+    assertThrows(IllegalStateException.class, infiniteXStats::pearsonsCorrelationCoefficient);
     assertThat(TWO_VALUES_PAIRED_STATS.pearsonsCorrelationCoefficient())
         .isWithin(ALLOWED_ERROR)
         .of(
@@ -172,18 +170,16 @@ public class PairedStatsTest extends TestCase {
     }
     assertThrows(
         IllegalStateException.class,
-        () -> HORIZONTAL_VALUES_PAIRED_STATS.pearsonsCorrelationCoefficient());
+        HORIZONTAL_VALUES_PAIRED_STATS::pearsonsCorrelationCoefficient);
     assertThrows(
-        IllegalStateException.class,
-        () -> VERTICAL_VALUES_PAIRED_STATS.pearsonsCorrelationCoefficient());
+        IllegalStateException.class, VERTICAL_VALUES_PAIRED_STATS::pearsonsCorrelationCoefficient);
     assertThrows(
-        IllegalStateException.class,
-        () -> CONSTANT_VALUES_PAIRED_STATS.pearsonsCorrelationCoefficient());
+        IllegalStateException.class, CONSTANT_VALUES_PAIRED_STATS::pearsonsCorrelationCoefficient);
   }
 
   public void testLeastSquaresFit() {
-    assertThrows(IllegalStateException.class, () -> EMPTY_PAIRED_STATS.leastSquaresFit());
-    assertThrows(IllegalStateException.class, () -> ONE_VALUE_PAIRED_STATS.leastSquaresFit());
+    assertThrows(IllegalStateException.class, EMPTY_PAIRED_STATS::leastSquaresFit);
+    assertThrows(IllegalStateException.class, ONE_VALUE_PAIRED_STATS::leastSquaresFit);
     assertThrows(
         IllegalStateException.class,
         () -> createSingleStats(Double.POSITIVE_INFINITY, 1.23).leastSquaresFit());
@@ -215,7 +211,7 @@ public class PairedStatsTest extends TestCase {
     assertVerticalLinearTransformation(
         VERTICAL_VALUES_PAIRED_STATS.leastSquaresFit(),
         VERTICAL_VALUES_PAIRED_STATS.xStats().mean());
-    assertThrows(IllegalStateException.class, () -> CONSTANT_VALUES_PAIRED_STATS.leastSquaresFit());
+    assertThrows(IllegalStateException.class, CONSTANT_VALUES_PAIRED_STATS::leastSquaresFit);
   }
 
   public void testEqualsAndHashCode() {

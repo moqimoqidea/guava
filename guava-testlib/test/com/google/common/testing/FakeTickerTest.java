@@ -127,15 +127,12 @@ public class FakeTickerTest extends TestCase {
     int numberOfThreads = 64;
     runConcurrentTest(
         numberOfThreads,
-        new Callable<@Nullable Void>() {
-          @Override
-          public @Nullable Void call() throws Exception {
-            // adds two nanoseconds to the ticker
-            ticker.advance(1L);
-            Thread.sleep(10);
-            ticker.advance(1L);
-            return null;
-          }
+        () -> {
+          // adds two nanoseconds to the ticker
+          ticker.advance(1L);
+          Thread.sleep(10);
+          ticker.advance(1L);
+          return null;
         });
 
     assertEquals(numberOfThreads * 2, ticker.read());
@@ -150,12 +147,9 @@ public class FakeTickerTest extends TestCase {
     int numberOfThreads = 64;
     runConcurrentTest(
         numberOfThreads,
-        new Callable<@Nullable Void>() {
-          @Override
-          public @Nullable Void call() throws Exception {
-            long unused = ticker.read();
-            return null;
-          }
+        () -> {
+          long unused = ticker.read();
+          return null;
         });
 
     assertEquals(incrementByNanos * numberOfThreads, ticker.read());
@@ -173,15 +167,12 @@ public class FakeTickerTest extends TestCase {
         @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
         Future<?> possiblyIgnoredError =
             executorService.submit(
-                new Callable<@Nullable Void>() {
-                  @Override
-                  public @Nullable Void call() throws Exception {
-                    startLatch.countDown();
-                    startLatch.await();
-                    callable.call();
-                    doneLatch.countDown();
-                    return null;
-                  }
+                () -> {
+                  startLatch.countDown();
+                  startLatch.await();
+                  callable.call();
+                  doneLatch.countDown();
+                  return null;
                 });
       }
       doneLatch.await();

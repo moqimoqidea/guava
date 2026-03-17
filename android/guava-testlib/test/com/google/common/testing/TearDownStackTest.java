@@ -119,16 +119,12 @@ public class TearDownStackTest extends TestCase {
   private TearDownStack buildTearDownStack() {
     TearDownStack result = new TearDownStack();
     tearDownStack.addTearDown(
-        new TearDown() {
-
-          @Override
-          public void tearDown() throws Exception {
-            synchronized (result.lock) {
-              assertEquals(
-                  "The test should have cleared the stack (say, by virtue of running runTearDown)",
-                  0,
-                  result.stack.size());
-            }
+        () -> {
+          synchronized (result.lock) {
+            assertEquals(
+                "The test should have cleared the stack (say, by virtue of running runTearDown)",
+                0,
+                result.stack.size());
           }
         });
     return result;
