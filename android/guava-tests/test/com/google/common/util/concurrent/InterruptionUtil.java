@@ -17,8 +17,8 @@
 package com.google.common.util.concurrent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.util.concurrent.Uninterruptibles.joinUninterruptibly;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static junit.framework.Assert.fail;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -91,36 +91,12 @@ final class InterruptionUtil {
             // This will be hidden by test-output redirection:
             logger.severe("InterruptenatorTask did not exit; future tests may be affected");
             /*
-             * This won't do any good under JUnit 3, but I'll leave it around in
-             * case we ever switch to JUnit 4:
+             * This fail() helps as long as TearDownAccepter is a TearDownStack that was *not*
+             * configured with suppressThrows=true.
              */
             fail();
           }
         });
-  }
-
-  // TODO(cpovirk): promote to Uninterruptibles, and add untimed version
-  private static void joinUninterruptibly(Thread thread, long timeout, TimeUnit unit) {
-    boolean interrupted = false;
-    try {
-      long remainingNanos = unit.toNanos(timeout);
-      long end = System.nanoTime() + remainingNanos;
-
-      while (true) {
-        try {
-          // TimeUnit.timedJoin() treats negative timeouts just like zero.
-          NANOSECONDS.timedJoin(thread, remainingNanos);
-          return;
-        } catch (InterruptedException e) {
-          interrupted = true;
-          remainingNanos = end - System.nanoTime();
-        }
-      }
-    } finally {
-      if (interrupted) {
-        Thread.currentThread().interrupt();
-      }
-    }
   }
 
   private InterruptionUtil() {}
