@@ -135,14 +135,14 @@ public class ByteStreamsTest extends IoTestCase {
   public void testNewDataInput_empty() {
     byte[] b = new byte[0];
     ByteArrayDataInput in = ByteStreams.newDataInput(b);
-    assertThrows(IllegalStateException.class, () -> in.readInt());
+    assertThrows(IllegalStateException.class, in::readInt);
   }
 
   public void testNewDataInput_normal() {
     ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
     assertEquals(0x12345678, in.readInt());
     assertEquals(0x76543210, in.readInt());
-    assertThrows(IllegalStateException.class, () -> in.readInt());
+    assertThrows(IllegalStateException.class, in::readInt);
   }
 
   public void testNewDataInput_readFully() {
@@ -234,7 +234,7 @@ public class ByteStreamsTest extends IoTestCase {
     for (byte aByte : bytes) {
       assertEquals(aByte, in.readByte());
     }
-    IllegalStateException expected = assertThrows(IllegalStateException.class, () -> in.readByte());
+    IllegalStateException expected = assertThrows(IllegalStateException.class, in::readByte);
     assertThat(expected).hasCauseThat().isInstanceOf(EOFException.class);
   }
 
@@ -244,14 +244,14 @@ public class ByteStreamsTest extends IoTestCase {
       assertEquals(aByte, in.readUnsignedByte());
     }
     IllegalStateException expected =
-        assertThrows(IllegalStateException.class, () -> in.readUnsignedByte());
+        assertThrows(IllegalStateException.class, in::readUnsignedByte);
     assertThat(expected).hasCauseThat().isInstanceOf(EOFException.class);
   }
 
   public void testNewDataInput_offset() {
     ByteArrayDataInput in = ByteStreams.newDataInput(bytes, 2);
     assertEquals(0x56787654, in.readInt());
-    assertThrows(IllegalStateException.class, () -> in.readInt());
+    assertThrows(IllegalStateException.class, in::readInt);
   }
 
   public void testNewDataInput_skip() {
@@ -612,14 +612,14 @@ public class ByteStreamsTest extends IoTestCase {
     InputStream bin = new ByteArrayInputStream(big);
     InputStream lin = ByteStreams.limit(bin, 2);
 
-    IOException expected = assertThrows(IOException.class, () -> lin.reset());
+    IOException expected = assertThrows(IOException.class, lin::reset);
     assertThat(expected).hasMessageThat().isEqualTo("Mark not set");
   }
 
   public void testLimit_markNotSupported() {
     InputStream lin = ByteStreams.limit(new UnmarkableInputStream(), 2);
 
-    IOException expected = assertThrows(IOException.class, () -> lin.reset());
+    IOException expected = assertThrows(IOException.class, lin::reset);
     assertThat(expected).hasMessageThat().isEqualTo("Mark not supported");
   }
 

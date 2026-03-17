@@ -78,20 +78,20 @@ public class LittleEndianDataInputStreamTest extends TestCase {
 
   public void testReadUnsignedByte_eof() throws IOException {
     DataInput in = new LittleEndianDataInputStream(new ByteArrayInputStream(new byte[0]));
-    assertThrows(EOFException.class, () -> in.readUnsignedByte());
+    assertThrows(EOFException.class, in::readUnsignedByte);
   }
 
   public void testReadUnsignedShort_eof() throws IOException {
     byte[] buf = {23};
     DataInput in = new LittleEndianDataInputStream(new ByteArrayInputStream(buf));
-    assertThrows(EOFException.class, () -> in.readUnsignedShort());
+    assertThrows(EOFException.class, in::readUnsignedShort);
   }
 
   @SuppressWarnings("DoNotCall")
   public void testReadLine() throws IOException {
     DataInput in = new LittleEndianDataInputStream(new ByteArrayInputStream(data));
     UnsupportedOperationException expected =
-        assertThrows(UnsupportedOperationException.class, () -> in.readLine());
+        assertThrows(UnsupportedOperationException.class, in::readLine);
     assertThat(expected).hasMessageThat().isEqualTo("readLine is not supported");
   }
 

@@ -99,7 +99,7 @@ public class CharSequenceReaderTest extends TestCase {
     CharSequenceReader reader = new CharSequenceReader("");
     reader.close();
 
-    assertThrows(IOException.class, () -> reader.read());
+    assertThrows(IOException.class, reader::read);
 
     assertThrows(IOException.class, () -> reader.read(new char[10]));
 
@@ -109,11 +109,11 @@ public class CharSequenceReaderTest extends TestCase {
 
     assertThrows(IOException.class, () -> reader.skip(10));
 
-    assertThrows(IOException.class, () -> reader.ready());
+    assertThrows(IOException.class, reader::ready);
 
     assertThrows(IOException.class, () -> reader.mark(10));
 
-    assertThrows(IOException.class, () -> reader.reset());
+    assertThrows(IOException.class, reader::reset);
   }
 
   /**

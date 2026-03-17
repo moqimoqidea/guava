@@ -39,22 +39,10 @@ public class FeatureSpecificTestSuiteBuilderTest extends TestCase {
 
   public void testLifecycle() {
     boolean[] setUp = {false};
-    Runnable setUpRunnable =
-        new Runnable() {
-          @Override
-          public void run() {
-            setUp[0] = true;
-          }
-        };
+    Runnable setUpRunnable = () -> setUp[0] = true;
 
     boolean[] tearDown = {false};
-    Runnable tearDownRunnable =
-        new Runnable() {
-          @Override
-          public void run() {
-            tearDown[0] = true;
-          }
-        };
+    Runnable tearDownRunnable = () -> tearDown[0] = true;
 
     MyTestSuiteBuilder builder = new MyTestSuiteBuilder();
     Test test =

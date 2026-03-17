@@ -324,19 +324,9 @@ public final class MapTestSuiteBuilderTests extends TestCase {
   private static Test testsForSetUpTearDown() {
     AtomicBoolean setUpRan = new AtomicBoolean();
     Runnable setUp =
-        new Runnable() {
-          @Override
-          public void run() {
+        () ->
             assertFalse("previous tearDown should have run before setUp", setUpRan.getAndSet(true));
-          }
-        };
-    Runnable tearDown =
-        new Runnable() {
-          @Override
-          public void run() {
-            assertTrue("setUp should have run", setUpRan.getAndSet(false));
-          }
-        };
+    Runnable tearDown = () -> assertTrue("setUp should have run", setUpRan.getAndSet(false));
     return MapTestSuiteBuilder.using(new CheckSetUpHashMapGenerator(setUpRan))
         .named("setUpTearDown")
         .withFeatures(

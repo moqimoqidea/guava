@@ -19,7 +19,6 @@ package com.google.common.io;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
@@ -67,14 +66,7 @@ public class LineBufferTest extends IoTestCase {
 
     List<String> expectProcess = Arrays.asList(expect);
     List<String> expectRead =
-        Lists.transform(
-            expectProcess,
-            new Function<String, String>() {
-              @Override
-              public String apply(String value) {
-                return value.replaceAll("[\\r\\n]", "");
-              }
-            });
+        Lists.transform(expectProcess, value -> value.replaceAll("[\\r\\n]", ""));
 
     for (int chunk : CHUNK_SIZES) {
       chunk = max(1, min(chunk, input.length()));

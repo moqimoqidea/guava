@@ -20,6 +20,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Uninterruptibles;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -82,34 +83,34 @@ public class DispatcherTest extends TestCase {
     CountDownLatch latch = new CountDownLatch(2);
 
     new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  barrier.await();
-                } catch (Exception e) {
-                  throw new AssertionError(e);
-                }
-
-                dispatcher.dispatch(2, integerSubscribers.iterator());
-                latch.countDown();
+            () -> {
+              try {
+                barrier.await();
+              } catch (BrokenBarrierException e) {
+                throw new AssertionError(e);
+              } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError(e);
               }
+
+              dispatcher.dispatch(2, integerSubscribers.iterator());
+              latch.countDown();
             })
         .start();
 
     new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  barrier.await();
-                } catch (Exception e) {
-                  throw new AssertionError(e);
-                }
-
-                dispatcher.dispatch("foo", stringSubscribers.iterator());
-                latch.countDown();
+            () -> {
+              try {
+                barrier.await();
+              } catch (BrokenBarrierException e) {
+                throw new AssertionError(e);
+              } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new AssertionError(e);
               }
+
+              dispatcher.dispatch("foo", stringSubscribers.iterator());
+              latch.countDown();
             })
         .start();
 

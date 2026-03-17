@@ -24,12 +24,10 @@ import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import org.jspecify.annotations.NullUnmarked;
-import org.jspecify.annotations.Nullable;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -498,21 +496,18 @@ public final class ValueGraphTest {
     for (int i = 0; i < threadCount; i++) {
       futures.add(
           executor.submit(
-              new Callable<@Nullable Void>() {
-                @Override
-                public @Nullable Void call() throws Exception {
-                  barrier.await();
-                  Integer first = graph.nodes().iterator().next();
-                  for (Integer node : graph.nodes()) {
-                    Set<Integer> unused = graph.successors(node);
-                  }
-                  /*
-                   * Also look up an earlier node so that, if the graph is using MapRetrievalCache,
-                   * we read one of the fields declared in that class.
-                   */
-                  Set<Integer> unused = graph.successors(first);
-                  return null;
+              () -> {
+                barrier.await();
+                Integer first = graph.nodes().iterator().next();
+                for (Integer node : graph.nodes()) {
+                  Set<Integer> unused = graph.successors(node);
                 }
+                /*
+                 * Also look up an earlier node so that, if the graph is using MapRetrievalCache,
+                 * we read one of the fields declared in that class.
+                 */
+                Set<Integer> unused = graph.successors(first);
+                return null; // so the lambda is a Callable to propagate checked await() exceptions
               }));
     }
 

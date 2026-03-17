@@ -141,7 +141,7 @@ public class MoreFilesTest extends TestCase {
 
       assertThat(source.sizeIfKnown()).isAbsent();
 
-      assertThrows(IOException.class, () -> source.size());
+      assertThrows(IOException.class, source::size);
     }
   }
 
@@ -156,7 +156,7 @@ public class MoreFilesTest extends TestCase {
 
       assertThat(source.sizeIfKnown()).isAbsent();
 
-      assertThrows(IOException.class, () -> source.size());
+      assertThrows(IOException.class, source::size);
     }
   }
 
@@ -185,7 +185,7 @@ public class MoreFilesTest extends TestCase {
 
       assertThat(source.sizeIfKnown()).isAbsent();
 
-      assertThrows(IOException.class, () -> source.size());
+      assertThrows(IOException.class, source::size);
     }
   }
 
@@ -594,7 +594,7 @@ public class MoreFilesTest extends TestCase {
    * not possible to protect against this if the file system doesn't.
    */
   @SuppressWarnings("ThreadPriorityCheck") // TODO: b/175898629 - Consider onSpinWait.
-  public void testDirectoryDeletion_directorySymlinkRace() throws IOException {
+  public void testDirectoryDeletion_directorySymlinkRace() throws Exception {
     int iterations = isAndroid() ? 100 : 5000;
     for (DirectoryDeleteMethod method : EnumSet.allOf(DirectoryDeleteMethod.class)) {
       try (FileSystem fs = newTestFileSystem(SECURE_DIRECTORY_STREAM)) {
@@ -603,7 +603,7 @@ public class MoreFilesTest extends TestCase {
         Path symlinkTarget = fs.getPath("/dontdelete");
 
         ExecutorService executor = newSingleThreadExecutor();
-        startDirectorySymlinkSwitching(changingFile, symlinkTarget, executor);
+        Future<?> switcher = startDirectorySymlinkSwitching(changingFile, symlinkTarget, executor);
 
         try {
           for (int i = 0; i < iterations; i++) {
@@ -630,6 +630,8 @@ public class MoreFilesTest extends TestCase {
         } finally {
           executor.shutdownNow();
         }
+
+        switcher.get(); // to check for (extremely unlikely) exceptions
       }
     }
   }
@@ -663,34 +665,29 @@ public class MoreFilesTest extends TestCase {
    * symlink should have.
    */
   @SuppressWarnings("ThreadPriorityCheck") // TODO: b/175898629 - Consider onSpinWait.
-  private static void startDirectorySymlinkSwitching(
+  private static Future<?> startDirectorySymlinkSwitching(
       Path file, Path target, ExecutorService executor) {
-    @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
-    Future<?> possiblyIgnoredError =
-        executor.submit(
-            new Runnable() {
-              @Override
-              public void run() {
-                boolean createSymlink = false;
-                while (!Thread.interrupted()) {
-                  try {
-                    // trying to switch between a real directory and a symlink (dir -> /a)
-                    if (Files.deleteIfExists(file)) {
-                      if (createSymlink) {
-                        Files.createSymbolicLink(file, target);
-                      } else {
-                        Files.createDirectory(file);
-                      }
-                      createSymlink = !createSymlink;
-                    }
-                  } catch (IOException tolerated) {
-                    // it's expected that some of these will fail
-                  }
-
-                  Thread.yield();
+    return executor.submit(
+        () -> {
+          boolean createSymlink = false;
+          while (!Thread.interrupted()) {
+            try {
+              // trying to switch between a real directory and a symlink (dir -> /a)
+              if (Files.deleteIfExists(file)) {
+                if (createSymlink) {
+                  Files.createSymbolicLink(file, target);
+                } else {
+                  Files.createDirectory(file);
                 }
+                createSymlink = !createSymlink;
               }
-            });
+            } catch (IOException tolerated) {
+              // it's expected that some of these will fail
+            }
+
+            Thread.yield();
+          }
+        });
   }
 
   /** Enum defining the two MoreFiles methods that delete directory contents. */

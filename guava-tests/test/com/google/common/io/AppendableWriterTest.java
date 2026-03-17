@@ -120,7 +120,7 @@ public class AppendableWriterTest extends IoTestCase {
 
     assertThrows(IOException.class, () -> writer.write(" Greg"));
 
-    assertThrows(IOException.class, () -> writer.flush());
+    assertThrows(IOException.class, writer::flush);
 
     // close()ing already closed writer is allowed
     writer.close();

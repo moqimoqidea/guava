@@ -250,7 +250,7 @@ public class MacHashFunctionTest extends TestCase {
                 .hash()
                 .toString())
         .isEqualTo("9753980fe94daa8ecaa82216519393a9");
-    assertThrows(IllegalStateException.class, () -> hasher.hash());
+    assertThrows(IllegalStateException.class, hasher::hash);
   }
 
   public void testToString() {

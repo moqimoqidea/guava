@@ -77,7 +77,7 @@ public class MessageDigestHashFunctionTest extends TestCase {
     assertThat(
             sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString())
         .isEqualTo("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
-    assertThrows(IllegalStateException.class, () -> sha1.hash());
+    assertThrows(IllegalStateException.class, sha1::hash);
   }
 
   public void testToString() {

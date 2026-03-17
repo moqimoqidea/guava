@@ -20,6 +20,7 @@ import static com.google.common.util.concurrent.Internal.toNanosSaturated;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import static com.google.common.util.concurrent.Uninterruptibles.getUninterruptibly;
 import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.callable;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import com.google.common.annotations.GwtCompatible;
@@ -764,15 +765,7 @@ public final class Futures extends GwtFuturesCatchingSpecialization {
      *     href="https://errorprone.info/bugpattern/FutureReturnValueIgnored">https://errorprone.info/bugpattern/FutureReturnValueIgnored</a>.
      */
     public ListenableFuture<?> run(Runnable combiner, Executor executor) {
-      return call(
-          new Callable<@Nullable Void>() {
-            @Override
-            public @Nullable Void call() throws Exception {
-              combiner.run();
-              return null;
-            }
-          },
-          executor);
+      return call(callable(combiner), executor);
     }
   }
 

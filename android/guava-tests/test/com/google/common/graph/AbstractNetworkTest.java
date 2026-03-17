@@ -32,12 +32,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import org.jspecify.annotations.NullUnmarked;
-import org.jspecify.annotations.Nullable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -821,21 +819,18 @@ public abstract class AbstractNetworkTest {
     for (int i = 0; i < threadCount; i++) {
       futures.add(
           executor.submit(
-              new Callable<@Nullable Void>() {
-                @Override
-                public @Nullable Void call() throws Exception {
-                  barrier.await();
-                  Integer first = network.nodes().iterator().next();
-                  for (Integer node : network.nodes()) {
-                    Set<Integer> unused = network.successors(node);
-                  }
-                  /*
-                   * Also look up an earlier node so that, if the graph is using MapRetrievalCache,
-                   * we read one of the fields declared in that class.
-                   */
-                  Set<Integer> unused = network.successors(first);
-                  return null;
+              () -> {
+                barrier.await();
+                Integer first = network.nodes().iterator().next();
+                for (Integer node : network.nodes()) {
+                  Set<Integer> unused = network.successors(node);
                 }
+                /*
+                 * Also look up an earlier node so that, if the graph is using MapRetrievalCache, we
+                 * read one of the fields declared in that class.
+                 */
+                Set<Integer> unused = network.successors(first);
+                return null; // so the lambda is a Callable to propagate checked await() exceptions
               }));
     }
 

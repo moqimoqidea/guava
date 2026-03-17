@@ -35,7 +35,6 @@ import com.google.common.testing.SerializableTester;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -247,9 +246,7 @@ public class BloomFilterTest extends TestCase {
     double p = 0.00000000000000000000000000000000000000000000000000000000000000000000000000000001;
     assertThrows(
         IllegalArgumentException.class,
-        () -> {
-          BloomFilter.create(Funnels.unencodedCharsFunnel(), n, p);
-        });
+        () -> BloomFilter.create(Funnels.unencodedCharsFunnel(), n, p));
   }
 
   public void testNullPointers() {
@@ -502,28 +499,16 @@ public class BloomFilterTest extends TestCase {
     BloomFilter<Integer> bf2 = BloomFilter.create(Funnels.integerFunnel(), 10);
 
     assertFalse(bf1.isCompatible(bf2));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          bf1.putAll(bf2);
-        });
+    assertThrows(IllegalArgumentException.class, () -> bf1.putAll(bf2));
 
     assertFalse(bf2.isCompatible(bf1));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          bf2.putAll(bf1);
-        });
+    assertThrows(IllegalArgumentException.class, () -> bf2.putAll(bf1));
   }
 
   public void testPutAllWithSelf() {
     BloomFilter<Integer> bf1 = BloomFilter.create(Funnels.integerFunnel(), 1);
     assertFalse(bf1.isCompatible(bf1));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> {
-          bf1.putAll(bf1);
-        });
+    assertThrows(IllegalArgumentException.class, () -> bf1.putAll(bf1));
   }
 
   public void testJavaSerialization() {
@@ -588,30 +573,27 @@ public class BloomFilterTest extends TestCase {
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     Runnable task =
-        new Runnable() {
-          @Override
-          public void run() {
-            do {
-              // We can't have a GOLDEN_NOT_PRESENT_KEY because false positives are
-              // possible! It's false negatives that can't happen.
-              assertThat(bloomFilter.mightContain(GOLDEN_PRESENT_KEY)).isTrue();
+        () -> {
+          do {
+            // We can't have a GOLDEN_NOT_PRESENT_KEY because false positives are
+            // possible! It's false negatives that can't happen.
+            assertThat(bloomFilter.mightContain(GOLDEN_PRESENT_KEY)).isTrue();
 
-              int key = getNonGoldenRandomKey();
-              // We can't check that the key is mightContain() == false before the
-              // put() because the key could have already been generated *or* the
-              // bloom filter might say true even when it's not there (false
-              // positive).
-              bloomFilter.put(key);
-              // False negative should *never* happen.
-              assertThat(bloomFilter.mightContain(key)).isTrue();
+            int key = getNonGoldenRandomKey();
+            // We can't check that the key is mightContain() == false before the
+            // put() because the key could have already been generated *or* the
+            // bloom filter might say true even when it's not there (false
+            // positive).
+            bloomFilter.put(key);
+            // False negative should *never* happen.
+            assertThat(bloomFilter.mightContain(key)).isTrue();
 
-              // If this check ever fails, that means we need to either bump the
-              // number of expected insertions or don't run the test for so long.
-              // Don't forget, the bloom filter slowly saturates over time and the
-              // expected false positive probability goes up!
-              assertThat(bloomFilter.expectedFpp()).isLessThan(safetyFalsePositiveRate);
-            } while (stopwatch.elapsed(SECONDS) < 1);
-          }
+            // If this check ever fails, that means we need to either bump the
+            // number of expected insertions or don't run the test for so long.
+            // Don't forget, the bloom filter slowly saturates over time and the
+            // expected false positive probability goes up!
+            assertThat(bloomFilter.expectedFpp()).isLessThan(safetyFalsePositiveRate);
+          } while (stopwatch.elapsed(SECONDS) < 1);
         };
 
     List<Throwable> exceptions = runThreadsAndReturnExceptions(numThreads, task);
@@ -624,13 +606,7 @@ public class BloomFilterTest extends TestCase {
     List<Throwable> exceptions = new ArrayList<>(numThreads);
     for (int i = 0; i < numThreads; i++) {
       Thread thread = new Thread(task);
-      thread.setUncaughtExceptionHandler(
-          new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-              exceptions.add(e);
-            }
-          });
+      thread.setUncaughtExceptionHandler((t, throwable) -> exceptions.add(throwable));
       threads.add(thread);
     }
     for (Thread t : threads) {
