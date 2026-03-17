@@ -36,6 +36,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import jsinterop.annotations.JsMethod;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -239,6 +240,12 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
 
   @SafeVarargs
   public static <K, V> ImmutableMap<K, V> ofEntries(Entry<? extends K, ? extends V>... entries) {
+    return new RegularImmutableMap<>(entries);
+  }
+
+  /** ImmutableMap.ofEntries API that is friendly to use from JavaScript. */
+  @JsMethod(name = "ofEntries")
+  static <K, V> ImmutableMap<K, V> jsOfEntries(Entry<? extends K, ? extends V>... entries) {
     return new RegularImmutableMap<>(entries);
   }
 
