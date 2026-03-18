@@ -93,6 +93,14 @@ The most reliable way to build and test Guava is:
 ./mvnw clean install
 ```
 
+If you want to run a single test, you'll need to pass multiple flags because
+Guava is a multi-module project. For performance reasons, you may also wish to
+skip generating Javadoc. For example:
+
+```shell
+./mvnw clean install -Dtest=FinalizableReferenceQueueTest -DfailIfNoTests=false -Dmaven.javadoc.skip
+```
+
 (Our benchmarks, however, are
 [not set up to run easily externally][benchmarks-run].)
 
