@@ -889,11 +889,8 @@ public class CacheLoadingTest extends TestCase {
             () ->
                 cache.get(
                     new Object(),
-                    new Callable<Object>() {
-                      @Override
-                      public Object call() {
-                        throw callableError;
-                      }
+                    () -> {
+                      throw callableError;
                     }));
     assertThat(expected).hasCauseThat().isSameInstanceAs(callableError);
     stats = cache.stats();
@@ -2019,27 +2016,24 @@ public class CacheLoadingTest extends TestCase {
       int index = i;
       Thread thread =
           new Thread(
-              new Runnable() {
-                @Override
-                public void run() {
-                  gettersStartedSignal.countDown();
-                  Object value = null;
-                  try {
-                    int mod = index % 3;
-                    if (mod == 0) {
-                      value = cache.get(key);
-                    } else if (mod == 1) {
-                      value = cache.getUnchecked(key);
-                    } else {
-                      cache.refresh(key);
-                      value = cache.get(key);
-                    }
-                    result.set(index, value);
-                  } catch (Throwable t) {
-                    result.set(index, t);
+              () -> {
+                gettersStartedSignal.countDown();
+                Object value = null;
+                try {
+                  int mod = index % 3;
+                  if (mod == 0) {
+                    value = cache.get(key);
+                  } else if (mod == 1) {
+                    value = cache.getUnchecked(key);
+                  } else {
+                    cache.refresh(key);
+                    value = cache.get(key);
                   }
-                  gettersComplete.countDown();
+                  result.set(index, value);
+                } catch (Throwable t) {
+                  result.set(index, t);
                 }
+                gettersComplete.countDown();
               });
       thread.start();
       // we want to wait until each thread is WAITING - one thread waiting inside CacheLoader.load
@@ -2425,11 +2419,8 @@ public class CacheLoadingTest extends TestCase {
   }
 
   static <T> Callable<T> throwing(Exception exception) {
-    return new Callable<T>() {
-      @Override
-      public T call() throws Exception {
-        throw exception;
-      }
+    return () -> {
+      throw exception;
     };
   }
 }

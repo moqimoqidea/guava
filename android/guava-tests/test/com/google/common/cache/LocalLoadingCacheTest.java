@@ -27,7 +27,6 @@ import com.google.common.cache.LocalCache.Segment;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.testing.NullPointerTester;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -340,11 +339,7 @@ public class LocalLoadingCacheTest extends TestCase {
             }
           }
         };
-    thread.setUncaughtExceptionHandler(
-        new UncaughtExceptionHandler() {
-          @Override
-          public void uncaughtException(Thread t, Throwable e) {}
-        });
+    thread.setUncaughtExceptionHandler((t, throwable) -> {});
     thread.start();
 
     boolean done = doneSignal.await(1, SECONDS);

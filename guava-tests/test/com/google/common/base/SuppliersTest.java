@@ -173,21 +173,9 @@ public class SuppliersTest extends TestCase {
   }
 
   public void testCompose() {
-    Supplier<Integer> fiveSupplier =
-        new Supplier<Integer>() {
-          @Override
-          public Integer get() {
-            return 5;
-          }
-        };
+    Supplier<Integer> fiveSupplier = () -> 5;
 
-    Function<Number, Integer> intValueFunction =
-        new Function<Number, Integer>() {
-          @Override
-          public Integer apply(Number x) {
-            return x.intValue();
-          }
-        };
+    Function<Number, Integer> intValueFunction = Number::intValue;
 
     Supplier<Integer> squareSupplier = Suppliers.compose(intValueFunction, fiveSupplier);
 
@@ -195,22 +183,13 @@ public class SuppliersTest extends TestCase {
   }
 
   public void testComposeWithLists() {
-    Supplier<ArrayList<Integer>> listSupplier =
-        new Supplier<ArrayList<Integer>>() {
-          @Override
-          public ArrayList<Integer> get() {
-            return Lists.newArrayList(0);
-          }
-        };
+    Supplier<ArrayList<Integer>> listSupplier = () -> Lists.newArrayList(0);
 
     Function<List<Integer>, List<Integer>> addElementFunction =
-        new Function<List<Integer>, List<Integer>>() {
-          @Override
-          public List<Integer> apply(List<Integer> list) {
-            ArrayList<Integer> result = new ArrayList<>(list);
-            result.add(1);
-            return result;
-          }
+        list -> {
+          ArrayList<Integer> result = new ArrayList<>(list);
+          result.add(1);
+          return result;
         };
 
     Supplier<List<Integer>> addSupplier = Suppliers.compose(addElementFunction, listSupplier);
@@ -328,27 +307,14 @@ public class SuppliersTest extends TestCase {
   @GwtIncompatible // Thread
   @SuppressWarnings("DoNotCall")
   public void testExpiringMemoizedSupplierThreadSafe() throws Throwable {
-    Function<Supplier<Boolean>, Supplier<Boolean>> memoizer =
-        new Function<Supplier<Boolean>, Supplier<Boolean>>() {
-          @Override
-          public Supplier<Boolean> apply(Supplier<Boolean> supplier) {
-            return Suppliers.memoizeWithExpiration(supplier, Long.MAX_VALUE, NANOSECONDS);
-          }
-        };
-    testSupplierThreadSafe(memoizer);
+    testSupplierThreadSafe(
+        supplier -> Suppliers.memoizeWithExpiration(supplier, Long.MAX_VALUE, NANOSECONDS));
   }
 
   @J2ktIncompatible
   @GwtIncompatible // Thread
   public void testMemoizedSupplierThreadSafe() throws Throwable {
-    Function<Supplier<Boolean>, Supplier<Boolean>> memoizer =
-        new Function<Supplier<Boolean>, Supplier<Boolean>>() {
-          @Override
-          public Supplier<Boolean> apply(Supplier<Boolean> supplier) {
-            return Suppliers.memoize(supplier);
-          }
-        };
-    testSupplierThreadSafe(memoizer);
+    testSupplierThreadSafe(Suppliers::memoize);
   }
 
   @J2ktIncompatible

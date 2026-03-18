@@ -206,19 +206,19 @@ public class CacheBuilderTest extends TestCase {
   @GwtIncompatible // weakKeys
   public void testKeyStrengthSetTwice() {
     CacheBuilder<Object, Object> builder1 = CacheBuilder.newBuilder().weakKeys();
-    assertThrows(IllegalStateException.class, () -> builder1.weakKeys());
+    assertThrows(IllegalStateException.class, builder1::weakKeys);
   }
 
   @J2ktIncompatible
   @GwtIncompatible // weakValues
   public void testValueStrengthSetTwice() {
     CacheBuilder<Object, Object> builder1 = CacheBuilder.newBuilder().weakValues();
-    assertThrows(IllegalStateException.class, () -> builder1.weakValues());
-    assertThrows(IllegalStateException.class, () -> builder1.softValues());
+    assertThrows(IllegalStateException.class, builder1::weakValues);
+    assertThrows(IllegalStateException.class, builder1::softValues);
 
     CacheBuilder<Object, Object> builder2 = CacheBuilder.newBuilder().softValues();
-    assertThrows(IllegalStateException.class, () -> builder2.softValues());
-    assertThrows(IllegalStateException.class, () -> builder2.weakValues());
+    assertThrows(IllegalStateException.class, builder2::softValues);
+    assertThrows(IllegalStateException.class, builder2::weakValues);
   }
 
   @J2ktIncompatible
@@ -401,13 +401,10 @@ public class CacheBuilderTest extends TestCase {
     CountDownLatch computationStarted = new CountDownLatch(1);
     CountDownLatch computationComplete = new CountDownLatch(1);
     new Thread(
-            new Runnable() {
-              @Override
-              public void run() {
-                computationStarted.countDown();
-                cache.getUnchecked("b");
-                computationComplete.countDown();
-              }
+            () -> {
+              computationStarted.countDown();
+              cache.getUnchecked("b");
+              computationComplete.countDown();
             })
         .start();
 
@@ -478,13 +475,10 @@ public class CacheBuilderTest extends TestCase {
       @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
       Future<?> possiblyIgnoredError =
           threadPool.submit(
-              new Runnable() {
-                @Override
-                public void run() {
-                  cache.getUnchecked(s);
-                  computedCount.incrementAndGet();
-                  tasksFinished.countDown();
-                }
+              () -> {
+                cache.getUnchecked(s);
+                computedCount.incrementAndGet();
+                tasksFinished.countDown();
               });
       expectedKeys.add(s);
     }
@@ -577,14 +571,11 @@ public class CacheBuilderTest extends TestCase {
       @SuppressWarnings("unused") // https://errorprone.info/bugpattern/FutureReturnValueIgnored
       Future<?> possiblyIgnoredError =
           threadPool.submit(
-              new Runnable() {
-                @Override
-                public void run() {
-                  for (int j = 0; j < getsPerTask; j++) {
-                    try {
-                      cache.getUnchecked("key" + random.nextInt(nUniqueKeys));
-                    } catch (RuntimeException e) {
-                    }
+              () -> {
+                for (int j = 0; j < getsPerTask; j++) {
+                  try {
+                    cache.getUnchecked("key" + random.nextInt(nUniqueKeys));
+                  } catch (RuntimeException e) {
                   }
                 }
               });

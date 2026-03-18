@@ -138,13 +138,7 @@ public class CacheEvictionTest extends TestCase {
     IdentityLoader<Integer> loader = identityLoader();
 
     // Even numbers are free, odd are too expensive
-    Weigher<Integer, Integer> evensOnly =
-        new Weigher<Integer, Integer>() {
-          @Override
-          public int weigh(Integer k, Integer v) {
-            return k % 2;
-          }
-        };
+    Weigher<Integer, Integer> evensOnly = (k, v) -> k % 2;
 
     LoadingCache<Integer, Integer> cache =
         CacheBuilder.newBuilder()

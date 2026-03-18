@@ -166,13 +166,7 @@ public class ConverterTest extends TestCase {
   }
 
   public void testFrom() {
-    Function<String, Integer> forward =
-        new Function<String, Integer>() {
-          @Override
-          public Integer apply(String input) {
-            return Integer.parseInt(input);
-          }
-        };
+    Function<String, Integer> forward = Integer::parseInt;
     Function<Object, String> backward = toStringFunction();
 
     Converter<String, Number> converter = Converter.<String, Number>from(forward, backward);

@@ -18,7 +18,6 @@ import static com.google.common.cache.LocalCache.Strength.STRONG;
 import static com.google.common.collect.Maps.immutableEntry;
 import static com.google.common.truth.Truth.assertThat;
 
-import com.google.common.base.Function;
 import com.google.common.cache.LocalCache.Strength;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -52,13 +51,7 @@ public class CacheReferencesTest extends TestCase {
   private Iterable<LoadingCache<Key, String>> caches() {
     CacheBuilderFactory factory = factoryWithAllKeyStrengths();
     return Iterables.transform(
-        factory.buildAllPermutations(),
-        new Function<CacheBuilder<Object, Object>, LoadingCache<Key, String>>() {
-          @Override
-          public LoadingCache<Key, String> apply(CacheBuilder<Object, Object> builder) {
-            return builder.build(KEY_TO_STRING_LOADER);
-          }
-        });
+        factory.buildAllPermutations(), builder -> builder.build(KEY_TO_STRING_LOADER));
   }
 
   public void testContainsKeyAndValue() {

@@ -41,12 +41,7 @@ import org.jspecify.annotations.Nullable;
 public final class SafeTreeMap<K, V> implements Serializable, NavigableMap<K, V> {
   @SuppressWarnings("unchecked")
   private static final Comparator<Object> NATURAL_ORDER =
-      new Comparator<Object>() {
-        @Override
-        public int compare(Object o1, Object o2) {
-          return ((Comparable<Object>) o1).compareTo(o2);
-        }
-      };
+      (o1, o2) -> ((Comparable<Object>) o1).compareTo(o2);
 
   private final NavigableMap<K, V> delegate;
 
@@ -94,10 +89,10 @@ public final class SafeTreeMap<K, V> implements Serializable, NavigableMap<K, V>
   @Override
   public Comparator<? super K> comparator() {
     Comparator<? super K> comparator = delegate.comparator();
-    if (comparator == null) {
-      comparator = (Comparator<? super K>) NATURAL_ORDER;
+    if (comparator != null) {
+      return comparator;
     }
-    return comparator;
+    return NATURAL_ORDER;
   }
 
   @Override

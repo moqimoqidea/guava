@@ -196,13 +196,10 @@ public class CacheExpirationTest extends TestCase {
     AtomicInteger totalSum = new AtomicInteger();
 
     RemovalListener<Integer, AtomicInteger> removalListener =
-        new RemovalListener<Integer, AtomicInteger>() {
-          @Override
-          public void onRemoval(RemovalNotification<Integer, AtomicInteger> notification) {
-            if (notification.wasEvicted()) {
-              evictionCount.incrementAndGet();
-              totalSum.addAndGet(notification.getValue().get());
-            }
+        notification -> {
+          if (notification.wasEvicted()) {
+            evictionCount.incrementAndGet();
+            totalSum.addAndGet(notification.getValue().get());
           }
         };
 

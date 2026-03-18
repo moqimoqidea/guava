@@ -14,7 +14,6 @@
 
 package com.google.common.cache;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -112,10 +111,8 @@ class CacheBuilderFactory {
             valueStrengths);
     return Iterables.transform(
         combinations,
-        new Function<List<Object>, CacheBuilder<Object, Object>>() {
-          @Override
-          public CacheBuilder<Object, Object> apply(List<Object> combination) {
-            return createCacheBuilder(
+        combination ->
+            createCacheBuilder(
                 (Integer) combination.get(0),
                 (Integer) combination.get(1),
                 (Integer) combination.get(2),
@@ -123,26 +120,8 @@ class CacheBuilderFactory {
                 (DurationSpec) combination.get(4),
                 (DurationSpec) combination.get(5),
                 (Strength) combination.get(6),
-                (Strength) combination.get(7));
-          }
-        });
+                (Strength) combination.get(7)));
   }
-
-  private static final Function<Object, Optional<?>> NULLABLE_TO_OPTIONAL =
-      new Function<Object, Optional<?>>() {
-        @Override
-        public Optional<?> apply(@Nullable Object obj) {
-          return Optional.fromNullable(obj);
-        }
-      };
-
-  private static final Function<Optional<?>, @Nullable Object> OPTIONAL_TO_NULLABLE =
-      new Function<Optional<?>, @Nullable Object>() {
-        @Override
-        public @Nullable Object apply(Optional<?> optional) {
-          return optional.orNull();
-        }
-      };
 
   /**
    * Sets.cartesianProduct doesn't allow sets that contain null, but we want null to mean "don't
@@ -154,18 +133,11 @@ class CacheBuilderFactory {
     List<Set<Optional<?>>> optionalSets = Lists.newArrayListWithExpectedSize(sets.length);
     for (Set<?> set : sets) {
       Set<Optional<?>> optionalSet =
-          Sets.newLinkedHashSet(Iterables.transform(set, NULLABLE_TO_OPTIONAL));
+          Sets.newLinkedHashSet(Iterables.transform(set, Optional::fromNullable));
       optionalSets.add(optionalSet);
     }
     Set<List<Optional<?>>> cartesianProduct = Sets.cartesianProduct(optionalSets);
-    return Iterables.transform(
-        cartesianProduct,
-        new Function<List<Optional<?>>, List<Object>>() {
-          @Override
-          public List<Object> apply(List<Optional<?>> objs) {
-            return Lists.transform(objs, OPTIONAL_TO_NULLABLE);
-          }
-        });
+    return Iterables.transform(cartesianProduct, objs -> Lists.transform(objs, Optional::orNull));
   }
 
   private CacheBuilder<Object, Object> createCacheBuilder(

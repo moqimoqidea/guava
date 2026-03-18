@@ -263,25 +263,22 @@ public class CacheBuilderGwtTest {
     int[] stats = new int[4];
 
     RemovalListener<Integer, Integer> countingListener =
-        new RemovalListener<Integer, Integer>() {
-          @Override
-          public void onRemoval(RemovalNotification<Integer, Integer> notification) {
-            switch (notification.getCause()) {
-              case EXPIRED:
-                stats[0]++;
-                break;
-              case EXPLICIT:
-                stats[1]++;
-                break;
-              case REPLACED:
-                stats[2]++;
-                break;
-              case SIZE:
-                stats[3]++;
-                break;
-              default:
-                throw new IllegalStateException("No collected exceptions in GWT CacheBuilder.");
-            }
+        notification -> {
+          switch (notification.getCause()) {
+            case EXPIRED:
+              stats[0]++;
+              break;
+            case EXPLICIT:
+              stats[1]++;
+              break;
+            case REPLACED:
+              stats[2]++;
+              break;
+            case SIZE:
+              stats[3]++;
+              break;
+            default:
+              throw new IllegalStateException("No collected exceptions in GWT CacheBuilder.");
           }
         };
 

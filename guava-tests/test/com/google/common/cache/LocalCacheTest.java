@@ -486,13 +486,7 @@ public class LocalCacheTest extends TestCase {
   }
 
   public void testSetWeigher() {
-    Weigher<Object, Object> testWeigher =
-        new Weigher<Object, Object>() {
-          @Override
-          public int weigh(Object key, Object value) {
-            return 42;
-          }
-        };
+    Weigher<Object, Object> testWeigher = (key, value) -> 42;
     LocalCache<Object, Object> map =
         makeLocalCache(createCacheBuilder().maximumWeight(1).weigher(testWeigher));
     assertThat(map.weigher).isSameInstanceAs(testWeigher);
@@ -793,13 +787,7 @@ public class LocalCacheTest extends TestCase {
 
   public void testComputeIfAbsent_removalListener() {
     List<RemovalNotification<Object, Object>> notifications = new ArrayList<>();
-    RemovalListener<Object, Object> removalListener =
-        new RemovalListener<Object, Object>() {
-          @Override
-          public void onRemoval(RemovalNotification<Object, Object> notification) {
-            notifications.add(notification);
-          }
-        };
+    RemovalListener<Object, Object> removalListener = notifications::add;
     Cache<Object, Object> cache =
         CacheBuilder.newBuilder().removalListener(removalListener).build();
     cache.put("a", "b");
@@ -891,11 +879,8 @@ public class LocalCacheTest extends TestCase {
   public void testRemovalListenerCheckedException() {
     RuntimeException e = new RuntimeException();
     RemovalListener<Object, Object> listener =
-        new RemovalListener<Object, Object>() {
-          @Override
-          public void onRemoval(RemovalNotification<Object, Object> notification) {
-            throw e;
-          }
+        unused -> {
+          throw e;
         };
 
     CacheBuilder<Object, Object> builder = createCacheBuilder().removalListener(listener);

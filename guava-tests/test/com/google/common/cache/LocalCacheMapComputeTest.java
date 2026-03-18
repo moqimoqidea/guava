@@ -56,11 +56,7 @@ public class LocalCacheMapComputeTest extends TestCase {
 
   public void testComputeIfAbsent() {
     // simultaneous insertion for same key, expect 1 winner
-    doParallelCacheOp(
-        count,
-        n -> {
-          cache.asMap().computeIfAbsent(key, k -> "value" + n);
-        });
+    doParallelCacheOp(count, n -> cache.asMap().computeIfAbsent(key, k -> "value" + n));
     assertThat(cache.size()).isEqualTo(1);
   }
 
@@ -91,11 +87,7 @@ public class LocalCacheMapComputeTest extends TestCase {
   public void testComputeIfPresent() {
     cache.put(key, "1");
     // simultaneous update for same key, expect count successful updates
-    doParallelCacheOp(
-        count,
-        n -> {
-          cache.asMap().computeIfPresent(key, (k, v) -> v + delimiter + n);
-        });
+    doParallelCacheOp(count, n -> cache.asMap().computeIfPresent(key, (k, v) -> v + delimiter + n));
     assertThat(cache.size()).isEqualTo(1);
     assertThat(cache.getIfPresent(key).split(delimiter)).hasLength(count + 1);
   }
@@ -104,13 +96,7 @@ public class LocalCacheMapComputeTest extends TestCase {
     List<RemovalNotification<Integer, Integer>> notifications = new ArrayList<>();
     Cache<Integer, Integer> cache =
         CacheBuilder.newBuilder()
-            .removalListener(
-                new RemovalListener<Integer, Integer>() {
-                  @Override
-                  public void onRemoval(RemovalNotification<Integer, Integer> notification) {
-                    notifications.add(notification);
-                  }
-                })
+            .removalListener((RemovalNotification<Integer, Integer> n) -> notifications.add(n))
             .build();
     cache.put(1, 2);
 
@@ -146,21 +132,14 @@ public class LocalCacheMapComputeTest extends TestCase {
     cache.put(key, "1");
     // simultaneous update for same key, some null, some non-null
     doParallelCacheOp(
-        count,
-        n -> {
-          cache.asMap().compute(key, (k, v) -> n % 2 == 0 ? v + delimiter + n : null);
-        });
+        count, n -> cache.asMap().compute(key, (k, v) -> n % 2 == 0 ? v + delimiter + n : null));
     assertThat(cache.size()).isAtMost(1);
   }
 
   public void testCompute() {
     cache.put(key, "1");
     // simultaneous deletion
-    doParallelCacheOp(
-        count,
-        n -> {
-          cache.asMap().compute(key, (k, v) -> null);
-        });
+    doParallelCacheOp(count, n -> cache.asMap().compute(key, (k, v) -> null));
     assertThat(cache.size()).isEqualTo(0);
   }
 
@@ -168,13 +147,7 @@ public class LocalCacheMapComputeTest extends TestCase {
     Queue<RemovalNotification<String, String>> notifications = new ConcurrentLinkedQueue<>();
     cache =
         CacheBuilder.newBuilder()
-            .removalListener(
-                new RemovalListener<String, String>() {
-                  @Override
-                  public void onRemoval(RemovalNotification<String, String> notification) {
-                    notifications.add(notification);
-                  }
-                })
+            .removalListener(notifications::add)
             .expireAfterAccess(500000, MILLISECONDS)
             .maximumSize(count)
             .build();
@@ -205,14 +178,13 @@ public class LocalCacheMapComputeTest extends TestCase {
         () ->
             doParallelCacheOp(
                 count,
-                n -> {
-                  cache
-                      .asMap()
-                      .compute(
-                          key,
-                          (k, v) -> {
-                            throw new RuntimeException();
-                          });
-                }));
+                n ->
+                    cache
+                        .asMap()
+                        .compute(
+                            key,
+                            (k, v) -> {
+                              throw new RuntimeException();
+                            })));
   }
 }

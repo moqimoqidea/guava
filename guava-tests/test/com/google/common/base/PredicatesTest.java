@@ -52,11 +52,8 @@ public class PredicatesTest extends TestCase {
   private static final Predicate<@Nullable Integer> TRUE = Predicates.alwaysTrue();
   private static final Predicate<@Nullable Integer> FALSE = Predicates.alwaysFalse();
   private static final Predicate<@Nullable Integer> NEVER_REACHED =
-      new Predicate<@Nullable Integer>() {
-        @Override
-        public boolean apply(@Nullable Integer i) {
-          throw new AssertionFailedError("This predicate should never have been evaluated");
-        }
+      unused -> {
+        throw new AssertionFailedError("This predicate should never have been evaluated");
       };
 
   /** Instantiable predicate with reasonable hashCode() and equals() methods. */

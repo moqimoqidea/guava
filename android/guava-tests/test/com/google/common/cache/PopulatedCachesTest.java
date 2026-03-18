@@ -22,7 +22,6 @@ import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertThrows;
 
-import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilderFactory.DurationSpec;
 import com.google.common.cache.LocalCache.Strength;
 import com.google.common.collect.ImmutableMap;
@@ -297,13 +296,7 @@ public class PopulatedCachesTest extends TestCase {
     // lots of different ways to configure a LoadingCache
     CacheBuilderFactory factory = cacheFactory();
     return Iterables.transform(
-        factory.buildAllPermutations(),
-        new Function<CacheBuilder<Object, Object>, LoadingCache<Object, Object>>() {
-          @Override
-          public LoadingCache<Object, Object> apply(CacheBuilder<Object, Object> builder) {
-            return builder.recordStats().build(identityLoader());
-          }
-        });
+        factory.buildAllPermutations(), builder -> builder.recordStats().build(identityLoader()));
   }
 
   private CacheBuilderFactory cacheFactory() {
