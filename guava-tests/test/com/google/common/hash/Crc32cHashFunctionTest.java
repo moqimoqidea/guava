@@ -14,6 +14,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.crc32c;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.util.Arrays;
@@ -138,12 +139,12 @@ public class Crc32cHashFunctionTest extends TestCase {
    * @param data the data to run the checksum on.
    */
   private static void assertCrc(int expectedCrc, byte[] data) {
-    int actualCrc = Hashing.crc32c().hashBytes(data).asInt();
+    int actualCrc = crc32c().hashBytes(data).asInt();
     assertEquals(
         String.format("expected: %08x, actual: %08x", expectedCrc, actualCrc),
         expectedCrc,
         actualCrc);
-    int actualCrcHasher = Hashing.crc32c().newHasher().putBytes(data).hash().asInt();
+    int actualCrcHasher = crc32c().newHasher().putBytes(data).hash().asInt();
     assertEquals(
         String.format("expected: %08x, actual: %08x", expectedCrc, actualCrc),
         expectedCrc,

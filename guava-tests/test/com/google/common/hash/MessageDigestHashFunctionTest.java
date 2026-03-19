@@ -16,6 +16,11 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.md5;
+import static com.google.common.hash.Hashing.sha1;
+import static com.google.common.hash.Hashing.sha256;
+import static com.google.common.hash.Hashing.sha384;
+import static com.google.common.hash.Hashing.sha512;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
@@ -42,19 +47,20 @@ public class MessageDigestHashFunctionTest extends TestCase {
   //  - Some providers may choose to also include alias names.
   //  - For example, the "SHA-1" algorithm might be referred to as "SHA1".
   //  - The algorithm name is not case-sensitive.
+  @SuppressWarnings("deprecation") // We still need to test our deprecated APIs.
   private static final ImmutableMap<String, HashFunction> ALGORITHMS =
       new ImmutableMap.Builder<String, HashFunction>()
-          .put("MD5", Hashing.md5())
-          .put("SHA", Hashing.sha1()) // Not the official name, but still works
-          .put("SHA1", Hashing.sha1()) // Not the official name, but still works
-          .put("sHa-1", Hashing.sha1()) // Not the official name, but still works
-          .put("SHA-1", Hashing.sha1())
-          .put("SHA-256", Hashing.sha256())
-          .put("SHA-384", Hashing.sha384())
-          .put("SHA-512", Hashing.sha512())
+          .put("MD5", md5())
+          .put("SHA", sha1()) // Not the official name, but still works
+          .put("SHA1", sha1()) // Not the official name, but still works
+          .put("sHa-1", sha1()) // Not the official name, but still works
+          .put("SHA-1", sha1())
+          .put("SHA-256", sha256())
+          .put("SHA-384", sha384())
+          .put("SHA-512", sha512())
           .build();
 
-  public void testHashing() {
+  public void testHashing() throws Exception {
     for (String stringToTest : INPUTS) {
       for (String algorithmToTest : ALGORITHMS.keySet()) {
         assertMessageDigestHashing(HashTestUtils.ascii(stringToTest), algorithmToTest);
@@ -63,48 +69,52 @@ public class MessageDigestHashFunctionTest extends TestCase {
   }
 
   public void testPutAfterHash() {
-    Hasher sha1 = Hashing.sha1().newHasher();
+    Hasher hasher = sha512().newHasher();
 
     assertThat(
-            sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString())
-        .isEqualTo("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
-    assertThrows(IllegalStateException.class, () -> sha1.putInt(42));
+            hasher
+                .putString("The quick brown fox jumps over the lazy dog", UTF_8)
+                .hash()
+                .toString())
+        .isEqualTo(
+            "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6");
+    assertThrows(IllegalStateException.class, () -> hasher.putInt(42));
   }
 
   public void testHashTwice() {
-    Hasher sha1 = Hashing.sha1().newHasher();
+    Hasher hasher = sha512().newHasher();
 
     assertThat(
-            sha1.putString("The quick brown fox jumps over the lazy dog", UTF_8).hash().toString())
-        .isEqualTo("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12");
-    assertThrows(IllegalStateException.class, sha1::hash);
+            hasher
+                .putString("The quick brown fox jumps over the lazy dog", UTF_8)
+                .hash()
+                .toString())
+        .isEqualTo(
+            "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6");
+    assertThrows(IllegalStateException.class, hasher::hash);
   }
 
+  @SuppressWarnings("deprecation") // We still need to test our deprecated APIs.
   public void testToString() {
-    assertThat(Hashing.md5().toString()).isEqualTo("Hashing.md5()");
-    assertThat(Hashing.sha1().toString()).isEqualTo("Hashing.sha1()");
-    assertThat(Hashing.sha256().toString()).isEqualTo("Hashing.sha256()");
-    assertThat(Hashing.sha512().toString()).isEqualTo("Hashing.sha512()");
+    assertThat(md5().toString()).isEqualTo("Hashing.md5()");
+    assertThat(sha1().toString()).isEqualTo("Hashing.sha1()");
+    assertThat(sha256().toString()).isEqualTo("Hashing.sha256()");
+    assertThat(sha512().toString()).isEqualTo("Hashing.sha512()");
   }
 
-  private static void assertMessageDigestHashing(byte[] input, String algorithmName) {
-    try {
-      MessageDigest digest = MessageDigest.getInstance(algorithmName);
+  private static void assertMessageDigestHashing(byte[] input, String algorithmName)
+      throws NoSuchAlgorithmException {
+    MessageDigest digest = MessageDigest.getInstance(algorithmName);
+    assertEquals(
+        HashCode.fromBytes(digest.digest(input)), ALGORITHMS.get(algorithmName).hashBytes(input));
+    for (int bytes = 4; bytes <= digest.getDigestLength(); bytes++) {
       assertEquals(
-          HashCode.fromBytes(digest.digest(input)), ALGORITHMS.get(algorithmName).hashBytes(input));
-      for (int bytes = 4; bytes <= digest.getDigestLength(); bytes++) {
-        assertEquals(
-            HashCode.fromBytes(Arrays.copyOf(digest.digest(input), bytes)),
-            new MessageDigestHashFunction(algorithmName, bytes, algorithmName).hashBytes(input));
-      }
-      try {
-        int maxSize = digest.getDigestLength();
-        new MessageDigestHashFunction(algorithmName, maxSize + 1, algorithmName);
-        fail();
-      } catch (IllegalArgumentException expected) {
-      }
-    } catch (NoSuchAlgorithmException nsae) {
-      throw new AssertionError(nsae);
+          HashCode.fromBytes(Arrays.copyOf(digest.digest(input), bytes)),
+          new MessageDigestHashFunction(algorithmName, bytes, algorithmName).hashBytes(input));
     }
+    int maxSize = digest.getDigestLength();
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new MessageDigestHashFunction(algorithmName, maxSize + 1, algorithmName));
   }
 }

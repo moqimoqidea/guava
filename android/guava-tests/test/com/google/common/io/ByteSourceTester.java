@@ -16,6 +16,7 @@
 
 package com.google.common.io;
 
+import static com.google.common.hash.Hashing.sha512;
 import static com.google.common.io.SourceSinkFactory.ByteSourceFactory;
 import static com.google.common.io.SourceSinkFactory.CharSourceFactory;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -25,7 +26,6 @@ import static org.junit.Assert.assertThrows;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -216,8 +216,8 @@ public class ByteSourceTester extends SourceSinkTester<ByteSource, byte[], ByteS
   }
 
   public void testHash() throws IOException {
-    HashCode expectedHash = Hashing.md5().hashBytes(expected);
-    assertEquals(expectedHash, source.hash(Hashing.md5()));
+    HashCode expectedHash = sha512().hashBytes(expected);
+    assertEquals(expectedHash, source.hash(sha512()));
   }
 
   public void testSlice_illegalArguments() {

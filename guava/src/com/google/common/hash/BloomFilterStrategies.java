@@ -15,6 +15,7 @@
 package com.google.common.hash;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.hash.Hashing.murmur3_128;
 
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
@@ -51,7 +52,7 @@ enum BloomFilterStrategies implements BloomFilter.Strategy {
         int numHashFunctions,
         LockFreeBitArray bits) {
       long bitSize = bits.bitSize();
-      long hash64 = Hashing.murmur3_128().hashObject(object, funnel).asLong();
+      long hash64 = murmur3_128().hashObject(object, funnel).asLong();
       int hash1 = (int) hash64;
       int hash2 = (int) (hash64 >>> 32);
 
@@ -74,7 +75,7 @@ enum BloomFilterStrategies implements BloomFilter.Strategy {
         int numHashFunctions,
         LockFreeBitArray bits) {
       long bitSize = bits.bitSize();
-      long hash64 = Hashing.murmur3_128().hashObject(object, funnel).asLong();
+      long hash64 = murmur3_128().hashObject(object, funnel).asLong();
       int hash1 = (int) hash64;
       int hash2 = (int) (hash64 >>> 32);
 
@@ -105,7 +106,7 @@ enum BloomFilterStrategies implements BloomFilter.Strategy {
         int numHashFunctions,
         LockFreeBitArray bits) {
       long bitSize = bits.bitSize();
-      byte[] bytes = Hashing.murmur3_128().hashObject(object, funnel).getBytesInternal();
+      byte[] bytes = murmur3_128().hashObject(object, funnel).getBytesInternal();
       long hash1 = lowerEight(bytes);
       long hash2 = upperEight(bytes);
 
@@ -126,7 +127,7 @@ enum BloomFilterStrategies implements BloomFilter.Strategy {
         int numHashFunctions,
         LockFreeBitArray bits) {
       long bitSize = bits.bitSize();
-      byte[] bytes = Hashing.murmur3_128().hashObject(object, funnel).getBytesInternal();
+      byte[] bytes = murmur3_128().hashObject(object, funnel).getBytesInternal();
       long hash1 = lowerEight(bytes);
       long hash2 = upperEight(bytes);
 

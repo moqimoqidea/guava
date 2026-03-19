@@ -16,6 +16,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.farmHashFingerprint64;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -34,7 +35,7 @@ import org.jspecify.annotations.NullUnmarked;
 @NullUnmarked
 public class FarmHashFingerprint64Test extends TestCase {
 
-  private static final HashFunction HASH_FN = Hashing.farmHashFingerprint64();
+  private static final HashFunction HASH_FN = farmHashFingerprint64();
 
   // If this test fails, all bets are off
   @SuppressWarnings("InlineMeInliner") // String.repeat unavailable under Java 8

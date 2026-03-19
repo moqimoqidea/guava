@@ -2,6 +2,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.fingerprint2011;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -57,7 +58,7 @@ public class Fingerprint2011Test extends TestCase {
           .put(1, 0x8199675ecaa6fe64L)
           .put(0, 0x23ad7c904aa665e3L)
           .build();
-  private static final HashFunction HASH_FN = Hashing.fingerprint2011();
+  private static final HashFunction HASH_FN = fingerprint2011();
 
   // If this test fails, all bets are off
   @SuppressWarnings("InlineMeInliner") // String.repeat unavailable under Java 8

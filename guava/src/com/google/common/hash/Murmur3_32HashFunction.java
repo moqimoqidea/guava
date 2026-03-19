@@ -27,6 +27,7 @@ package com.google.common.hash;
 
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.hash.Hashing.GOOD_FAST_HASH_SEED;
 import static java.lang.Byte.toUnsignedInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -61,7 +62,7 @@ final class Murmur3_32HashFunction extends AbstractHashFunction implements Seria
   // We can include the non-BMP fix here because Hashing.goodFastHash stresses that the hash is a
   // temporary-use one. Therefore it shouldn't be persisted.
   static final HashFunction GOOD_FAST_HASH_32 =
-      new Murmur3_32HashFunction(Hashing.GOOD_FAST_HASH_SEED, /* supplementaryPlaneFix= */ true);
+      new Murmur3_32HashFunction(GOOD_FAST_HASH_SEED, /* supplementaryPlaneFix= */ true);
 
   private static final int CHUNK_SIZE = 4;
 

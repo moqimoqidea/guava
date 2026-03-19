@@ -16,6 +16,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Funnels.byteArrayFunnel;
 import static com.google.common.hash.Hashing.murmur3_128;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -69,7 +70,7 @@ public class Murmur3Hash128Test extends TestCase {
           @Override
           public byte[] hash(byte[] input, int seed) {
             Hasher hasher = murmur3_128(seed).newHasher();
-            Funnels.byteArrayFunnel().funnel(input, hasher);
+            byteArrayFunnel().funnel(input, hasher);
             return hasher.hash().asBytes();
           }
         };

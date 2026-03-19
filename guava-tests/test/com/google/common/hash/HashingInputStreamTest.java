@@ -14,6 +14,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.sha512;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -108,8 +109,8 @@ public class HashingInputStreamTest extends TestCase {
   }
 
   public void testHash_hashesCorrectly() throws Exception {
-    HashCode expectedHash = Hashing.md5().hashBytes(testBytes);
-    HashingInputStream in = new HashingInputStream(Hashing.md5(), buffer);
+    HashCode expectedHash = sha512().hashBytes(testBytes);
+    HashingInputStream in = new HashingInputStream(sha512(), buffer);
 
     byte[] buf = new byte[4];
     int numOfByteRead = in.read(buf, 0, buf.length);
@@ -119,8 +120,8 @@ public class HashingInputStreamTest extends TestCase {
   }
 
   public void testHash_hashesCorrectlyReadOutOfBound() throws Exception {
-    HashCode expectedHash = Hashing.md5().hashBytes(testBytes);
-    HashingInputStream in = new HashingInputStream(Hashing.md5(), buffer);
+    HashCode expectedHash = sha512().hashBytes(testBytes);
+    HashingInputStream in = new HashingInputStream(sha512(), buffer);
 
     byte[] buf = new byte[100];
     int numOfByteRead = in.read(buf, 0, buf.length);
@@ -131,8 +132,8 @@ public class HashingInputStreamTest extends TestCase {
   }
 
   public void testHash_hashesCorrectlyForSkipping() throws Exception {
-    HashCode expectedHash = Hashing.md5().hashBytes(new byte[] {'m', 's'});
-    HashingInputStream in = new HashingInputStream(Hashing.md5(), buffer);
+    HashCode expectedHash = sha512().hashBytes(new byte[] {'m', 's'});
+    HashingInputStream in = new HashingInputStream(sha512(), buffer);
 
     long numOfByteSkipped = in.skip(2);
     assertEquals(2, numOfByteSkipped);
@@ -147,7 +148,7 @@ public class HashingInputStreamTest extends TestCase {
   public void testChecksForNull() throws Exception {
     NullPointerTester tester = new NullPointerTester();
 
-    tester.testAllPublicInstanceMethods(new HashingInputStream(Hashing.md5(), buffer));
+    tester.testAllPublicInstanceMethods(new HashingInputStream(sha512(), buffer));
     tester.testAllPublicStaticMethods(HashingInputStream.class);
     tester.testAllPublicConstructors(HashingInputStream.class);
   }

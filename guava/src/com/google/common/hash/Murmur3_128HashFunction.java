@@ -25,6 +25,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.GOOD_FAST_HASH_SEED;
 import static java.lang.Byte.toUnsignedInt;
 
 import com.google.errorprone.annotations.Immutable;
@@ -45,8 +46,7 @@ import org.jspecify.annotations.Nullable;
 final class Murmur3_128HashFunction extends AbstractHashFunction implements Serializable {
   static final HashFunction MURMUR3_128 = new Murmur3_128HashFunction(0);
 
-  static final HashFunction GOOD_FAST_HASH_128 =
-      new Murmur3_128HashFunction(Hashing.GOOD_FAST_HASH_SEED);
+  static final HashFunction GOOD_FAST_HASH_128 = new Murmur3_128HashFunction(GOOD_FAST_HASH_SEED);
 
   // TODO(user): when the shortcuts are implemented, update BloomFilterStrategies
   private final int seed;

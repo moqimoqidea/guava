@@ -16,6 +16,7 @@
 
 package com.google.common.io;
 
+import static com.google.common.hash.Hashing.sha512;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
@@ -23,7 +24,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.hash.Hashing;
 import com.google.common.primitives.Bytes;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -480,14 +480,17 @@ public class FilesTest extends IoTestCase {
     File asciiFile = getTestFile("ascii.txt");
     File i18nFile = getTestFile("i18n.txt");
 
-    String init = "d41d8cd98f00b204e9800998ecf8427e";
-    assertThat(Hashing.md5().newHasher().hash().toString()).isEqualTo(init);
+    String init =
+        "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e";
+    assertThat(sha512().newHasher().hash().toString()).isEqualTo(init);
 
-    String asciiHash = "e5df5a39f2b8cb71b24e1d8038f93131";
-    assertThat(Files.hash(asciiFile, Hashing.md5()).toString()).isEqualTo(asciiHash);
+    String asciiHash =
+        "65d4ba90de6e2733e2364c8baf514b557d18fdda9c8227c68c2e7a7190d8888b4919f84ce412be8fa548298d36fe1f762b38c562bb147e04835e3a52f251ae34";
+    assertThat(Files.hash(asciiFile, sha512()).toString()).isEqualTo(asciiHash);
 
-    String i18nHash = "7fa826962ce2079c8334cd4ebf33aea4";
-    assertThat(Files.hash(i18nFile, Hashing.md5()).toString()).isEqualTo(i18nHash);
+    String i18nHash =
+        "4d64ba743dfc35ad6896fcb8674f7ccc040320a8413e086ddd65197e8a8a323559a9cb2d47137b83dd46deb44bbb14c42f9fde3b411411080ed7625828f8474e";
+    assertThat(Files.hash(i18nFile, sha512()).toString()).isEqualTo(i18nHash);
   }
 
   public void testMap() throws IOException {

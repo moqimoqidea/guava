@@ -16,6 +16,7 @@ package com.google.common.net;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.hash.Hashing.murmur3_32_fixed;
 import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
@@ -23,7 +24,6 @@ import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.MoreObjects;
-import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
 import com.google.common.primitives.Ints;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -1029,7 +1029,7 @@ public final class InetAddresses {
     }
 
     // Many strategies for hashing are possible. This might suffice for now.
-    int coercedHash = Hashing.murmur3_32_fixed().hashLong(addressAsLong).asInt();
+    int coercedHash = murmur3_32_fixed().hashLong(addressAsLong).asInt();
 
     // Squash into 224/4 Multicast and 240/4 Reserved space (i.e. 224/3).
     coercedHash |= 0xe0000000;

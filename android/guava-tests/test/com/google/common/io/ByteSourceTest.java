@@ -17,6 +17,7 @@
 package com.google.common.io;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.hash.Hashing.sha512;
 import static com.google.common.io.TestOption.AVAILABLE_ALWAYS_ZERO;
 import static com.google.common.io.TestOption.CLOSE_THROWS;
 import static com.google.common.io.TestOption.OPEN_THROWS;
@@ -34,7 +35,6 @@ import static org.junit.Assert.assertThrows;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.hash.Hashing;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,9 +180,10 @@ public class ByteSourceTest extends IoTestCase {
   public void testHash() throws IOException {
     ByteSource byteSource = new TestByteSource("hamburger\n".getBytes(US_ASCII));
 
-    // Pasted this expected string from `echo hamburger | md5sum`
-    assertThat(byteSource.hash(Hashing.md5()).toString())
-        .isEqualTo("cfa0c5002275c90508338a5cdb2a9781");
+    // Pasted this expected string from `echo hamburger | sha512sum`
+    assertThat(byteSource.hash(sha512()).toString())
+        .isEqualTo(
+            "db0f986332e64487e8cfd30773944574abf9472382e661597e070699a3a78f6781bc0bd3b1cd51156ba25a4028c73bc505bdea2343de3b724568bcf3c50526c6");
   }
 
   public void testContentEquals() throws IOException {

@@ -16,6 +16,7 @@
 
 package com.google.common.hash;
 
+import static com.google.common.hash.Hashing.sha1;
 import static com.google.common.io.BaseEncoding.base16;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -186,7 +187,7 @@ public class HashCodeTest extends TestCase {
   }
 
   public void testRoundTripHashCodeUsingBaseEncoding() {
-    HashCode hash1 = Hashing.sha1().hashString("foo", US_ASCII);
+    HashCode hash1 = sha1().hashString("foo", US_ASCII);
     HashCode hash2 = HashCode.fromBytes(BaseEncoding.base16().lowerCase().decode(hash1.toString()));
     assertEquals(hash1, hash2);
   }
@@ -218,7 +219,7 @@ public class HashCodeTest extends TestCase {
   }
 
   public void testRoundTripHashCodeUsingFromString() {
-    HashCode hash1 = Hashing.sha1().hashString("foo", US_ASCII);
+    HashCode hash1 = sha1().hashString("foo", US_ASCII);
     HashCode hash2 = HashCode.fromString(hash1.toString());
     assertEquals(hash1, hash2);
   }
@@ -237,7 +238,7 @@ public class HashCodeTest extends TestCase {
   }
 
   public void testFromStringFailsWithUpperCaseString() {
-    String string = Hashing.sha1().hashString("foo", US_ASCII).toString().toUpperCase();
+    String string = sha1().hashString("foo", US_ASCII).toString().toUpperCase();
     assertThrows(IllegalArgumentException.class, () -> HashCode.fromString(string));
   }
 
