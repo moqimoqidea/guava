@@ -18,6 +18,7 @@ package com.google.common.net;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static java.lang.Integer.parseInt;
 import static org.junit.Assert.assertThrows;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -261,7 +262,7 @@ public class InetAddressesTest extends TestCase {
         processedNamedInterface |= !isNumeric;
         assertThat(InetAddresses.toAddrString(parsed)).contains("%");
         if (isNumeric) {
-          assertEquals(Integer.parseInt(scopeId), parsed.getScopeId());
+          assertEquals(parseInt(scopeId), parsed.getScopeId());
         } else {
           assertThat(parsed.getScopedInterface().getName()).isEqualTo(scopeId);
         }

@@ -17,6 +17,7 @@ package com.google.common.primitives;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
+import static java.lang.Long.parseLong;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -360,7 +361,7 @@ public final class UnsignedInts {
   @CanIgnoreReturnValue
   public static int parseUnsignedInt(String string, int radix) {
     checkNotNull(string);
-    long result = Long.parseLong(string, radix);
+    long result = parseLong(string, radix);
     if ((result & INT_MASK) != result) {
       throw new NumberFormatException(
           "Input " + string + " in base " + radix + " is not in the range of an unsigned integer");

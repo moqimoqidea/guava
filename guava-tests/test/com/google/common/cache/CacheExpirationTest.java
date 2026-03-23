@@ -18,6 +18,7 @@ import static com.google.common.cache.TestingCacheLoaders.identityLoader;
 import static com.google.common.cache.TestingRemovalListeners.countingRemovalListener;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static java.lang.Integer.parseInt;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -523,7 +524,7 @@ public class CacheExpirationTest extends TestCase {
     @Override
     public Integer load(String key) {
       wasCalled = true;
-      return valuePrefix + Integer.parseInt(key.substring(keyPrefix.length()));
+      return valuePrefix + parseInt(key.substring(keyPrefix.length()));
     }
   }
 }

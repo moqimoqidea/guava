@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 import static com.google.common.base.Strings.lenientFormat;
+import static java.lang.Float.parseFloat;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -724,7 +725,7 @@ public final class Floats extends FloatsMethodsForWeb {
       // TODO(lowasser): could be potentially optimized, but only with
       // extensive testing
       try {
-        return Float.parseFloat(string);
+        return parseFloat(string);
       } catch (NumberFormatException e) {
         // Float.parseFloat has changed specs several times, so fall through
         // gracefully

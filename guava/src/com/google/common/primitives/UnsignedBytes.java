@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 import static java.lang.Byte.toUnsignedInt;
+import static java.lang.Integer.parseInt;
 import static java.security.AccessController.doPrivileged;
 import static java.util.Objects.requireNonNull;
 
@@ -228,7 +229,7 @@ public final class UnsignedBytes {
    */
   @CanIgnoreReturnValue
   public static byte parseUnsignedByte(String string, int radix) {
-    int parse = Integer.parseInt(checkNotNull(string), radix);
+    int parse = parseInt(checkNotNull(string), radix);
     // We need to throw a NumberFormatException, so we have to duplicate checkedCast. =(
     if (parse >> Byte.SIZE == 0) {
       return (byte) parse;
