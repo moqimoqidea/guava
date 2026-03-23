@@ -16,6 +16,7 @@
 
 package com.google.common.collect.testing;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.testing.Helpers.copyToSet;
 import static com.google.common.collect.testing.Helpers.getMethod;
 import static com.google.common.collect.testing.features.FeatureUtil.addImpliedFeatures;
@@ -134,11 +135,10 @@ public abstract class FeatureSpecificTestSuiteBuilder<
   /** Configures this builder produce a TestSuite with the given name. */
   @CanIgnoreReturnValue
   public B named(String name) {
-    if (name.contains("(")) {
-      throw new IllegalArgumentException(
-          "Eclipse hides all characters after "
-              + "'('; please use '[]' or other characters instead of parentheses");
-    }
+    checkArgument(
+        !name.contains("("),
+        "Eclipse hides all characters after "
+            + "'('; please use '[]' or other characters instead of parentheses");
     this.name = name;
     return self();
   }

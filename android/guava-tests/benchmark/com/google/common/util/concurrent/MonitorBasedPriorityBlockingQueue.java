@@ -16,6 +16,7 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtIncompatible;
@@ -442,8 +443,8 @@ public class MonitorBasedPriorityBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue // pushed down from class to method
   @Override
   public int drainTo(Collection<? super E> c) {
-    if (c == null) throw new NullPointerException();
-    if (c == this) throw new IllegalArgumentException();
+    checkNotNull(c);
+    checkArgument(c != this);
     Monitor monitor = this.monitor;
     monitor.enter();
     try {
@@ -468,8 +469,8 @@ public class MonitorBasedPriorityBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue // pushed down from class to method
   @Override
   public int drainTo(Collection<? super E> c, int maxElements) {
-    if (c == null) throw new NullPointerException();
-    if (c == this) throw new IllegalArgumentException();
+    checkNotNull(c);
+    checkArgument(c != this);
     if (maxElements <= 0) return 0;
     Monitor monitor = this.monitor;
     monitor.enter();

@@ -16,6 +16,7 @@
 
 package com.google.common.collect.testing;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.Math.max;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
@@ -480,11 +481,7 @@ public class Helpers {
     private final String justAfterNull;
 
     protected NullsBefore(String justAfterNull) {
-      if (justAfterNull == null) {
-        throw new NullPointerException();
-      }
-
-      this.justAfterNull = justAfterNull;
+      this.justAfterNull = checkNotNull(justAfterNull);
     }
 
     @Override

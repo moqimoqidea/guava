@@ -489,10 +489,10 @@ public final class Quantiles {
   }
 
   private static void checkIndex(int index, int scale) {
-    if (index < 0 || index > scale) {
-      throw new IllegalArgumentException(
-          "Quantile indexes must be between 0 and the scale, which is " + scale);
-    }
+    checkArgument(
+        index >= 0 && index <= scale,
+        "Quantile indexes must be between 0 and the scale, which is %s",
+        scale);
   }
 
   private static double[] longsToDoubles(long[] longs) {

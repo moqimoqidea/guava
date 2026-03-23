@@ -16,6 +16,7 @@
 
 package com.google.common.collect.testing;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.asList;
 
@@ -77,9 +78,7 @@ public class MinimalCollection<E extends @Nullable Object> extends AbstractColle
   public boolean contains(@Nullable Object object) {
     if (!allowNulls) {
       // behave badly
-      if (object == null) {
-        throw new NullPointerException();
-      }
+      checkNotNull(object);
     }
     Platform.checkCast(type, object); // behave badly
     return asList(contents).contains(object);

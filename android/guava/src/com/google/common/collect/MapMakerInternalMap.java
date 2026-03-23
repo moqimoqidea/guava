@@ -14,6 +14,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkRemove;
 import static java.lang.Math.min;
@@ -243,9 +244,8 @@ final class MapMakerInternalMap<
         && builder.getValueStrength() == Strength.STRONG) {
       return new MapMakerInternalMap<>(builder, WeakKeyDummyValueEntry.Helper.instance());
     }
-    if (builder.getValueStrength() == Strength.WEAK) {
-      throw new IllegalArgumentException("Map cannot have both weak and dummy values");
-    }
+    checkArgument(
+        builder.getValueStrength() != Strength.WEAK, "Map cannot have both weak and dummy values");
     throw new AssertionError();
   }
 

@@ -16,6 +16,9 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.J2ktIncompatible;
 import com.google.common.collect.ObjectArrays;
@@ -168,7 +171,7 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
    * @throws IllegalArgumentException if {@code capacity} is less than 1
    */
   public MonitorBasedArrayBlockingQueue(int capacity, boolean fair) {
-    if (capacity <= 0) throw new IllegalArgumentException();
+    checkArgument(capacity > 0);
     this.items = newEArray(capacity);
     monitor = new Monitor(fair);
     notEmpty =
@@ -202,7 +205,7 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
    */
   public MonitorBasedArrayBlockingQueue(int capacity, boolean fair, Collection<? extends E> c) {
     this(capacity, fair);
-    if (capacity < c.size()) throw new IllegalArgumentException();
+    checkArgument(capacity >= c.size());
 
     for (E e : c) add(e);
   }
@@ -239,7 +242,7 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue
   @Override
   public boolean offer(E e) {
-    if (e == null) throw new NullPointerException();
+    checkNotNull(e);
     Monitor monitor = this.monitor;
     if (monitor.enterIf(notFull)) {
       try {
@@ -263,8 +266,7 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue
   @Override
   public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
-
-    if (e == null) throw new NullPointerException();
+    checkNotNull(e);
     Monitor monitor = this.monitor;
     if (monitor.enterWhen(notFull, timeout, unit)) {
       try {
@@ -287,7 +289,7 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
    */
   @Override
   public void put(E e) throws InterruptedException {
-    if (e == null) throw new NullPointerException();
+    checkNotNull(e);
     Monitor monitor = this.monitor;
     monitor.enterWhen(notFull);
     try {
@@ -589,8 +591,8 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue
   @Override
   public int drainTo(Collection<? super E> c) {
-    if (c == null) throw new NullPointerException();
-    if (c == this) throw new IllegalArgumentException();
+    checkNotNull(c);
+    checkArgument(c != this);
     E[] items = this.items;
     Monitor monitor = this.monitor;
     monitor.enter();
@@ -624,8 +626,8 @@ public class MonitorBasedArrayBlockingQueue<E> extends AbstractQueue<E>
   @CanIgnoreReturnValue
   @Override
   public int drainTo(Collection<? super E> c, int maxElements) {
-    if (c == null) throw new NullPointerException();
-    if (c == this) throw new IllegalArgumentException();
+    checkNotNull(c);
+    checkArgument(c != this);
     if (maxElements <= 0) return 0;
     E[] items = this.items;
     Monitor monitor = this.monitor;

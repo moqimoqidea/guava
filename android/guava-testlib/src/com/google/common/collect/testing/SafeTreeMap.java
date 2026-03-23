@@ -16,6 +16,8 @@
 
 package com.google.common.collect.testing;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.GwtIncompatible;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.Serializable;
@@ -62,10 +64,7 @@ public final class SafeTreeMap<K, V> implements Serializable, NavigableMap<K, V>
   }
 
   private SafeTreeMap(NavigableMap<K, V> delegate) {
-    this.delegate = delegate;
-    if (delegate == null) {
-      throw new NullPointerException();
-    }
+    this.delegate = checkNotNull(delegate);
     for (K k : keySet()) {
       checkValid(k);
     }

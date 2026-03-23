@@ -16,6 +16,7 @@
 
 package com.google.common.collect.testing;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.testing.Helpers.copyToList;
 import static com.google.common.collect.testing.Helpers.copyToSet;
 import static java.lang.System.arraycopy;
@@ -287,9 +288,7 @@ abstract class AbstractIteratorTester<E extends @Nullable Object, I extends Iter
     // periodically we should manually try (steps * 3 / 2) here; all tests but
     // one should still pass (testVerifyGetsCalled()).
     stimuli = (Stimulus<E, ? super I>[]) new Stimulus<?, ?>[steps];
-    if (!elementsToInsertIterable.iterator().hasNext()) {
-      throw new IllegalArgumentException();
-    }
+    checkArgument(elementsToInsertIterable.iterator().hasNext());
     elementsToInsert = Helpers.cycle(elementsToInsertIterable);
     this.features = copyToSet(features);
     this.expectedElements = copyToList(expectedElements);

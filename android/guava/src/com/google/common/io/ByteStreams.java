@@ -493,9 +493,7 @@ public final class ByteStreams {
   public static ByteArrayDataOutput newDataOutput(int size) {
     // When called at high frequency, boxing size generates too much garbage,
     // so avoid doing that if we can.
-    if (size < 0) {
-      throw new IllegalArgumentException(String.format("Invalid size: %s", size));
-    }
+    checkArgument(size >= 0, "Invalid size: %s", size);
     return newDataOutput(new ByteArrayOutputStream(size));
   }
 
