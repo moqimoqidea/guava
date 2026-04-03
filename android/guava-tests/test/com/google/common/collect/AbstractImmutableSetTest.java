@@ -33,6 +33,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.testing.IteratorTester;
 import com.google.common.collect.testing.MinimalCollection;
 import com.google.common.collect.testing.MinimalIterable;
+import com.google.common.testing.EqualsTester;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -187,10 +188,10 @@ public abstract class AbstractImmutableSetTest extends TestCase {
   }
 
   public void testCopyOf_collection_enumSet() {
-    Collection<TestEnum> c = EnumSet.of(TestEnum.A, TestEnum.B, TestEnum.D);
-    Set<TestEnum> set = copyOf(c);
-    assertEquals(3, set.size());
-    assertEquals(c, set);
+    Set<TestEnum> original = EnumSet.of(TestEnum.A, TestEnum.B, TestEnum.D);
+    Set<TestEnum> copy = copyOf(original);
+    assertEquals(3, copy.size());
+    assertEquals(original, copy);
   }
 
   public void testCopyOf_iterator_empty() {
@@ -302,9 +303,10 @@ public abstract class AbstractImmutableSetTest extends TestCase {
   }
 
   public void testEquals_sameType() {
-    Collection<String> c = of("a", "b", "c");
-    assertTrue(c.equals(of("a", "b", "c")));
-    assertFalse(c.equals(of("a", "b", "d")));
+    new EqualsTester()
+        .addEqualityGroup(of("a", "b", "c"), of("a", "b", "c"))
+        .addEqualityGroup(of("a", "b", "d"))
+        .testEquals();
   }
 
   abstract <E extends Comparable<E>> ImmutableSet.Builder<E> builder();

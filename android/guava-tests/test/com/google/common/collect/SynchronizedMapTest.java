@@ -18,9 +18,11 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertThat;
+import static java.util.Collections.singletonMap;
 
 import com.google.common.collect.Synchronized.SynchronizedCollection;
 import com.google.common.collect.Synchronized.SynchronizedSet;
+import com.google.common.testing.EqualsTester;
 import com.google.common.testing.SerializableTester;
 import java.io.Serializable;
 import java.util.Collection;
@@ -220,11 +222,10 @@ public class SynchronizedMapTest extends TestCase {
   }
 
   public void testEquals() {
-    boolean unused = create().equals(new HashMap<String, Integer>());
-  }
-
-  public void testHashCode() {
-    int unused = create().hashCode();
+    new EqualsTester()
+        .addEqualityGroup(create(), new HashMap<>())
+        .addEqualityGroup(singletonMap("a", 1))
+        .testEquals();
   }
 
   public void testToString() {

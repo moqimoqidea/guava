@@ -22,6 +22,7 @@ import static java.util.Collections.nCopies;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.collect.Multiset.Entry;
+import com.google.common.testing.EqualsTester;
 import junit.framework.TestCase;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -55,29 +56,14 @@ public class MultisetsImmutableEntryTest extends TestCase {
   }
 
   public void testEquals() {
-    assertEquals(control("foo", 1), entry("foo", 1));
-    assertEquals(control("bar", 2), entry("bar", 2));
-    assertFalse(control("foo", 1).equals(entry("foo", 2)));
-    assertFalse(entry("foo", 1).equals(control("bar", 1)));
-    assertFalse(entry("foo", 1).equals(new Object()));
-    assertFalse(entry("foo", 1).equals(null));
-  }
-
-  public void testEqualsNull() {
-    assertEquals(control(NE, 1), entry(NE, 1));
-    assertFalse(control(NE, 1).equals(entry(NE, 2)));
-    assertFalse(entry(NE, 1).equals(control("bar", 1)));
-    assertFalse(entry(NE, 1).equals(new Object()));
-    assertFalse(entry(NE, 1).equals(null));
-  }
-
-  public void testHashCode() {
-    assertEquals(control("foo", 1).hashCode(), entry("foo", 1).hashCode());
-    assertEquals(control("bar", 2).hashCode(), entry("bar", 2).hashCode());
-  }
-
-  public void testHashCodeNull() {
-    assertEquals(control(NE, 1).hashCode(), entry(NE, 1).hashCode());
+    new EqualsTester()
+        .addEqualityGroup(control("foo", 1), entry("foo", 1))
+        .addEqualityGroup(control("bar", 2), entry("bar", 2))
+        .addEqualityGroup(control("foo", 2), entry("foo", 2))
+        .addEqualityGroup(control("bar", 1), entry("bar", 1))
+        .addEqualityGroup(control(NE, 1), entry(NE, 1))
+        .addEqualityGroup(control(NE, 2), entry(NE, 2))
+        .testEquals();
   }
 
   public void testNegativeCount() {

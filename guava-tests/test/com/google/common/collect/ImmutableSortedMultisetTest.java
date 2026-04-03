@@ -33,6 +33,7 @@ import com.google.common.collect.testing.google.SortedMultisetTestSuiteBuilder;
 import com.google.common.collect.testing.google.TestStringMultisetGenerator;
 import com.google.common.collect.testing.google.UnmodifiableCollectionTests;
 import com.google.common.testing.CollectorTester;
+import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.SerializableTester;
 import java.util.ArrayList;
@@ -184,6 +185,7 @@ public class ImmutableSortedMultisetTest extends TestCase {
     assertEquals(HashMultiset.create(asList("a")), multiset);
   }
 
+  @SuppressWarnings("ArrayAsKeyOfSetOrMap") // We use the same array instance throughout.
   public void testCreation_arrayOfArray() {
     Comparator<String[]> comparator =
         Ordering.natural().lexicographical().onResultOf(Arrays::asList);
@@ -484,11 +486,14 @@ public class ImmutableSortedMultisetTest extends TestCase {
   }
 
   public void testEquals_immutableMultiset() {
-    Collection<String> c = ImmutableSortedMultiset.of("a", "b", "a");
-    assertEquals(c, ImmutableSortedMultiset.of("a", "b", "a"));
-    assertEquals(c, ImmutableSortedMultiset.of("a", "a", "b"));
-    assertThat(c).isNotEqualTo(ImmutableSortedMultiset.of("a", "b"));
-    assertThat(c).isNotEqualTo(ImmutableSortedMultiset.of("a", "b", "c", "d"));
+    new EqualsTester()
+        .addEqualityGroup(
+            ImmutableSortedMultiset.of("a", "b", "a"),
+            ImmutableSortedMultiset.of("a", "b", "a"),
+            ImmutableSortedMultiset.of("a", "a", "b"))
+        .addEqualityGroup(ImmutableSortedMultiset.of("a", "b"))
+        .addEqualityGroup(ImmutableSortedMultiset.of("a", "b", "c", "d"))
+        .testEquals();
   }
 
   public void testIterationOrder() {

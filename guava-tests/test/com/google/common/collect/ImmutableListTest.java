@@ -44,6 +44,7 @@ import com.google.common.collect.testing.google.ListGenerators.ImmutableListTail
 import com.google.common.collect.testing.google.ListGenerators.UnhashableElementsImmutableListGenerator;
 import com.google.common.collect.testing.testers.ListHashCodeTester;
 import com.google.common.testing.CollectorTester;
+import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.SerializableTester;
 import java.util.Arrays;
@@ -461,11 +462,12 @@ public class ImmutableListTest extends TestCase {
   }
 
   public void testEquals_immutableList() {
-    Collection<String> c = ImmutableList.of("a", "b", "c");
-    assertTrue(c.equals(ImmutableList.of("a", "b", "c")));
-    assertFalse(c.equals(ImmutableList.of("a", "c", "b")));
-    assertFalse(c.equals(ImmutableList.of("a", "b")));
-    assertFalse(c.equals(ImmutableList.of("a", "b", "c", "d")));
+    new EqualsTester()
+        .addEqualityGroup(ImmutableList.of("a", "b", "c"), ImmutableList.of("a", "b", "c"))
+        .addEqualityGroup(ImmutableList.of("a", "c", "b"))
+        .addEqualityGroup(ImmutableList.of("a", "b"))
+        .addEqualityGroup(ImmutableList.of("a", "b", "c", "d"))
+        .testEquals();
   }
 
   public void testBuilderAdd() {
