@@ -16,6 +16,7 @@
 
 package com.google.common.testing;
 
+import static com.google.common.base.Throwables.throwIfUnchecked;
 import static com.google.common.collect.Sets.newConcurrentHashSet;
 import static java.lang.Math.max;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -28,6 +29,8 @@ import com.google.errorprone.annotations.DoNotMock;
 import com.google.errorprone.annotations.FormatMethod;
 import com.google.j2objc.annotations.J2ObjCIncompatible;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -36,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Testing utilities relating to garbage collection finalization.
@@ -142,7 +146,6 @@ public final class GcFinalization {
    *
    * @throws RuntimeException if timed out or interrupted while waiting
    */
-  @SuppressWarnings("removal") // b/487687332
   public static void awaitDone(Future<?> future) {
     if (future.isDone()) {
       return;
@@ -150,7 +153,7 @@ public final class GcFinalization {
     long timeoutSeconds = timeoutSeconds();
     long deadline = System.nanoTime() + SECONDS.toNanos(timeoutSeconds);
     do {
-      System.runFinalization();
+      runFinalization();
       if (future.isDone()) {
         return;
       }
@@ -175,7 +178,6 @@ public final class GcFinalization {
    *
    * @throws RuntimeException if timed out or interrupted while waiting
    */
-  @SuppressWarnings("removal") // b/487687332
   public static void awaitDone(FinalizationPredicate predicate) {
     if (predicate.isDone()) {
       return;
@@ -183,7 +185,7 @@ public final class GcFinalization {
     long timeoutSeconds = timeoutSeconds();
     long deadline = System.nanoTime() + SECONDS.toNanos(timeoutSeconds);
     do {
-      System.runFinalization();
+      runFinalization();
       if (predicate.isDone()) {
         return;
       }
@@ -204,7 +206,6 @@ public final class GcFinalization {
    *
    * @throws RuntimeException if timed out or interrupted while waiting
    */
-  @SuppressWarnings("removal") // b/487687332
   public static void await(CountDownLatch latch) {
     if (latch.getCount() == 0) {
       return;
@@ -212,7 +213,7 @@ public final class GcFinalization {
     long timeoutSeconds = timeoutSeconds();
     long deadline = System.nanoTime() + SECONDS.toNanos(timeoutSeconds);
     do {
-      System.runFinalization();
+      runFinalization();
       if (latch.getCount() == 0) {
         return;
       }
@@ -303,7 +304,7 @@ public final class GcFinalization {
     awaitClear(ref);
 
     // Hope to catch some stragglers queued up behind our finalizable object
-    System.runFinalization();
+    runFinalization();
   }
 
   private static WeakReference<Object> createWeakReferenceWithFinalizer(
@@ -338,5 +339,29 @@ public final class GcFinalization {
   @FormatMethod
   private static RuntimeException formatRuntimeException(String format, Object... args) {
     return new RuntimeException(String.format(Locale.ROOT, format, args));
+  }
+
+  private static final @Nullable Method runFinalizationMethod = getRunFinalizationMethod();
+
+  private static @Nullable Method getRunFinalizationMethod() {
+    try {
+      return System.class.getMethod("runFinalization");
+    } catch (NoSuchMethodException | SecurityException e) {
+      return null;
+    }
+  }
+
+  private static void runFinalization() {
+    if (runFinalizationMethod == null) {
+      return;
+    }
+    try {
+      runFinalizationMethod.invoke(null);
+    } catch (InvocationTargetException e) {
+      throwIfUnchecked(e.getCause());
+      throw new AssertionError(e.getCause());
+    } catch (IllegalAccessException e) {
+      throw new AssertionError(e);
+    }
   }
 }
