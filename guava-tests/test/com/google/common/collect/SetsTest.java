@@ -1121,71 +1121,29 @@ public class SetsTest extends TestCase {
   }
 
   void ensureNotDirectlyModifiable(SortedSet<Integer> unmod) {
-    try {
-      unmod.add(4);
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.remove(4);
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.addAll(singleton(4));
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      Iterator<Integer> iterator = unmod.iterator();
-      iterator.next();
-      iterator.remove();
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
+    assertThrows(UnsupportedOperationException.class, () -> unmod.add(4));
+    assertThrows(UnsupportedOperationException.class, () -> unmod.remove(4));
+    assertThrows(UnsupportedOperationException.class, () -> unmod.addAll(singleton(4)));
+    Iterator<Integer> iterator = unmod.iterator();
+    iterator.next();
+    assertThrows(UnsupportedOperationException.class, () -> iterator.remove());
   }
 
   @GwtIncompatible // NavigableSet
   void ensureNotDirectlyModifiable(NavigableSet<Integer> unmod) {
-    try {
-      unmod.add(4);
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.remove(4);
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.addAll(singleton(4));
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.pollFirst();
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      unmod.pollLast();
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      Iterator<Integer> iterator = unmod.iterator();
-      iterator.next();
-      iterator.remove();
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
-    try {
-      Iterator<Integer> iterator = unmod.descendingIterator();
-      iterator.next();
-      iterator.remove();
-      fail("UnsupportedOperationException expected");
-    } catch (UnsupportedOperationException expected) {
-    }
+    assertThrows(UnsupportedOperationException.class, () -> unmod.add(4));
+    assertThrows(UnsupportedOperationException.class, () -> unmod.remove(4));
+    assertThrows(UnsupportedOperationException.class, () -> unmod.addAll(singleton(4)));
+    assertThrows(UnsupportedOperationException.class, () -> unmod.pollFirst());
+    assertThrows(UnsupportedOperationException.class, () -> unmod.pollLast());
+
+    Iterator<Integer> iterator = unmod.iterator();
+    iterator.next();
+    assertThrows(UnsupportedOperationException.class, () -> iterator.remove());
+
+    Iterator<Integer> descendingIterator = unmod.descendingIterator();
+    descendingIterator.next();
+    assertThrows(UnsupportedOperationException.class, () -> descendingIterator.remove());
   }
 
   @GwtIncompatible // NavigableSet
